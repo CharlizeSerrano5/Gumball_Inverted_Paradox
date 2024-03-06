@@ -20,7 +20,7 @@ let config = {
     type: Phaser.AUTO,
     width: 320,
     height: 288,
-    backgroundColor: '',
+    backgroundColor: '#CDC7FF',
     pixelArt: true,
     zoom: 2,
     physics: {
@@ -34,10 +34,11 @@ let config = {
             }
         }
     },
-    scene: [ Menu, Selection, Talking, Fighting]
+    scene: [ Menu, Fighting]
 
 }
 
+const game = new Phaser.Game(config)
 // global variables
 
 const centerX = game.config.width / 2
@@ -45,3 +46,5 @@ const centerY = game.config.height / 2
 const HP = 900
 const MP = 99
 let cursors = null
+
+
