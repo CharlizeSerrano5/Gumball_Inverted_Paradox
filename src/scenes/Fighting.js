@@ -17,7 +17,8 @@ class Fighting extends Phaser.Scene {
         // initializing a background
 
         // adding a character to scene
-        // this.character = new Character()
+        this.gumball = new Character(this, centerX, centerY, 'gumball', 0, HP, MP);
+        
 
         // adding enemy to scene
         // this.enemy = new this.Enemy()
