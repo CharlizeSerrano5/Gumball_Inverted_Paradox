@@ -18,20 +18,22 @@
 let tileSize = 32
 let config = {
     type: Phaser.AUTO,
-    width: 320,
-    height: 288,
+    width: 352,
+    height: 220,
     backgroundColor: '#CDC7FF',
     pixelArt: true,
-    zoom: 2,
+    zoom: 3,
+    // see: https://phaser.discourse.group/t/how-do-i-move-phaser-game-to-the-center-of-a-browser/8577/9
+    scale: {autoCenter: Phaser.Scale.CENTER_BOTH},
     physics: {
         default: "arcade",
         arcade: {
             debug: true,
             // gravity not needed
-            gravity: {
-                x: 0,
-                y: 0
-            }
+            // gravity: {
+            //     x: 0,
+            //     y: 0
+            // }
         }
     },
     scene: [ Menu, Fighting]
@@ -43,7 +45,11 @@ const game = new Phaser.Game(config)
 
 const centerX = game.config.width / 2
 const centerY = game.config.height / 2
-const HP = 900
+// set the floor to be around 40%
+const floorY = game.config.height / 10 * 6
+const leftPos = game.config.width / 5
+const rightPos = game.config.width / 5 * 4
+const HP = 999
 const MP = 99
 let cursors = null
 
