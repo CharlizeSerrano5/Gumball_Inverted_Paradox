@@ -9,6 +9,8 @@ class Character extends Phaser.GameObjects.Sprite {
         this.health = health
         this.name = name
         this.hurtTimer = 250
+        // creating a boolean value to check if the current character has attacked
+        this.char_attack = false
 
         // adding health
         // each character should have their own health bar that shows on the bottom of the screen
@@ -22,7 +24,7 @@ class Character extends Phaser.GameObjects.Sprite {
             attack: new AttackState(),
             hurt: new HurtState(),
             collapse: new CollapseState(),
-        })
+        },[scene, this])
     }
 }
 
@@ -33,30 +35,42 @@ class IdleState extends State {
     // the character will be performing idle motion
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
-        
+        // player should not have attacked in idle state
+        scene.player_attack = false
+        console.log('in default state')
         // console.log(character.name)
         // console.log(`${character.name}`)
     }
     execute(scene, character) {
-        // const { left, right, up, down, space, shift } = scene.keys
+        const { left, right, up, down, space, shift } = scene.keys
         // character.anims.play(`${character}_idle`, true)
 
         // if attack was selected enter the attack animation
-        // if(Phaser.Input.Keyboard.JustDown(down)) {
+        // console.log('inside of idle ' +scene.player_attack)
+        if (character.char_attack == true){
+        // if (scene.player_attack == true){
+            console.log('enter')
+            this.stateMachine.transition('attack')
+        }
+        // if character was hit enter the hurt animation
+        
+        // if(Phaser.Input.Keyboard.JustDown(down)) { // BROKEN ONLY ONE CHARACTER IS TRANSITIONING
         //     this.stateMachine.transition('hurt')
         //     return
         // }
-        // if character was hit enter the hurt animation
-        
         
         
     }
 }
 
+
+// IN PROGRESS - ATTACK IS NOT WORKING PROPERLY
 class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
         // create a delay at the end of this animation to go back into the idle state
+        scene.player_turn = false
+        console.log('in attack state')
         
         character.anims.play(`${character}_attack`, true)
         character.once('animationcomplete', () => {

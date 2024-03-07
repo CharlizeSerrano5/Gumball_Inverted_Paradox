@@ -12,9 +12,6 @@ class HealthBar{
         this.height = 12
         this.draw();
         
-        
-        
-
         // adding the bar to the scene
         scene.add.existing(this.bar)
     }
@@ -35,9 +32,7 @@ class HealthBar{
     draw() {
         this.bar.clear()
         
-        // BG of the bar
-        
-        // create a container for the health
+        // BG of the bar - a container for the health
         // Note: should design a container for health
         this.bar.fillStyle(0x000000)
         this.bar.fillRect(this.x, this.y, this.width, this.height);

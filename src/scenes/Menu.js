@@ -31,6 +31,10 @@ class Menu extends Phaser.Scene{
             frameWidth: 32,
             frameHeight: 32
         })
+        this.load.spritesheet('penny', 'penny_1.png', {
+            frameWidth: 36,
+            frameHeight: 52
+        })
 
         // loading fonts
         this.load.bitmapFont('font', 'atari-classic.png', 'atari-classic.xml')
