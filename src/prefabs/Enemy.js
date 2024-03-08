@@ -8,7 +8,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.name = name
         this.damagedTimer = 250
         // set up an attack
-        this.attack = false
+        this.attacking = false
         this.dmgToPlayer = 0
         this.attack_dmg = power
 
@@ -29,7 +29,8 @@ class DefaultState extends State {
     enter (scene, enemy) {
         // ensure enemy is not attacking in this scene
         enemy.dmgToPlayer = 0
-        enemy.attack = false
+        enemy.attacking = false
+        scene.enemy_attacking
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
     execute(scene, enemy) {       
@@ -47,7 +48,7 @@ class DefaultState extends State {
         }
 
         // if player has attacked enter hurt state and decrease health
-        if (scene.player_attack == true){
+        if (scene.player_attacking == true){
             this.stateMachine.transition('damaged')
         }
 
@@ -61,7 +62,7 @@ class SingleAttackState extends State {
     // enemy will play a temporary attack animation where they throw their enemy specific attack
     enter (scene, enemy) {
         // set attack to true
-        enemy.attack = true
+        enemy.attacking = true
         // play animation and delay till end of animation to go back into the idle state
         // enemy.anims.play(`${enemy}_attack`, true)
         enemy.once('animationcomplete', () => {
@@ -76,7 +77,7 @@ class SingleAttackState extends State {
         enemy.dmgToPlayer = enemy.attack_dmg
     }
     execute(scene, enemy) {
-        if (enemy.attack == false) {
+        if (enemy.attacking == false) {
             this.stateMachine.transition('default')   
         }
     }
@@ -87,6 +88,7 @@ class DamagedState extends State {
     enter (scene, enemy) { 
         enemy.health -= scene.dmgToEnemy
         enemy.setTint(0xFF0000)
+        console.log('DAMAGE TO ENEMY: ' + scene.dmgToEnemy)
         if (enemy.health > 0){
             scene.time.delayedCall(enemy.damagedTimer, () => {
                 enemy.clearTint()

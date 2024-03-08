@@ -8,7 +8,8 @@ class Fighting extends Phaser.Scene {
         this.mp = MP
         // initialize a boolean value to check if player has attacked 
         // Note: might make a global variable
-        this.player_attack = false
+        this.player_attacking = false
+        this.enemy_attacking = false
         // check if it is the player's turn (start off with the player going first)
         this.player_turn = true
         // set the current player at the first one
@@ -21,6 +22,10 @@ class Fighting extends Phaser.Scene {
         // initializing the amt the player will do to the enemy
         this.dmgToEnemy = 0
         this.enemy_dmg = 0
+
+        this.hp_pos = centerX - tileSize * 2.7
+        this.name_pos = centerX - tileSize * 5.5
+        this.health_pos = centerX + 54
     }
 
     create() {
@@ -32,10 +37,6 @@ class Fighting extends Phaser.Scene {
         this.anais = new Character(this, rightPos + tileSize, floorY +tileSize, 'anais', 0, this.hp, MP, this.temp_dmg, 'ANAIS', 1).setOrigin(0,1)
         this.darwin = new Character(this, rightPos-tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, this.temp_dmg, 'DARWIN', 2).setOrigin(0,1)
         // adding each character health
-            // Note: could probably put all health and items inside of a container...
-        this.hp_pos = centerX - tileSize * 2.7
-        this.name_pos = centerX - tileSize * 5.5
-        this.health_pos = centerX + 54
             // gumball
             this.gumball_hp = this.statsPrints(this.gumball, floorY+ tileSize, this.gumball_health, this.gumball_hp)
             // this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball.health, 0)
@@ -91,28 +92,25 @@ class Fighting extends Phaser.Scene {
         const { left, right, up, down, space, shift } = this.keys
         
         // check for game over
-        if (this.active_players == 0){
+        if (this.active_players == 0 || this.active_enemies == 0){
             this.gameOver = true
         }
-        if (this.active_enemies == 0){
-            if (!this.textAdded){
-                this.add.bitmapText(centerX, centerY, 'font', 'YOU WIN', 20).setOrigin(0.5)
-                this.textAdded = true
-            }
-            if (up.isDown){
-                this.scene.start('menuScene')
-            }
-            if (right.isDown){
-                this.scene.restart()
-            }
-        }
+        
         
         // restart game if game over
         if (this.gameOver){
-            // use a boolean value to ensure that browser does not lag
-            if (!this.textAdded){
-                this.add.bitmapText(centerX, centerY, 'font', 'GAME OVER', 20).setOrigin(0.5)
-                this.textAdded = true
+            if (this.active_enemies == 0){
+                if (!this.textAdded){
+                    this.add.bitmapText(centerX, centerY, 'font', 'YOU WIN', 20).setOrigin(0.5)
+                    this.textAdded = true
+                }
+            }
+            // use boolean value to ensure that browser does not lag
+            if (this.active_players == 0){
+                if (!this.textAdded){
+                    this.add.bitmapText(centerX, centerY, 'font', 'GAME OVER', 20).setOrigin(0.5)
+                    this.textAdded = true
+                }
             }
             if (up.isDown){
                 this.scene.start('menuScene')
@@ -134,33 +132,32 @@ class Fighting extends Phaser.Scene {
             this.healthMatch(this.enemy, this.enemy_hp, this.enemy_health)
             
             // if the enemy is attacking
-            if (this.enemy.attack == true) {
-                this.anais.health -= this.enemy.attack_dmg
-                this.anais.hurt = true
-                this.darwin.health -= this.enemy.attack_dmg
-                this.darwin.hurt = true
-                this.gumball.health -= this.enemy.attack_dmg
-                this.gumball.hurt = true
-                this.enemy.attack = false;
+            if (this.enemy.attacking == true) {
+                // this.anais.health -= this.enemy.attack_dmg
+                // this.anais.hurt = true
+                // this.darwin.health -= this.enemy.attack_dmg
+                // this.darwin.hurt = true
+                // this.gumball.health -= this.enemy.attack_dmg
+                // this.gumball.hurt = true
+                // this.enemy.attacking = false;
+                this.enemyAttacking()
             }
-            else if (this.enemy.attack == false) {
+            else if (this.enemy.attacking == false) {
                 this.anais.hurt = false
                 this.darwin.hurt = false
                 this.gumball.hurt = false
             }
-
-            // if any character has attacked
-            if (this.gumball.willAttack || this.anais.willAttack || this.darwin.willAttack){
-                console.log('someone will attack')
-            }
-            
             
             if (Phaser.Input.Keyboard.JustDown(left)){ // NOT WORKING
-                this.player_attack = true
-                // it is no longer the player's turn
-                this.player_turn = false
-                this.gumball.willAttack = true // here 
-                console.log('gumball is attacking' + this.gumball.willAttack)
+                // temporarily setting gumball to attack
+                if (this.gumball.collapsed == false){
+                    this.player_attacking = true
+                    // it is no longer the player's turn
+                    this.player_turn = false
+                    this.gumball.willAttack = true
+                }
+                 // here 
+                // console.log('gumball is attacking' + this.gumball.willAttack)
                 
             }
         } 
@@ -177,5 +174,26 @@ class Fighting extends Phaser.Scene {
         this.add.bitmapText(this.name_pos, char_health_bar.y, 'font', char.name, 12)
         // char_health_txt = this.add.bitmapText(this.health_pos, char_health_bar.y, 'font', char.health, 8)
         return char_health_bar
+    }
+
+    enemyAttacking(){
+        let livingCharacters = Array(3).fill(-1);
+        for (let i = 0; i < this.characters.length; i++) {
+            if (!this.characters[i].collapsed){
+                // if character not collapsed put into array
+                livingCharacters[i] = this.characters[i].index
+            }
+        }
+        let select = Math.floor(Math.random() * livingCharacters.length)
+        while (livingCharacters[select] == -1){
+            select = Math.floor(Math.random() * livingCharacters.length)
+            console.log("bruh " + this.characters[select].name)
+        
+        }
+        this.characters[select].health -= this.enemy.attack_dmg
+        this.characters[select].hurt = true
+        this.enemy.attacking = false;
+        console.log(this.characters[select].name)
+        console.log(livingCharacters)
     }
 }

@@ -4,16 +4,18 @@ class Character extends Phaser.GameObjects.Sprite {
         scene.add.existing(this)
         
         // setting character properties
+        this.index = index
         this.health = health
         this.name = name // for prints
         this.hurtTimer = 250
         // setting up fighting damage
-
-        // this.dmgToEnemy = 0
         this.attack_dmg = power
         // creating a boolean value to check if the current character has attacked
         this.willAttack = false
         this.hurt = false
+        this.collapsed = false
+        // temporary check
+        this.check = ''
 
         // scene.characterFSM = new StateMachine('idle', {
         scene.FSM_holder[index] = new StateMachine('idle', {
@@ -28,9 +30,8 @@ class Character extends Phaser.GameObjects.Sprite {
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
-        // player should not have attacked in idle state
-        scene.player_attack = false
-        // reset variables of character
+        // player is not attacking in idle state
+        scene.player_attacking = false
         scene.dmgToEnemy = 0
 
     }
@@ -38,7 +39,6 @@ class IdleState extends State {
         const { left, right, up, down, space, shift } = scene.keys
         // perform idle animation
         // character.anims.play(`${character}_idle`, true)
-
         // if attack was selected enter the attack animation
         if (character.willAttack == true){
             this.stateMachine.transition('attack')
@@ -51,7 +51,7 @@ class IdleState extends State {
     }
 }
 
-// IN PROGRESS - attack dmg now needs to be added
+// IN PROGRESS - needs to select if attacking
 class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
@@ -78,12 +78,15 @@ class HurtState extends State {
     enter (scene, character) {
         // character.anims.play(`${character.name}_hurt`, true)
         character.setTint(0xFF0000)
-        scene.time.delayedCall(character.hurtTimer, () => {
-            character.clearTint()
-            if (character.health > 0){
-                this.stateMachine.transition('idle')
-            }
-        })
+        if (character.health > 0){
+            scene.time.delayedCall(character.hurtTimer, () => {
+                character.clearTint()
+                if (character.health > 0){
+                    this.stateMachine.transition('idle')
+                }
+            })
+        }
+        
     }
     execute(scene, character) {
         if (character.health <= 0){
@@ -94,19 +97,22 @@ class HurtState extends State {
             })
         }
         
+
+        
     }
 }
 
 class CollapseState extends State {
     // the character will be knocked out in this state
     enter (scene, character) {
+        character.collapsed = true
         character.setTint('#A020F0')
         scene.active_players -= 1
         // character.anims.play(`${character}_collapse`, true)
+        console.log(character.name + ' COLLAPSED')
         
     }
     execute(scene, character) {
-        // character.setTint('#A020F0')
         
     }
 }
