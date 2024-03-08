@@ -42,8 +42,7 @@ class DefaultState extends State {
         // }  
 
         //test 
-        if (Phaser.Input.Keyboard.JustDown(down)){
-            
+        if (Phaser.Input.Keyboard.JustDown(space)){
             this.stateMachine.transition('single_attack')
         }
 

@@ -1,5 +1,5 @@
 class Character extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y , texture, frame, health, mana, power, name, index) {
+    constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, index) {
         super(scene, x, y, texture)
         scene.add.existing(this)
         
@@ -8,8 +8,9 @@ class Character extends Phaser.GameObjects.Sprite {
         this.health = health
         this.name = name // for prints
         this.hurtTimer = 250
+        this.power = power
         // setting up fighting damage
-        this.attack_dmg = power
+        this.attack_dmg = attack_dmg
         // creating a boolean value to check if the current character has attacked
         this.willAttack = false
         this.hurt = false

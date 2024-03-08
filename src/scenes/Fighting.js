@@ -26,6 +26,10 @@ class Fighting extends Phaser.Scene {
         this.hp_pos = centerX - tileSize * 2.7
         this.name_pos = centerX - tileSize * 5.5
         this.health_pos = centerX + 54
+
+        // setting up buttons
+        // see: https://blog.ourcade.co/posts/2020/phaser-3-ui-menu-selection-cursor-selector/
+        
     }
 
     create() {
@@ -33,9 +37,9 @@ class Fighting extends Phaser.Scene {
         // see: https://www.youtube.com/watch?v=OOo69t_-uok
         this.background = this.add.image(this.scale.width / 2,this.scale.height / 2, 'background')
         // adding a character to scene - each character should have their own HP
-        this.gumball = new Character(this, rightPos, floorY + tileSize, 'gumball', 0, this.hp, MP, this.temp_dmg, 'GUMBALL', 0).setOrigin(0,1)
-        this.anais = new Character(this, rightPos + tileSize, floorY +tileSize, 'anais', 0, this.hp, MP, this.temp_dmg, 'ANAIS', 1).setOrigin(0,1)
-        this.darwin = new Character(this, rightPos-tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, this.temp_dmg, 'DARWIN', 2).setOrigin(0,1)
+        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 100, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
+        this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 400, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
+        this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'HEALING', 2).setOrigin(0,1)
         // adding each character health
             // gumball
             this.gumball_hp = this.statsPrints(this.gumball, floorY+ tileSize, this.gumball_health, this.gumball_hp)
@@ -55,13 +59,10 @@ class Fighting extends Phaser.Scene {
             this.darwin_health = this.add.bitmapText(this.health_pos, this.darwin_hp.y, 'font', this.darwin.health, 8)
         
         // adding all characters into an array to loop all the characters
-        this.characters = [ this.gumball, this.darwin, this.anais ]
-
+        this.characters = [ this.gumball, this.anais, this.darwin ]
 
         // adding enemy to scene - enemy has their own prefab
         this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
-        // creating a temp health for the enemy
-        // this.enemy_health = this.add.bitmapText(centerX, centerY - 32, 'font', this.enemy.health, 40).setOrigin(0.5)
         // adding enemy stats
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy.health)
         this.add.bitmapText(this.hp_pos, this.enemy_hp.y, 'font', 'HP', 12)
@@ -71,18 +72,17 @@ class Fighting extends Phaser.Scene {
         // setting up keyboard inputs
         this.keys = this.input.keyboard.createCursorKeys()
 
-        // adding music
-        // this.music = this.sound.add('music')
-                // const temp_rectangle = this.add.rectangle(0, floorY+tileSize, game.config.width, floorY - game.config.height, 0x6666ff).setOrigin(0,1);
-        
-        // initializing selection button
+        // initializing temporary selection button
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         const container_bg = this.add.image(0,0, 'container')
-        const attack = this.add.bitmapText(-24, -20, 'font', "ATTACK", 8)
-        const item = this.add.bitmapText(-24, -8, 'font', "ITEM", 8)
-        const power = this.add.bitmapText(-24, 4, 'font', "POWER", 8)
-        const selection = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , attack, item, power]) // .setVisible(false)
-        
+        const cursorSelect = this.add.image(-24,-20, 'cursor')
+        const attack = this.add.bitmapText(-24, -8, 'font', "ATTACK", 8)
+        this.charDisplay = this.add.bitmapText(-24, -20, 'font', this.characters[this.current_player].name, 8)
+        // const item = this.add.bitmapText(-24, -8, 'font', "ITEM", 8)
+        this.powerDisplay = this.add.bitmapText(-24, 4, 'font', this.characters[this.current_player].power, 8)
+        const selection = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , attack, this.charDisplay, this.powerDisplay, cursorSelect]) // .setVisible(false)
+
+
         // Game OVER flag
         this.gameOver = false
         
@@ -90,13 +90,10 @@ class Fighting extends Phaser.Scene {
 
     update() {
         const { left, right, up, down, space, shift } = this.keys
-        
         // check for game over
         if (this.active_players == 0 || this.active_enemies == 0){
             this.gameOver = true
         }
-        
-        
         // restart game if game over
         if (this.gameOver){
             if (this.active_enemies == 0){
@@ -118,7 +115,6 @@ class Fighting extends Phaser.Scene {
             if (right.isDown){
                 this.scene.restart()
             }
-            
         }
         if (!this.gameOver){
             this.FSM_holder[0].step()
@@ -133,13 +129,6 @@ class Fighting extends Phaser.Scene {
             
             // if the enemy is attacking
             if (this.enemy.attacking == true) {
-                // this.anais.health -= this.enemy.attack_dmg
-                // this.anais.hurt = true
-                // this.darwin.health -= this.enemy.attack_dmg
-                // this.darwin.hurt = true
-                // this.gumball.health -= this.enemy.attack_dmg
-                // this.gumball.hurt = true
-                // this.enemy.attacking = false;
                 this.enemyAttacking()
             }
             else if (this.enemy.attacking == false) {
@@ -148,20 +137,25 @@ class Fighting extends Phaser.Scene {
                 this.gumball.hurt = false
             }
             
-            if (Phaser.Input.Keyboard.JustDown(left)){ // NOT WORKING
+            if (Phaser.Input.Keyboard.JustDown(left)){ 
                 // temporarily setting gumball to attack
-                if (this.gumball.collapsed == false){
+                if (this.characters[this.current_player].collapsed == false){
                     this.player_attacking = true
                     // it is no longer the player's turn
                     this.player_turn = false
-                    this.gumball.willAttack = true
+                    this.characters[this.current_player].willAttack = true
                 }
-                 // here 
-                // console.log('gumball is attacking' + this.gumball.willAttack)
-                
+            }
+
+            if (Phaser.Input.Keyboard.JustDown(up)){
+                this.charChange(1)
+            }
+            if (Phaser.Input.Keyboard.JustDown(down)){
+                this.charChange(-1)
             }
         } 
     }
+    
     healthMatch(char, health_bar, health) {
         // ensure the health is dynamically updating
         health_bar.match(char.health)
@@ -187,13 +181,35 @@ class Fighting extends Phaser.Scene {
         let select = Math.floor(Math.random() * livingCharacters.length)
         while (livingCharacters[select] == -1){
             select = Math.floor(Math.random() * livingCharacters.length)
-            console.log("bruh " + this.characters[select].name)
         
         }
         this.characters[select].health -= this.enemy.attack_dmg
         this.characters[select].hurt = true
         this.enemy.attacking = false;
-        console.log(this.characters[select].name)
-        console.log(livingCharacters)
+        // console.log(livingCharacters)
+    }
+
+    selectChoice(choice) {
+        // selection menu options
+
+        // if left and right button were clicked scroll through the characters
+    }
+    
+    charChange(input){
+        // allow the character to move through the character options
+        
+        // probably make an active characters array to ensure that only those who have a turn can go
+        this.current_player += input
+        if (this.current_player >= this.characters.length){
+            this.current_player = 0
+        }
+        else if (this.current_player < 0){
+            this.current_player = this.characters.length - 1
+        }
+        this.charDisplay.text = this.characters[this.current_player].name
+        this.powerDisplay.text = this.characters[this.current_player].power
+    }
+    charAttack(){
+
     }
 }

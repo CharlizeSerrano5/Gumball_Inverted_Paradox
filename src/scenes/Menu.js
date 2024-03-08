@@ -10,6 +10,7 @@ class Menu extends Phaser.Scene{
         // setting up backgrounds
         this.load.image('background', 'gumball_side_walk_2.png')
         this.load.image('container', 'container_1.png')
+        this.load.image('cursor', 'pixelburger2.png')
 
         // setting up audio
         // this.load.audio()
