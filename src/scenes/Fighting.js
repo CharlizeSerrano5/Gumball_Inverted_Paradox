@@ -80,7 +80,7 @@ class Fighting extends Phaser.Scene {
         this.charDisplay = this.add.bitmapText(-24, -20, 'font', this.characters[this.current_player].name, 8)
         // const item = this.add.bitmapText(-24, -8, 'font', "ITEM", 8)
         this.powerDisplay = this.add.bitmapText(-24, 4, 'font', this.characters[this.current_player].power, 8)
-        const selection = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , attack, this.charDisplay, this.powerDisplay, cursorSelect]) // .setVisible(false)
+        this.choiceMenu = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , attack, this.charDisplay, this.powerDisplay, cursorSelect]) // .setVisible(false)
 
 
         // Game OVER flag
@@ -137,9 +137,11 @@ class Fighting extends Phaser.Scene {
                 this.gumball.hurt = false
             }
             
-            if (Phaser.Input.Keyboard.JustDown(left)){ 
+            if (Phaser.Input.Keyboard.JustDown(left)){
+                // BROKEN 
                 // temporarily setting gumball to attack
                 if (this.characters[this.current_player].collapsed == false){
+                    // NOTE: check if character has died
                     this.player_attacking = true
                     // it is no longer the player's turn
                     this.player_turn = false
@@ -153,6 +155,14 @@ class Fighting extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(down)){
                 this.charChange(-1)
             }
+
+            if (this.player_turn == false){
+                this.choiceMenu.setVisible(false)
+            }
+            else if (this.player_turn == true){
+                this.choiceMenu.setVisible(true)
+            }
+            
         } 
     }
     
@@ -186,7 +196,6 @@ class Fighting extends Phaser.Scene {
         this.characters[select].health -= this.enemy.attack_dmg
         this.characters[select].hurt = true
         this.enemy.attacking = false;
-        // console.log(livingCharacters)
     }
 
     selectChoice(choice) {

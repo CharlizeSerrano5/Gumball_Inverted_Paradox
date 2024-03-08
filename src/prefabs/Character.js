@@ -7,7 +7,7 @@ class Character extends Phaser.GameObjects.Sprite {
         this.index = index
         this.health = health
         this.name = name // for prints
-        this.hurtTimer = 250
+        this.hurtTimer = temp_timer
         this.power = power
         // setting up fighting damage
         this.attack_dmg = attack_dmg
@@ -34,6 +34,7 @@ class IdleState extends State {
         // player is not attacking in idle state
         scene.player_attacking = false
         scene.dmgToEnemy = 0
+        character.clearTint()
 
     }
     execute(scene, character) {
@@ -58,14 +59,14 @@ class AttackState extends State {
     enter (scene, character) {
         // remove the enemies health
         scene.dmgToEnemy = character.attack_dmg 
-        // create a delay at the end of this animation to go back into the idle state
-        // character.anims.play(`${character}_attack`, true)
-        // character.once('animationcomplete', () => {
-        //     this.stateMachine.transition('idle')
-        // })
-        // end player attacking
         scene.player_turn = false
-        character.willAttack = false
+        character.setTint(0xDB91EF)
+        
+        scene.time.delayedCall(character.hurtTimer, () => {
+            scene.player_attacking = true
+            console.log(scene.player_attacking)
+            character.willAttack = false
+        })
     }
     execute(scene, character) {
         // reset to idle
@@ -109,7 +110,6 @@ class CollapseState extends State {
         character.collapsed = true
         character.setTint('#A020F0')
         scene.active_players -= 1
-        // character.anims.play(`${character}_collapse`, true)
         console.log(character.name + ' COLLAPSED')
         
     }

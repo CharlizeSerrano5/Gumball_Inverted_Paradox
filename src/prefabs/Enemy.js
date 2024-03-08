@@ -6,7 +6,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
         // setting enemy properties
         this.health = health // Note: enemy will not have health bar
         this.name = name
-        this.damagedTimer = 250
+        this.damagedTimer = temp_timer
         // set up an attack
         this.attacking = false
         this.dmgToPlayer = 0
@@ -31,6 +31,8 @@ class DefaultState extends State {
         enemy.dmgToPlayer = 0
         enemy.attacking = false
         scene.enemy_attacking
+        scene.player_turn = true
+        enemy.clearTint()
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
     execute(scene, enemy) {       
@@ -41,13 +43,13 @@ class DefaultState extends State {
         //     this.stateMachine.transition('single_attack')
         // }  
 
-        //test 
-        if (Phaser.Input.Keyboard.JustDown(space)){
+        if (scene.player_turn == false){
             this.stateMachine.transition('single_attack')
         }
 
         // if player has attacked enter hurt state and decrease health
         if (scene.player_attacking == true){
+            console.log('reached')
             this.stateMachine.transition('damaged')
         }
 
@@ -60,20 +62,14 @@ class DefaultState extends State {
 class SingleAttackState extends State {
     // enemy will play a temporary attack animation where they throw their enemy specific attack
     enter (scene, enemy) {
-        // set attack to true
-        enemy.attacking = true
-        // play animation and delay till end of animation to go back into the idle state
-        // enemy.anims.play(`${enemy}_attack`, true)
-        enemy.once('animationcomplete', () => {
-            // at end of animation decrease health of player
-            enemy.dmgToPlayer = enemy.attack_dmg // NOTE: temp value
-            // reset to the default state
-            // this.stateMachine.transition('default')
-        })
-
-        // testing
         // the damage to player becomes the attack power of this enemy
-        enemy.dmgToPlayer = enemy.attack_dmg
+        scene.time.delayedCall(enemy.damagedTimer, () => {
+            // scene.player_attacking = true
+            enemy.attacking = true
+            enemy.dmgToPlayer = enemy.attack_dmg
+        })
+        
+        
     }
     execute(scene, enemy) {
         if (enemy.attacking == false) {
@@ -83,14 +79,13 @@ class SingleAttackState extends State {
 }
 
 class DamagedState extends State {
-    // enemy should be taking hits
+    // animation play after finished character attack
     enter (scene, enemy) { 
         enemy.health -= scene.dmgToEnemy
-        enemy.setTint(0xFF0000)
-        console.log('DAMAGE TO ENEMY: ' + scene.dmgToEnemy)
+        enemy.setTint(0xFF0000)    
+
         if (enemy.health > 0){
-            scene.time.delayedCall(enemy.damagedTimer, () => {
-                enemy.clearTint()
+            scene.time.delayedCall(enemy.damagedTimer * 2, () => {
                 this.stateMachine.transition('default')
             })
         }

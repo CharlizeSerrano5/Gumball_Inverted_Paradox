@@ -51,6 +51,7 @@ const leftPos = game.config.width / 5
 const rightPos = game.config.width / 5 * 4
 const HP = 999
 const MP = 99
+const temp_timer = 400
 
 // // initialize a boolean value to check if player has attacked 
 // let player_attack = false
