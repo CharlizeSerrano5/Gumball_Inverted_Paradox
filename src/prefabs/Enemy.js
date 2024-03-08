@@ -34,11 +34,19 @@ class DefaultState extends State {
         console.log("Current Enemy Dmg: " + enemy.attack_dmg)
         // console.log(`${enemy.name}`)
     }
-    execute(scene, enemy) {        
+    execute(scene, enemy) {       
+        const { left, right, up, down, space, shift } = scene.keys
         // if player has attacked and it is not the player's turn
         if (scene.player_attack == true && scene.player_turn == false){
             this.stateMachine.transition('single_attack')
         }  
+
+        //test 
+        if (down.isDown){
+            this.stateMachine.transition('single_attack')
+        }
+        
+        
         
     }
 }
@@ -55,8 +63,14 @@ class SingleAttackState extends State {
             enemy.attack_dmg = 152 // NOTE: temp value
             console.log("Current Enemy Dmg: " + enemy.attack_dmg)
             // reset to the default state
-            this.stateMachine.transition('default')
+            // this.stateMachine.transition('default')
         })
+
+        // testing
+        enemy.attack_dmg = 152
+        console.log("Current Enemy Dmg: " + enemy.attack_dmg)
+        scene.damage = enemy.attack_dmg
+        this.stateMachine.transition('default')
     }
     execute(scene, enemy) {
         
@@ -90,9 +104,6 @@ class DefeatState extends State {
     enter (scene, enemy) {
         // maybe increase a variable to check how many players have defeatd
         console.log('defeat')
-
-        // use an assert to check if their health is depleted
-        // assert(enemy.health == 0);
         console.log(enemy.health)
         enemy.anims.play(`${enemy}_defeat`, true)
     }

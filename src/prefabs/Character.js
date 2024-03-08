@@ -9,6 +9,7 @@ class Character extends Phaser.GameObjects.Sprite {
         this.health = health
         this.name = name
         this.hurtTimer = 250
+        this.damage = 0
         // creating a boolean value to check if the current character has attacked
         this.char_attack = false
 
@@ -17,8 +18,8 @@ class Character extends Phaser.GameObjects.Sprite {
             // this.hp = new HealthBar(scene, x-tileSize, y - 110);
 
         // adding attack
-        console.log(this.health)
-        console.log(this.name) // HAS A VALUE
+        // console.log(this.health)
+        // console.log(this.name) // HAS A VALUE
         scene.characterFSM = new StateMachine('idle', {
             idle: new IdleState(),
             attack: new AttackState(),
@@ -38,6 +39,8 @@ class IdleState extends State {
         // player should not have attacked in idle state
         scene.player_attack = false
         console.log('in default state')
+        // reset the variable of character
+        character.damage = 0
         // console.log(character.name)
         // console.log(`${character.name}`)
     }
@@ -48,7 +51,6 @@ class IdleState extends State {
         // if attack was selected enter the attack animation
         // console.log('inside of idle ' +scene.player_attack)
         if (character.char_attack == true){
-        // if (scene.player_attack == true){
             console.log('enter')
             this.stateMachine.transition('attack')
         }
