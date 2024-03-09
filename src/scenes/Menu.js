@@ -10,7 +10,7 @@ class Menu extends Phaser.Scene{
         // setting up backgrounds
         this.load.image('background', 'gumball_side_walk_2.png')
         this.load.image('container', 'container_1.png')
-        this.load.image('cursor', 'pixelburger2.png')
+        this.load.image('cursor', 'cursor.png')
 
         // setting up audio
         // this.load.audio()
@@ -28,9 +28,9 @@ class Menu extends Phaser.Scene{
             frameWidth: 46,
             frameHeight: 35
         })
-        this.load.spritesheet('penny', 'penny.png', {
+        this.load.spritesheet('penny', 'penny_spritesheet.png', {
             frameWidth: 39,
-            frameHeight: 57
+            frameHeight: 59
         })
         this.load.spritesheet('ANAIS_projectile', 'sci_proj_spritesheet.png', {
             frameWidth: 16,
@@ -45,7 +45,11 @@ class Menu extends Phaser.Scene{
     create() {
         // add title text
         this.add.bitmapText(centerX, centerY - 32, 'font', 'Gumball Inverted Paradox', 12).setOrigin(0.5)
-    
+        this.add.bitmapText(centerX, centerY , 'font', 'up and down to change choice', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, centerY  - 20, 'font', 'change characters <- ->', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, centerY  + 12, 'font', 'SPACE to select choice', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, floorY  + tileSize, 'font', 'arrow keys to START', 8).setOrigin(0.5)
+
         // setting up inputs
         this.keys = this.input.keyboard.createCursorKeys()
 
@@ -79,7 +83,7 @@ class Menu extends Phaser.Scene{
         this.anims.create({
             key: 'ANAIS_projectileAttack',
             frameRate: 8,
-            repeat: -1,
+            repeat: 0,
             frames: this.anims.generateFrameNumbers('ANAIS_projectile', { start: 0, end: 7}),
         })
 
@@ -94,6 +98,31 @@ class Menu extends Phaser.Scene{
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('darwin', { start: 8, end: 8}),
+        })
+        this.anims.create({
+            key: 'PENNY_attack',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('penny', { start: 1, end: 7}),
+        })
+        this.anims.create({
+            key: 'PENNY_default',
+            frameRate: 8,
+            repeat: -1,
+            // repurposing code bc enemy attack is weird
+            frames: this.anims.generateFrameNumbers('penny', { start: 0, end:7}),
+        })
+        this.anims.create({
+            key: 'PENNY_damaged',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('penny', { start: 8, end:15}),
+        })
+        this.anims.create({
+            key: 'PENNY_defeat',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('penny', { start: 16, end: 16}),
         })
 
     }

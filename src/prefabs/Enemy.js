@@ -33,6 +33,9 @@ class DefaultState extends State {
         scene.enemy_attacking
         scene.player_turn = true
         enemy.clearTint()
+        enemy.anims.play(`${enemy.name}_default`, true)
+
+
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
     execute(scene, enemy) {       
@@ -49,7 +52,7 @@ class DefaultState extends State {
 
         // if player has attacked enter hurt state and decrease health
         if (scene.player_attacking == true){
-            console.log('reached')
+            // console.log('reached')
             this.stateMachine.transition('damaged')
         }
 
@@ -82,7 +85,8 @@ class DamagedState extends State {
     // animation play after finished character attack
     enter (scene, enemy) { 
         enemy.health -= scene.dmgToEnemy
-        enemy.setTint(0xFF0000)    
+        // enemy.setTint(0xFF0000)    
+        enemy.anims.play(`${enemy.name}_damaged`, true)
 
         if (enemy.health > 0){
             scene.time.delayedCall(enemy.damagedTimer * 2, () => {
@@ -107,8 +111,9 @@ class DefeatState extends State {
     // the enemy will be knocked out in this state
     enter (scene, enemy) {
         // maybe increase a variable to check how many players have defeatd
-        enemy.setTint('#A020F0')
-        console.log('ENEMY DEFEATED')
+        enemy.anims.play(`${enemy.name}_defeat`, true)
+        // enemy.setTint('#A020F0')
+        // console.log('ENEMY DEFEATED')
         scene.active_enemies -= 1
     }
     execute(scene, enemy) {

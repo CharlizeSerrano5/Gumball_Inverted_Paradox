@@ -8,18 +8,15 @@ class Projectile extends Phaser.GameObjects.Sprite{
         this.character = character
         this.startX = this.x
         // console.log(this.character.name)
+        // this.setVisible(false)
     }
 
     move(landX, landY) {
-        console.log('enemyX: ' + landX + 'enemyY:' + landY)
-        console.log('thisX: ' + this.x + 'thisY:' + this.y)
-        // if (this.x != landX){
-        //     // console.log('enter')
-        //     this.x = landX
-        //     console.log('thisX: ' + this.x + ' AFTER ENTER')
-        // }
+        // console.log('enemyX: ' + landX + 'enemyY:' + landY)
+        // console.log('thisX: ' + this.x + 'thisY:' + this.y)
+        // this.setVisible(true)
         if(this.x >= landX){
-            // this.anims.play(`${this.character.name}_projectileAttack`)
+            this.anims.play(`${this.character.name}_projectileAttack`)
 
             // increase if going to the right
             // decrease if going to the left
@@ -31,8 +28,7 @@ class Projectile extends Phaser.GameObjects.Sprite{
             }
         }
         if (this.x == landX){
-            console.log('reached')
-            this.setVisible(false)
+            // this.setVisible(false)
         }
 
         if (this.x == landX){
@@ -41,6 +37,7 @@ class Projectile extends Phaser.GameObjects.Sprite{
     }
     reset(x){
         this.x = x
+        // this.setVisible(false)
     }
 
     // update() {

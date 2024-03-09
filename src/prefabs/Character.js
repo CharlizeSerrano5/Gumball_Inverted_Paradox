@@ -64,6 +64,7 @@ class AttackState extends State {
         scene.player_turn = false
         character.setTint(0xDB91EF)
         while (character.projectile.x > scene.enemyX)
+        
             character.projectile.move(scene.enemyX, scene.enemyY)
         scene.time.delayedCall(character.hurtTimer, () => {
             scene.player_attacking = true

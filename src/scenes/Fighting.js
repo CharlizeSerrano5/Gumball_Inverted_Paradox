@@ -44,7 +44,7 @@ class Fighting extends Phaser.Scene {
         // adding a character to scene - each character should have their own HP
         this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 100, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
         this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 400, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
-        this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'HEALING', 2).setOrigin(0,1)
+        this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 2).setOrigin(0,1)
         // adding each character health
             // gumball
             this.gumball_hp = this.statsPrints(this.gumball, floorY+ tileSize, this.gumball_health, this.gumball_hp)
@@ -80,7 +80,7 @@ class Fighting extends Phaser.Scene {
         // initializing temporary selection button
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         const container_bg = this.add.image(0,0, 'container')
-        this.cursorImage = this.add.image(-24,-20, 'cursor').setOrigin(0.5, 0).setScale(0.5)
+        this.cursorImage = this.add.image(-32,-20, 'cursor').setOrigin(0.5, 0)
         this.charDisplay = this.add.bitmapText(-24, -20, 'font', this.characters[this.current_player].name, 8)
         const item = this.add.bitmapText(-24, -8, 'font', "PHONE", 8)
         this.powerDisplay = this.add.bitmapText(-24, 4, 'font', this.characters[this.current_player].power, 8)
