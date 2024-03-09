@@ -32,9 +32,9 @@ class Menu extends Phaser.Scene{
             frameWidth: 39,
             frameHeight: 57
         })
-        this.load.spritesheet('science', 'sci_proj_spritesheet.png', {
-            frameWidth: 32,
-            frameHeight: 32
+        this.load.spritesheet('ANAIS_projectile', 'sci_proj_spritesheet.png', {
+            frameWidth: 16,
+            frameHeight: 16
         })
 
         // loading fonts
@@ -77,10 +77,10 @@ class Menu extends Phaser.Scene{
             frames: this.anims.generateFrameNumbers('anais', { start: 8, end: 8}),
         })
         this.anims.create({
-            key: 'science',
+            key: 'ANAIS_projectileAttack',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('science', { start: 0, end: 7}),
+            frames: this.anims.generateFrameNumbers('ANAIS_projectile', { start: 0, end: 7}),
         })
 
         this.anims.create({

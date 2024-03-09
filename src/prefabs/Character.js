@@ -2,7 +2,8 @@ class Character extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, index) {
         super(scene, x, y, texture)
         scene.add.existing(this)
-        
+        this.x = x
+        this.y = y
         // setting character properties
         this.index = index
         this.health = health
@@ -17,6 +18,7 @@ class Character extends Phaser.GameObjects.Sprite {
         this.collapsed = false
         // temporary check
         this.check = ''
+        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
 
         // scene.characterFSM = new StateMachine('idle', {
         scene.FSM_holder[index] = new StateMachine('idle', {
@@ -61,16 +63,19 @@ class AttackState extends State {
         scene.dmgToEnemy = character.attack_dmg 
         scene.player_turn = false
         character.setTint(0xDB91EF)
-        
+        while (character.projectile.x > scene.enemyX)
+            character.projectile.move(scene.enemyX, scene.enemyY)
         scene.time.delayedCall(character.hurtTimer, () => {
             scene.player_attacking = true
             console.log(scene.player_attacking)
             character.willAttack = false
         })
+        
     }
     execute(scene, character) {
         // reset to idle
         if (character.willAttack == false){
+            character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
     }

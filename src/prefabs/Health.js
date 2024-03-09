@@ -16,19 +16,6 @@ class HealthBar{
         scene.add.existing(this.bar)
     }
 
-    // decrease (amount) {
-    //     // whatever amount has been subtracted from health
-    //     this.value -= amount
-    //     // ensure no negative values
-    //     if (this.value < 0){
-    //         this.value = 0
-    //     }
-        
-    //     this.draw()
-
-    //     return (this.value === 0)
-    // }
-
     match (amount) {
             // whatever changes were made to the characters health
             this.value = amount

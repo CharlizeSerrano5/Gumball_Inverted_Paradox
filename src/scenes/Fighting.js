@@ -29,6 +29,9 @@ class Fighting extends Phaser.Scene {
         this.name_pos = centerX - tileSize * 5.5
         this.health_pos = centerX + 54
 
+        this.enemyX = leftPos - tileSize
+        this.enemyY = floorY + tileSize
+
         // setting up buttons
         // see: https://blog.ourcade.co/posts/2020/phaser-3-ui-menu-selection-cursor-selector/
         
@@ -78,11 +81,10 @@ class Fighting extends Phaser.Scene {
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         const container_bg = this.add.image(0,0, 'container')
         this.cursorImage = this.add.image(-24,-20, 'cursor').setOrigin(0.5, 0).setScale(0.5)
-        // const attack = this.add.bitmapText(-24, -8, 'font', "ATTACK", 8)
         this.charDisplay = this.add.bitmapText(-24, -20, 'font', this.characters[this.current_player].name, 8)
         const item = this.add.bitmapText(-24, -8, 'font', "PHONE", 8)
         this.powerDisplay = this.add.bitmapText(-24, 4, 'font', this.characters[this.current_player].power, 8)
-        this.choiceMenu = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , item, this.charDisplay, this.powerDisplay, this.cursorImage]) // .setVisible(false)
+        this.choiceMenu = this.add.container(rightPos + tileSize / 2, floorY + tileSize + 25 , [ container_bg , item, this.charDisplay, this.powerDisplay, this.cursorImage]) // .setVisible(false)
 
 
         // Game OVER flag
@@ -216,17 +218,15 @@ class Fighting extends Phaser.Scene {
         this.cursor_pos += -input*12
         this.current_selection += input
         if (this.current_selection > 2){
-            console.log('greater than 2')
             this.current_selection = 0
             this.cursor_pos = 4
         }
         else if (this.current_selection < 0){
-            console.log("less than 0")
             this.current_selection = 3 - 1
             this.cursor_pos = -20
         }
         this.cursorImage.y = this.cursor_pos
-        console.log("current selection: " + this.current_selection + " y position: " + this.cursor_pos)
+        // console.log("current selection: " + this.current_selection + " y position: " + this.cursor_pos)
 
         // if left and right button were clicked scroll through the characters
     }
