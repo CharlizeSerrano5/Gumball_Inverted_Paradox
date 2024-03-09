@@ -32,6 +32,8 @@ class Fighting extends Phaser.Scene {
         this.enemyX = leftPos - tileSize
         this.enemyY = floorY + tileSize
 
+        this.music_playing = false
+
         // setting up buttons
         // see: https://blog.ourcade.co/posts/2020/phaser-3-ui-menu-selection-cursor-selector/
         
@@ -41,6 +43,9 @@ class Fighting extends Phaser.Scene {
         // initializing a background
         // see: https://www.youtube.com/watch?v=OOo69t_-uok
         this.background = this.add.image(this.scale.width / 2,this.scale.height / 2, 'background')
+        // adding music
+        this.music = this.sound.add('music').setLoop(true).setVolume(0.4)
+        
         // adding a character to scene - each character should have their own HP
         this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 100, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
         this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 400, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
@@ -103,24 +108,37 @@ class Fighting extends Phaser.Scene {
             if (this.active_enemies == 0){
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'YOU WIN', 20).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
                     this.textAdded = true
+                    
                 }
             }
             // use boolean value to ensure that browser does not lag
             if (this.active_players == 0){
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'GAME OVER', 20).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
+
                     this.textAdded = true
+
                 }
             }
+
+
             if (up.isDown){
+                this.music.stop()
                 this.scene.start('menuScene')
             }
             if (right.isDown){
+                this.music.stop()
                 this.scene.restart()
             }
         }
         if (!this.gameOver){
+            if (!this.music_playing){
+                this.music.play()
+                this.music_playing = true
+            }
             this.FSM_holder[0].step()
             this.FSM_holder[1].step()
             this.FSM_holder[2].step()

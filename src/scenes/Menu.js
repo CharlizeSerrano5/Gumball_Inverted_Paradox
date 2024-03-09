@@ -13,7 +13,7 @@ class Menu extends Phaser.Scene{
         this.load.image('cursor', 'cursor.png')
 
         // setting up audio
-        // this.load.audio()
+        this.load.audio('music', '8BitArcade.mp3')
 
         //setting up character sprite sheet
         this.load.spritesheet('gumball', 'gumball_spritesheet.png', {
