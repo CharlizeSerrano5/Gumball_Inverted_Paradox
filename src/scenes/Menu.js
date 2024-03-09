@@ -36,6 +36,14 @@ class Menu extends Phaser.Scene{
             frameWidth: 16,
             frameHeight: 16
         })
+        this.load.spritesheet('GUMBALL_projectile', 'love_projectile.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        })
+        this.load.spritesheet('DARWIN_projectile', 'support_projectile.png', {
+            frameWidth: 16,
+            frameHeight: 16
+        })
 
         // loading fonts
         this.load.bitmapFont('font', 'atari-classic.png', 'atari-classic.xml')
@@ -66,6 +74,12 @@ class Menu extends Phaser.Scene{
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('gumball', { start: 8, end: 8}),
+        })
+        this.anims.create({
+            key: 'GUMBALL_projectileAttack',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('GUMBALL_projectile', { start: 0, end: 0}),
         })
 
         this.anims.create({
@@ -99,6 +113,13 @@ class Menu extends Phaser.Scene{
             repeat: -1,
             frames: this.anims.generateFrameNumbers('darwin', { start: 8, end: 8}),
         })
+        this.anims.create({
+            key: 'DARWIN_projectileAttack',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('DARWIN_projectile', { start: 0, end: 0}),
+        })
+
         this.anims.create({
             key: 'PENNY_attack',
             frameRate: 8,
