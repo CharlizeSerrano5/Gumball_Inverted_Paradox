@@ -16,25 +16,25 @@ class Menu extends Phaser.Scene{
         // this.load.audio()
 
         //setting up character sprite sheet
-        this.load.spritesheet('gumball', 'gumball_test.png', {
-            frameWidth: 32,
+        this.load.spritesheet('gumball', 'gumball_spritesheet.png', {
+            frameWidth: 30,
             frameHeight: 42
         })
-        this.load.spritesheet('anais', 'anais_test.png', {
-            frameWidth: 32,
-            frameHeight: 42
+        this.load.spritesheet('anais', 'anais_spritesheet.png', {
+            frameWidth: 33,
+            frameHeight: 34
         })
-        this.load.spritesheet('darwin', 'darwin_test.png', {
-            frameWidth: 32,
-            frameHeight: 42
+        this.load.spritesheet('darwin', 'darwin_spritesheet.png', {
+            frameWidth: 46,
+            frameHeight: 35
         })
-        this.load.spritesheet('boss_temp', 'penguin_spritesheet_1.png', {
+        this.load.spritesheet('penny', 'penny.png', {
+            frameWidth: 39,
+            frameHeight: 57
+        })
+        this.load.spritesheet('science', 'sci_proj_spritesheet.png', {
             frameWidth: 32,
             frameHeight: 32
-        })
-        this.load.spritesheet('penny', 'penny_1.png', {
-            frameWidth: 36,
-            frameHeight: 52
         })
 
         // loading fonts
@@ -52,11 +52,50 @@ class Menu extends Phaser.Scene{
         // setting up animations
 
         this.anims.create({
-            key: 'boss_temp_idle',
+            key: 'GUMBALL_idle',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('boss_temp', { start: 0, end: 3}),
+            frames: this.anims.generateFrameNumbers('gumball', { start: 0, end: 7}),
         })
+        this.anims.create({
+            key: 'GUMBALL_collapse',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('gumball', { start: 8, end: 8}),
+        })
+
+        this.anims.create({
+            key: 'ANAIS_idle',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('anais', { start: 0, end: 7}),
+        })
+        this.anims.create({
+            key: 'ANAIS_collapse',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('anais', { start: 8, end: 8}),
+        })
+        this.anims.create({
+            key: 'science',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('science', { start: 0, end: 7}),
+        })
+
+        this.anims.create({
+            key: 'DARWIN_idle',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('darwin', { start: 0, end: 7}),
+        })
+        this.anims.create({
+            key: 'DARWIN_collapse',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('darwin', { start: 8, end: 8}),
+        })
+
     }
 
     update() {

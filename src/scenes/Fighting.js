@@ -14,6 +14,8 @@ class Fighting extends Phaser.Scene {
         this.player_turn = true
         // set the current player at the first one
         this.current_player = 0
+        this.current_selection = 2
+        this.cursor_pos = -20
         this.active_players = 3 // Note: with more scenes turn this into a global variable
         this.active_enemies = 1 // Note: in future scenes it may change the amount
         this.FSM_holder = Array(3).fill(0)
@@ -75,12 +77,12 @@ class Fighting extends Phaser.Scene {
         // initializing temporary selection button
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         const container_bg = this.add.image(0,0, 'container')
-        const cursorSelect = this.add.image(-24,-20, 'cursor')
-        const attack = this.add.bitmapText(-24, -8, 'font', "ATTACK", 8)
+        this.cursorImage = this.add.image(-24,-20, 'cursor').setOrigin(0.5, 0).setScale(0.5)
+        // const attack = this.add.bitmapText(-24, -8, 'font', "ATTACK", 8)
         this.charDisplay = this.add.bitmapText(-24, -20, 'font', this.characters[this.current_player].name, 8)
-        // const item = this.add.bitmapText(-24, -8, 'font', "ITEM", 8)
+        const item = this.add.bitmapText(-24, -8, 'font', "PHONE", 8)
         this.powerDisplay = this.add.bitmapText(-24, 4, 'font', this.characters[this.current_player].power, 8)
-        this.choiceMenu = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , attack, this.charDisplay, this.powerDisplay, cursorSelect]) // .setVisible(false)
+        this.choiceMenu = this.add.container(rightPos, floorY + tileSize + 28 , [ container_bg , item, this.charDisplay, this.powerDisplay, this.cursorImage]) // .setVisible(false)
 
 
         // Game OVER flag
@@ -137,23 +139,33 @@ class Fighting extends Phaser.Scene {
                 this.gumball.hurt = false
             }
             
-            if (Phaser.Input.Keyboard.JustDown(left)){
-                // BROKEN 
-                // temporarily setting gumball to attack
-                if (this.characters[this.current_player].collapsed == false){
-                    // NOTE: check if character has died
-                    this.player_attacking = true
-                    // it is no longer the player's turn
-                    this.player_turn = false
-                    this.characters[this.current_player].willAttack = true
+            if (this.current_selection == 0){
+                if (Phaser.Input.Keyboard.JustDown(space)){
+                    // BROKEN
+                    // the enemy gets attacked at different timings 
+                    if (this.characters[this.current_player].collapsed == false){
+                        // NOTE: check if character has died
+                        this.player_attacking = true
+                        this.player_turn = false
+                        this.characters[this.current_player].willAttack = true
+                    }
                 }
             }
 
+            if (this.current_selection == 2){
+                if (Phaser.Input.Keyboard.JustDown(right)){
+                    this.charChange(1)
+                }
+                if (Phaser.Input.Keyboard.JustDown(left)){
+                    this.charChange(-1)
+                }
+            }
+            
             if (Phaser.Input.Keyboard.JustDown(up)){
-                this.charChange(1)
+                this.lookChoice(1)
             }
             if (Phaser.Input.Keyboard.JustDown(down)){
-                this.charChange(-1)
+                this.lookChoice(-1)
             }
 
             if (this.player_turn == false){
@@ -198,8 +210,23 @@ class Fighting extends Phaser.Scene {
         this.enemy.attacking = false;
     }
 
-    selectChoice(choice) {
+    lookChoice(input) {
         // selection menu options
+        // if up and down selected then scroll through options
+        this.cursor_pos += -input*12
+        this.current_selection += input
+        if (this.current_selection > 2){
+            console.log('greater than 2')
+            this.current_selection = 0
+            this.cursor_pos = 4
+        }
+        else if (this.current_selection < 0){
+            console.log("less than 0")
+            this.current_selection = 3 - 1
+            this.cursor_pos = -20
+        }
+        this.cursorImage.y = this.cursor_pos
+        console.log("current selection: " + this.current_selection + " y position: " + this.cursor_pos)
 
         // if left and right button were clicked scroll through the characters
     }

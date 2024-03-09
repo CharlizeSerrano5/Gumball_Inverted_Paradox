@@ -40,7 +40,7 @@ class IdleState extends State {
     execute(scene, character) {
         const { left, right, up, down, space, shift } = scene.keys
         // perform idle animation
-        // character.anims.play(`${character}_idle`, true)
+        character.anims.play(`${character.name}_idle`, true)
         // if attack was selected enter the attack animation
         if (character.willAttack == true){
             this.stateMachine.transition('attack')
@@ -107,8 +107,9 @@ class HurtState extends State {
 class CollapseState extends State {
     // the character will be knocked out in this state
     enter (scene, character) {
+        character.anims.play(`${character.name}_collapse`, true)
         character.collapsed = true
-        character.setTint('#A020F0')
+        character.setTint(0xA020F0)
         scene.active_players -= 1
         console.log(character.name + ' COLLAPSED')
         
