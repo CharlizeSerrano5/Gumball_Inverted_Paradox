@@ -1,4 +1,5 @@
 class Character extends Phaser.GameObjects.Sprite {
+    // poop
     constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, index) {
         super(scene, x, y, texture)
         scene.add.existing(this)
