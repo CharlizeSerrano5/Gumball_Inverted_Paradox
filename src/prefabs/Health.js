@@ -1,19 +1,28 @@
 class HealthBar{
     // see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/graphics/health%20bars%20demo.js
-    constructor(scene, x, y, hp){
+    constructor(scene, x, y, character){
         this.bar = new Phaser.GameObjects.Graphics(scene)
 
         this.x = x - tileSize * 2;
         this.y = y;
-        this.value = hp;
+        this.value = character.health;
         // this.p = /100;
         this.padding = 4
         this.width = 118
         this.height = 12
         this.draw();
         
+        // Note: should set up a variable for the global font size
+        // 12 is the font size
+        this.hp_pos = this.x - 24
+        this.name_pos = centerX - tileSize * 5.5
+        this.health_pos = this.width + this.x
+
         // adding the bar to the scene
         scene.add.existing(this.bar)
+        scene.add.bitmapText(this.hp_pos, this.y, 'font', 'HP', 12)
+        scene.add.bitmapText(this.name_pos, this.y, 'font', character.name, 12)
+        this.health_txt = scene.add.bitmapText(this.health_pos, this.y, 'font', character.health, 8)
     }
 
     match (amount) {
@@ -25,6 +34,7 @@ class HealthBar{
             }
             
             this.draw()
+            this.health_txt.text = this.value
     
             return (this.value === 0)
         }

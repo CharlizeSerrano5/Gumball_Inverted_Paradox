@@ -16,6 +16,7 @@ class Character extends Phaser.GameObjects.Sprite {
         this.willAttack = false
         this.hurt = false
         this.collapsed = false
+        this.hasAttacked = false
         // temporary check
         this.check = ''
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
@@ -38,6 +39,10 @@ class IdleState extends State {
         scene.dmgToEnemy = 0
         character.clearTint()
 
+        character.hasAttacked = false
+        
+
+
     }
     execute(scene, character) {
         const { left, right, up, down, space, shift } = scene.keys
@@ -47,36 +52,44 @@ class IdleState extends State {
         if (character.willAttack == true){
             this.stateMachine.transition('attack')
         }
-        // if character was hit enter the hurt animation
-        if(character.hurt) { // test one character at a time
+        // if the enemy is attacking
+        if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
             this.stateMachine.transition('hurt')
         }
 
     }
 }
 
-// IN PROGRESS - needs to select if attacking
+// IN PROGRESS - character has to go before boss can go
 class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
         // remove the enemies health
         scene.dmgToEnemy = character.attack_dmg 
-        scene.player_turn = false
+        
         character.setTint(0xDB91EF)
         while (character.projectile.x > scene.enemyX)
         
             character.projectile.move(scene.enemyX, scene.enemyY)
         scene.time.delayedCall(character.hurtTimer, () => {
             scene.player_attacking = true
-            console.log(scene.player_attacking)
             character.willAttack = false
+
+            character.hasAttacked = true
         })
         
     }
     execute(scene, character) {
         // reset to idle
         if (character.willAttack == false){
+            // once the player has finished attacking
+            // scene.player_turn = false // temporarily placing
             character.projectile.reset(character.x)
+            this.stateMachine.transition('idle')
+        }
+
+        if (character.hasAttacked = true){
+            scene.player_turn = false
             this.stateMachine.transition('idle')
         }
     }
@@ -86,6 +99,11 @@ class HurtState extends State {
     enter (scene, character) {
         // character.anims.play(`${character.name}_hurt`, true)
         character.setTint(0xFF0000)
+        
+        // decrease health and update bar
+        character.health -= scene.enemy.dmgToPlayer
+        scene.characters_hp[scene.enemy.selectedChar].match(character.health)
+
         if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
@@ -94,9 +112,13 @@ class HurtState extends State {
                 }
             })
         }
+
+        console.log('HURT')
         
     }
     execute(scene, character) {
+        // PROBLEM FOREVER IN HURT STATE
+        console.log("HURTING")
         if (character.health <= 0){
             // if health depleted after hurt animation collapse this character
             this.stateMachine.transition('collapse')
@@ -104,8 +126,6 @@ class HurtState extends State {
                 this.stateMachine.transition('collapse')
             })
         }
-        
-
         
     }
 }
@@ -117,8 +137,7 @@ class CollapseState extends State {
         character.collapsed = true
         character.setTint(0xA020F0)
         scene.active_players -= 1
-        console.log(character.name + ' COLLAPSED')
-        
+        console.log(character.name + ' COLLAPSED')   
     }
     execute(scene, character) {
         

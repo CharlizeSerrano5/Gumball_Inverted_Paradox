@@ -25,13 +25,10 @@ class Fighting extends Phaser.Scene {
         this.dmgToEnemy = 0
         this.enemy_dmg = 0
 
-        this.hp_pos = centerX - tileSize * 2.7
-        this.name_pos = centerX - tileSize * 5.5
-        this.health_pos = centerX + 54
 
         this.enemyX = leftPos - tileSize
         this.enemyY = floorY + tileSize
-
+        
         this.music_playing = false
 
         // setting up buttons
@@ -51,33 +48,16 @@ class Fighting extends Phaser.Scene {
         this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 400, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
         this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 2).setOrigin(0,1)
         // adding each character health
-            // gumball
-            this.gumball_hp = this.statsPrints(this.gumball, floorY+ tileSize, this.gumball_health, this.gumball_hp)
-            // this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball.health, 0)
-            // this.add.bitmapText(this.hp_pos, this.gumball_hp.y, 'font', 'HP', 12)
-            // this.add.bitmapText(this.name_pos, this.gumball_hp.y, 'font', this.gumball.name, 12)
-            this.gumball_health = this.add.bitmapText(this.health_pos, this.gumball_hp.y, 'font', this.gumball.health, 8)
-            // anais
-            this.anais_hp = this.statsPrints(this.anais, floorY+ tileSize *1.5, this.anais_health, this.anais_hp)
-            // this.add.bitmapText(this.hp_pos, this.anais_hp.y, 'font', 'HP', 12)
-            // this.add.bitmapText(this.name_pos, this.anais_hp.y, 'font', this.anais.name, 12)
-            this.anais_health = this.add.bitmapText(this.health_pos, this.anais_hp.y, 'font', this.anais.health, 8)
-            // darwin
-            this.darwin_hp = new HealthBar(this, centerX, floorY + tileSize * 2, this.darwin.health, 2)
-            this.add.bitmapText(this.hp_pos, this.darwin_hp.y, 'font', 'HP', 12)
-            this.add.bitmapText(this.name_pos, this.darwin_hp.y, 'font', this.darwin.name, 12)
-            this.darwin_health = this.add.bitmapText(this.health_pos, this.darwin_hp.y, 'font', this.darwin.health, 8)
-        
+        this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball, 0)
+        this.anais_hp = new HealthBar(this, centerX,floorY+ tileSize *1.5, this.anais, 0)
+        this.darwin_hp = new HealthBar(this, centerX, floorY + tileSize * 2, this.darwin, 2)
         // adding all characters into an array to loop all the characters
         this.characters = [ this.gumball, this.anais, this.darwin ]
-
+        this.characters_hp = [ this.gumball_hp, this.anais_hp, this.darwin_hp ]
         // adding enemy to scene - enemy has their own prefab
         this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
-        // adding enemy stats
-        this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy.health)
-        this.add.bitmapText(this.hp_pos, this.enemy_hp.y, 'font', 'HP', 12)
-        this.add.bitmapText(this.name_pos, this.enemy_hp.y, 'font', this.enemy.name, 12)
-        this.enemy_health = this.add.bitmapText(this.health_pos, this.enemy_hp.y, 'font', this.enemy.health, 8)
+        this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
+
 
         // setting up keyboard inputs
         this.keys = this.input.keyboard.createCursorKeys()
@@ -143,28 +123,29 @@ class Fighting extends Phaser.Scene {
             this.FSM_holder[1].step()
             this.FSM_holder[2].step()
             this.enemyFSM.step()
-            // match the characters health
-            this.healthMatch(this.anais, this.anais_hp, this.anais_health);
-            this.healthMatch(this.gumball, this.gumball_hp, this.gumball_health)
-            this.healthMatch(this.darwin, this.darwin_hp, this.darwin_health)
-            this.healthMatch(this.enemy, this.enemy_hp, this.enemy_health)
-            
+            // CURRENT PROBLEM - attacks are checked inside of the scene
             // if the enemy is attacking
-            if (this.enemy.attacking == true) {
-                this.enemyAttacking()
-            }
-            else if (this.enemy.attacking == false) {
+
+            // probably put inside of the character
+            if (this.enemy.attacking == false) {
                 this.anais.hurt = false
                 this.darwin.hurt = false
                 this.gumball.hurt = false
             }
             
+            // FIXXXX PLAYER TURNS ARE BROKEN
             if (this.current_selection == 0){
+                // if cursor on the power selection
+
+                // select choice
                 if (Phaser.Input.Keyboard.JustDown(space)){
                     // BROKEN
                     // the enemy gets attacked at different timings 
+                    
+                    // if the current character has not collapsed
                     if (this.characters[this.current_player].collapsed == false){
                         // NOTE: check if character has died
+                        console.log('character is not dead - checking if player turn activated')
                         this.player_attacking = true
                         this.player_turn = false
                         this.characters[this.current_player].willAttack = true
@@ -187,47 +168,28 @@ class Fighting extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(down)){
                 this.lookChoice(-1)
             }
-
-            if (this.player_turn == false){
-                this.choiceMenu.setVisible(false)
-            }
-            else if (this.player_turn == true){
-                this.choiceMenu.setVisible(true)
-            }
+            // if (this.player_turn == false){
+            //     this.choiceMenu.setVisible(false)
+            // }
+            // else if (this.player_turn == true){
+            //     this.choiceMenu.setVisible(true)
+            // }
             
         } 
     }
-    
-    healthMatch(char, health_bar, health) {
-        // ensure the health is dynamically updating
-        health_bar.match(char.health)
-        health.text = health_bar.value
-    }
-    statsPrints(char, y, char_health_txt, char_health_bar){
-        // refining the code of making a health bar
-        char_health_bar = new HealthBar(this, centerX, y, char.health)
-        this.add.bitmapText(this.hp_pos, char_health_bar.y, 'font', 'HP', 12)
-        this.add.bitmapText(this.name_pos, char_health_bar.y, 'font', char.name, 12)
-        // char_health_txt = this.add.bitmapText(this.health_pos, char_health_bar.y, 'font', char.health, 8)
-        return char_health_bar
-    }
 
-    enemyAttacking(){
+    checkLiving(){
+        // function to update living characters
         let livingCharacters = Array(3).fill(-1);
+
         for (let i = 0; i < this.characters.length; i++) {
             if (!this.characters[i].collapsed){
                 // if character not collapsed put into array
                 livingCharacters[i] = this.characters[i].index
             }
         }
-        let select = Math.floor(Math.random() * livingCharacters.length)
-        while (livingCharacters[select] == -1){
-            select = Math.floor(Math.random() * livingCharacters.length)
-        
-        }
-        this.characters[select].health -= this.enemy.attack_dmg
-        this.characters[select].hurt = true
-        this.enemy.attacking = false;
+        return livingCharacters
+            
     }
 
     lookChoice(input) {
