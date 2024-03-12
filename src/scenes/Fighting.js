@@ -9,10 +9,8 @@ class Fighting extends Phaser.Scene {
 
         // check if it is the player's turn (start off with the player going first)
         this.player_turn = true
-        // set the current player at the first one
-        this.current_player = 0
-        this.current_selection = 2
-        this.cursor_pos = -20
+
+
         this.active_players = 3 // Note: with more scenes turn this into a global variable
         this.active_enemies = 1 // Note: in future scenes it may change the amount
         this.FSM_holder = Array(3).fill(0)
@@ -59,15 +57,7 @@ class Fighting extends Phaser.Scene {
         // setting up keyboard inputs
         this.keys = this.input.keyboard.createCursorKeys()
 
-        // initializing temporary selection button
-        //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
-        const container_bg = this.add.image(0,0, 'container')
-        this.cursorImage = this.add.image(-32,-20, 'cursor').setOrigin(0.5, 0)
-        this.charDisplay = this.add.bitmapText(-24, -20, 'font', this.characters[this.current_player].name, 8)
-        const item = this.add.bitmapText(-24, -8, 'font', "PHONE", 8)
-        this.powerDisplay = this.add.bitmapText(-24, 4, 'font', this.characters[this.current_player].power, 8)
-        this.choiceMenu = this.add.container(rightPos + tileSize / 2, floorY + tileSize + 25 , [ container_bg , item, this.charDisplay, this.powerDisplay, this.cursorImage]) // .setVisible(false)
-
+        this.selectionMenu = new SelectionMenu(this, rightPos + tileSize / 2, floorY + tileSize + 25, this.characters)
 
         // Game OVER flag
         this.gameOver = false
@@ -129,36 +119,29 @@ class Fighting extends Phaser.Scene {
                 this.darwin.hurt = false
                 this.gumball.hurt = false
             }
-            
-            if (this.current_selection == 0){
-                // if cursor on the power selection
-
-                // select choice
-                if (Phaser.Input.Keyboard.JustDown(space)){
-                    if (this.characters[this.current_player].collapsed == false && !this.characters[this.current_player].hasAttacked){
-                        // NOTE: check if character has died
-                        this.characters[this.current_player].willAttack = true
-                    }
-                }
+        
+            if (Phaser.Input.Keyboard.JustDown(space)){
+                this.selectionMenu.select()
             }
-            
-
             // PROBLEM: the menu selection is spammable
-            if (this.current_selection == 2){
+           
+            if (this.selectionMenu.current_selection == 2){
+                console.log('selectingGGG')
                 if (Phaser.Input.Keyboard.JustDown(right)){
-                    this.charChange(1)
+                    this.selectionMenu.charChange(1)
                 }
                 if (Phaser.Input.Keyboard.JustDown(left)){
-                    this.charChange(-1)
+                    this.selectionMenu.charChange(-1)
                 }
             }
             
             if (Phaser.Input.Keyboard.JustDown(up)){
-                this.lookChoice(1)
+                this.selectionMenu.lookChoice(1)
             }
             if (Phaser.Input.Keyboard.JustDown(down)){
-                this.lookChoice(-1)
+                this.selectionMenu.lookChoice(-1)
             }
+
             // if (this.player_turn == false){
             //     this.choiceMenu.setVisible(false)
             // }
@@ -212,50 +195,7 @@ class Fighting extends Phaser.Scene {
             
     }
 
-    lookChoice(input) {
-        // selection menu options
-        // if up and down selected then scroll through options
-        this.cursor_pos += -input*12
-        this.current_selection += input
-        if (this.current_selection > 2){
-            this.current_selection = 0
-            this.cursor_pos = 4
-        }
-        else if (this.current_selection < 0){
-            this.current_selection = 3 - 1
-            this.cursor_pos = -20
-        }
-        this.cursorImage.y = this.cursor_pos
-        // console.log("current selection: " + this.current_selection + " y position: " + this.cursor_pos)
-
-        // if left and right button were clicked scroll through the characters
-    }
     
-    charChange(input){
-        // let availableChar = Array(3).fill(-1);
-        // for (let i = 0; i < this.characters.length; i++) {
-        //     if (this.characters[i].hasAttacked && !this.characters[i].collapsed){
-        //         // if character not collapsed put into array
-        //         availableChar[i] = this.characters[i].index
-        //     }
-        // }
-        
-        // allow the character to move through the character options
-        
-        // probably make an active characters array to ensure that only those who have a turn can go
-        this.current_player += input
-        if (this.current_player >= this.characters.length){
-            this.current_player = 0
-        }
-        else if (this.current_player < 0){
-            this.current_player = this.characters.length - 1
-        }
-        
-        
-        
-        this.charDisplay.text = this.characters[this.current_player].name
-        this.powerDisplay.text = this.characters[this.current_player].power
-    }
     charAttack(){
 
     }

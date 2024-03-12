@@ -16,7 +16,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         // setting up the character to attack
         this.selectedChar = -1
-        this.damaged = false
+        // this.damaged = false
 
         // setting up state machines
         scene.enemyFSM = new StateMachine('default', {
@@ -43,6 +43,7 @@ class DefaultState extends State {
     // the enemy will be performing idle motion
     // in this state the enemy may only enter the attack and damaged state
     enter (scene, enemy) {
+        // scene.choiceMenu.setVisible(true)
         enemy.damaged = false
         // ensure enemy is not attacking in this scene
         enemy.hasAttacked = false
@@ -52,7 +53,7 @@ class DefaultState extends State {
         // scene.player_turn = true
         enemy.clearTint()
         enemy.anims.play(`${enemy.name}_default`, true)
-        scene.choiceMenu.setVisible(true)
+        
 
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
@@ -62,6 +63,9 @@ class DefaultState extends State {
         if(scene.player_turn == false && enemy.hasAttacked == false){
             this.stateMachine.transition('single_attack')
         }
+        // if(Phaser.Input.Keyboard.JustDown(shift)){
+        //     this.stateMachine.transition('single_attack')
+        // }
 
         
 
@@ -72,7 +76,7 @@ class DefaultState extends State {
         // }
 
         // if enemy has been damaged
-        if ( enemy.damaged == true){
+        if ( scene.dmgToEnemy ){
             this.stateMachine.transition('damaged')
         }
 
@@ -86,14 +90,12 @@ class SingleAttackState extends State {
     // enemy will play a temporary attack animation where they throw their enemy specific attack
     enter (scene, enemy) {
         // the damage to player becomes the attack power of this enemy
-        
         scene.time.delayedCall(enemy.damagedTimer, () => {
             enemy.attacking = true
             enemy.dmgToPlayer = enemy.attack_dmg
         })
         
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
-
         scene.characters[enemy.selectedChar].hurt = true
         enemy.hasAttacked = true
     }
@@ -111,7 +113,7 @@ class SingleAttackState extends State {
 class DamagedState extends State {
     // animation play after finished character attack
     enter (scene, enemy) { 
-        scene.choiceMenu.setVisible(false)
+        // scene.choiceMenu.setVisible(false)
         enemy.health -= scene.dmgToEnemy
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)

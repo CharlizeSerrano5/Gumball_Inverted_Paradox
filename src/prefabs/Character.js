@@ -11,6 +11,7 @@ class Character extends Phaser.GameObjects.Sprite {
         this.name = name // for prints
         this.hurtTimer = temp_timer
         this.power = power
+        this.hasAttacked = false
         // setting up fighting damage
         this.attack_dmg = attack_dmg
         
@@ -40,7 +41,7 @@ class IdleState extends State {
             console.log('no attacky')
         }
         
-        character.hasAttacked = false
+        // character.hasAttacked = false
         
 
 
@@ -50,7 +51,7 @@ class IdleState extends State {
         // perform idle animation
         character.anims.play(`${character.name}_idle`, true)
         // if attack was selected enter the attack animation
-        if (character.willAttack == true && !character.hasAttacked && !scene.enemy.damaged){
+        if (character.willAttack == true && !character.hasAttacked){
             console.log('entering attack')
             this.stateMachine.transition('attack')
         }
@@ -68,7 +69,7 @@ class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
         // remove the enemies health
-        scene.enemy.damaged = true
+        // scene.enemy.damaged = true
         scene.dmgToEnemy = character.attack_dmg
         character.setTint(0xDB91EF)
         
@@ -91,6 +92,10 @@ class AttackState extends State {
             character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
+        // if (scene.enemy.damaged == false){
+        //     character.projectile.reset(character.x)
+        //     this.stateMachine.transition('idle')
+        // }
     }
 }
 
@@ -98,7 +103,6 @@ class HurtState extends State {
     enter (scene, character) {
         // character.anims.play(`${character.name}_hurt`, true)
         character.setTint(0xFF0000)
-        
         // decrease health and update bar
         character.health -= scene.enemy.dmgToPlayer
         scene.characters_hp[scene.enemy.selectedChar].match(character.health)
@@ -106,6 +110,8 @@ class HurtState extends State {
         if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
+                scene.enemy.attacking = false
+
                 if (character.health > 0){
                     this.stateMachine.transition('idle')
                 }
