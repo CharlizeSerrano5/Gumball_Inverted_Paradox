@@ -6,10 +6,7 @@ class Fighting extends Phaser.Scene {
     init() {
         this.hp = HP
         this.mp = MP
-        // initialize a boolean value to check if player has attacked 
-        // Note: might make a global variable
-        this.player_attacking = false
-        this.enemy_attacking = false
+
         // check if it is the player's turn (start off with the player going first)
         this.player_turn = true
         // set the current player at the first one
@@ -78,7 +75,6 @@ class Fighting extends Phaser.Scene {
     }
 
     update() {
-        console.log("PLAYER IS ATTACKING IN SCENE" + this.player_attacking)
         const { left, right, up, down, space, shift } = this.keys
         // check for game over
         if (this.active_players == 0 || this.active_enemies == 0){
@@ -134,20 +130,13 @@ class Fighting extends Phaser.Scene {
                 this.gumball.hurt = false
             }
             
-            // FIXXXX PLAYER TURNS ARE BROKEN
             if (this.current_selection == 0){
                 // if cursor on the power selection
 
                 // select choice
                 if (Phaser.Input.Keyboard.JustDown(space)){
-                    // BROKEN
-                    // the enemy gets attacked at different timings 
-                    
-                    // if the current character has not collapsed
                     if (this.characters[this.current_player].collapsed == false){
                         // NOTE: check if character has died
-                        console.log('character is not dead - checking if player turn activated')
-                        this.player_turn = false
                         this.characters[this.current_player].willAttack = true
                     }
                 }
@@ -176,10 +165,6 @@ class Fighting extends Phaser.Scene {
             // }
             
         } 
-    }
-
-    attackEnemy(){
-        this.player_attacking = true
     }
 
     checkAttacked(){

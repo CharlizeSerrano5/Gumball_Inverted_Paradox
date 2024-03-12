@@ -27,7 +27,6 @@ class Enemy extends Phaser.GameObjects.Sprite {
         },[scene, this])
     }
 
-    // possible solution
     charAttacking(livingCharacters){
         // function to choose which character to attack
         let select = Math.floor(Math.random() * livingCharacters.length)
@@ -71,7 +70,7 @@ class DefaultState extends State {
         //     this.stateMachine.transition('single_attack')
         // }
 
-        // if player has attacked enter hurt state and decrease health
+        // if enemy has been damaged
         if ( enemy.damaged == true){
             console.log('player is supposedly attacking enemy')
             this.stateMachine.transition('damaged')
@@ -89,14 +88,12 @@ class SingleAttackState extends State {
         // the damage to player becomes the attack power of this enemy
         
         scene.time.delayedCall(enemy.damagedTimer, () => {
-            // scene.player_attacking = true
             enemy.attacking = true
             enemy.dmgToPlayer = enemy.attack_dmg
         })
         
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
 
-        // console.log('Inside of Single Attack State: attack dmg' + enemy.attack_dmg)
         scene.characters[enemy.selectedChar].hurt = true
         enemy.hasAttacked = true
     }
@@ -107,10 +104,7 @@ class SingleAttackState extends State {
             this.stateMachine.transition('default')   
         }
         
-        // determine how to get enemy out of attack state
-        // if (enemy.hasAttacked == true){
-        //     scene.player_turn = true
-        // }
+
     }
 }
 
@@ -120,9 +114,9 @@ class DamagedState extends State {
         enemy.health -= scene.dmgToEnemy
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)
-        enemy.health -= scene.dmgToEnemy
         scene.enemy_hp.match(enemy.health)
         enemy.damaged = false
+        
         if (enemy.health > 0){
             enemy.once('animationcomplete', () => {
                 console.log("back to default")
@@ -132,11 +126,11 @@ class DamagedState extends State {
         }        
     }
     execute(scene, enemy) {
-        console.log("damaging enemy")
+        console.log("damaged ENTERED")
+
         if (enemy.health <= 0){
             // if health depleted after damaged animation defeat this enemy
             enemy.once('animationcomplete', () => {
-                scene.player_attacking = false
                 this.stateMachine.transition('defeat')
             })
             this.stateMachine.transition('defeat')

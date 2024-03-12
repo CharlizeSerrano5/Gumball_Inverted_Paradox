@@ -13,11 +13,10 @@ class Character extends Phaser.GameObjects.Sprite {
         this.power = power
         // setting up fighting damage
         this.attack_dmg = attack_dmg
+        
         // creating a boolean value to check if the current character has attacked
-        this.willAttack = false
         this.hurt = false
         this.collapsed = false
-        this.hasAttacked = false
         // temporary check
         this.check = ''
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
@@ -35,10 +34,9 @@ class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
         // player is not attacking in idle state
-        scene.player_attacking = false
         scene.dmgToEnemy = 0
         character.clearTint()
-
+        console.log('no attack in stupid idle')
         character.hasAttacked = false
         
 
@@ -53,12 +51,6 @@ class IdleState extends State {
             console.log('entering attack')
             this.stateMachine.transition('attack')
         }
-        if (character.hasAttacked == true){
-            console.log('wtf')
-        }
-
-        // player is entering attack multiple times
-        // let's test character attacks first
         // if the enemy is attacking
         // if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
         //     this.stateMachine.transition('hurt')
@@ -90,8 +82,6 @@ class AttackState extends State {
     execute(scene, character) {
         // reset to idle
         if (character.hasAttacked == true){
-            // once the player has finished attacking
-            // scene.player_turn = false // temporarily placing
             character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
