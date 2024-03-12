@@ -78,6 +78,7 @@ class Fighting extends Phaser.Scene {
     }
 
     update() {
+        console.log("PLAYER IS ATTACKING IN SCENE" + this.player_attacking)
         const { left, right, up, down, space, shift } = this.keys
         // check for game over
         if (this.active_players == 0 || this.active_enemies == 0){
@@ -146,7 +147,6 @@ class Fighting extends Phaser.Scene {
                     if (this.characters[this.current_player].collapsed == false){
                         // NOTE: check if character has died
                         console.log('character is not dead - checking if player turn activated')
-                        this.player_attacking = true
                         this.player_turn = false
                         this.characters[this.current_player].willAttack = true
                     }
@@ -178,21 +178,37 @@ class Fighting extends Phaser.Scene {
         } 
     }
 
+    attackEnemy(){
+        this.player_attacking = true
+    }
+
     checkAttacked(){
+        // check which characters has attacked
         let attackedCharacters = Array(3).fill(-1);
         for (let i = 0; i < this.characters.length; i++) {
-            if (this.characters[i].hasAttacked){
+            if (this.characters[i].hasAttacked && !this.characters[i].collapsed){
                 // if character not collapsed put into array
                 attackedCharacters[i] = this.characters[i].index
             }
         }
         return attackedCharacters
-
-
     }
 
-    resetAttack(){
-        
+    changeTurn(){
+        // changes turn if all characters have attacked
+        let attackedCharacters = this.checkAttacked();
+        let count = 0
+        for (let i = 0; i < attackedCharacters.length; i++) {
+            if (attackedCharacters[i].hasAttacked){
+                // if character has attacked
+                count += 1
+                this.characters[i].hasAttacked = false
+            }
+        }
+        // console.log(count)
+        if (count == 3){
+            this.player_turn = false
+        }
     }
 
     checkLiving(){

@@ -22,7 +22,6 @@ class Character extends Phaser.GameObjects.Sprite {
         this.check = ''
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
 
-        // scene.characterFSM = new StateMachine('idle', {
         scene.FSM_holder[index] = new StateMachine('idle', {
             idle: new IdleState(),
             attack: new AttackState(),
@@ -50,47 +49,50 @@ class IdleState extends State {
         // perform idle animation
         character.anims.play(`${character.name}_idle`, true)
         // if attack was selected enter the attack animation
-        if (character.willAttack == true){
+        if (character.willAttack == true && character.hasAttacked == false){
+            console.log('entering attack')
             this.stateMachine.transition('attack')
         }
-        // if the enemy is attacking
-        if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
-            this.stateMachine.transition('hurt')
+        if (character.hasAttacked == true){
+            console.log('wtf')
         }
+
+        // player is entering attack multiple times
+        // let's test character attacks first
+        // if the enemy is attacking
+        // if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
+        //     this.stateMachine.transition('hurt')
+        // }
 
     }
 }
 
+// problem character forever in attack state    
 // IN PROGRESS - character has to go before boss can go
 class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
         // remove the enemies health
-        scene.dmgToEnemy = character.attack_dmg 
-        
+        scene.enemy.damaged = true
+        scene.dmgToEnemy = character.attack_dmg
         character.setTint(0xDB91EF)
-        while (character.projectile.x > scene.enemyX)
-        
+        while (character.projectile.x > scene.enemyX){
             character.projectile.move(scene.enemyX, scene.enemyY)
+        }
         scene.time.delayedCall(character.hurtTimer, () => {
-            scene.player_attacking = true
+            
             character.willAttack = false
-
             character.hasAttacked = true
+            scene.changeTurn();
         })
         
     }
     execute(scene, character) {
         // reset to idle
-        if (character.willAttack == false){
+        if (character.hasAttacked == true){
             // once the player has finished attacking
             // scene.player_turn = false // temporarily placing
             character.projectile.reset(character.x)
-            this.stateMachine.transition('idle')
-        }
-
-        if (character.hasAttacked = true){
-            scene.player_turn = false
             this.stateMachine.transition('idle')
         }
     }

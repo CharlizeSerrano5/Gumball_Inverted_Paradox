@@ -16,6 +16,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         // setting up the character to attack
         this.selectedChar = -1
+        this.damaged = false
 
         // setting up state machines
         scene.enemyFSM = new StateMachine('default', {
@@ -34,8 +35,6 @@ class Enemy extends Phaser.GameObjects.Sprite {
                 select = Math.floor(Math.random() * livingCharacters.length)
             
             }
-            // this.characters[select].health -= this.enemy.attack_dmg
-            // this.characters[select].hurt = true
         return select
     }
 }
@@ -59,23 +58,10 @@ class DefaultState extends State {
     }
     execute(scene, enemy) {       
         const { left, right, up, down, space, shift } = scene.keys
-        // if player has attacked and it is not the player's turn
-        // temporarily commenting out
-        // if (scene.player_attacking == true && scene.player_turn == false){
-        //     this.stateMachine.transition('single_attack')
-        // }  
-
-
-        // PROBLEM - characters are repeatedly removing health
-        if (Phaser.Input.Keyboard.JustDown(shift)){
+        // if it is not the player's turn attack
+        if(scene.player_turn == false && enemy.hasAttacked == false){
             this.stateMachine.transition('single_attack')
         }
-
-
-        // FIXXX
-        // if(scene.player_turn == false && enemy.hasAttacked == false){
-        //     this.stateMachine.transition('single_attack')
-        // }
 
         
 
@@ -86,7 +72,8 @@ class DefaultState extends State {
         // }
 
         // if player has attacked enter hurt state and decrease health
-        if (scene.player_attacking == true){
+        if ( enemy.damaged == true){
+            console.log('player is supposedly attacking enemy')
             this.stateMachine.transition('damaged')
         }
 
@@ -109,7 +96,7 @@ class SingleAttackState extends State {
         
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
 
-        console.log('Inside of Single Attack State: attack dmg' + enemy.attack_dmg)
+        // console.log('Inside of Single Attack State: attack dmg' + enemy.attack_dmg)
         scene.characters[enemy.selectedChar].hurt = true
         enemy.hasAttacked = true
     }
@@ -133,21 +120,23 @@ class DamagedState extends State {
         enemy.health -= scene.dmgToEnemy
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)
-
+        enemy.health -= scene.dmgToEnemy
+        scene.enemy_hp.match(enemy.health)
+        enemy.damaged = false
         if (enemy.health > 0){
-            // scene.time.delayedCall(enemy.damagedTimer * 2, () => {
-            //     this.stateMachine.transition('default')
-            // })
             enemy.once('animationcomplete', () => {
+                console.log("back to default")
                 this.stateMachine.transition('default')
             })
-        }
-        
+            
+        }        
     }
     execute(scene, enemy) {
+        console.log("damaging enemy")
         if (enemy.health <= 0){
             // if health depleted after damaged animation defeat this enemy
             enemy.once('animationcomplete', () => {
+                scene.player_attacking = false
                 this.stateMachine.transition('defeat')
             })
             this.stateMachine.transition('defeat')
