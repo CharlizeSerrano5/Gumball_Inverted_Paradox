@@ -1,5 +1,6 @@
-class SelectionMenu{
+class SelectionMenu extends Phaser.GameObjects.Graphics{
     constructor(scene, x, y, characters){
+        super(scene, x, y)
         this.menu = new Phaser.GameObjects.Graphics(scene)
 
         this.x = x
@@ -9,8 +10,8 @@ class SelectionMenu{
         this.characters = characters
         
         // set the current player at the first one
-        this.current_player = 0
-        this.current_selection = 2
+        this.current_player = 0 // which character player is on
+        this.current_selection = 2 // what the cursor is pointing at
         this.cursor_pos = -20
 
         // initializing temporary selection button
@@ -23,36 +24,48 @@ class SelectionMenu{
         this.selections = [ this.powerDisplay, this.item, this.charDisplay ]
         this.selections[this.current_selection].setTint(0xDFFF00);
     }
-    checkActive(){
-        let availableChar = Array(0);
-        for (let i = 0; i < this.characters.length; i++) {
-            if (!this.characters[i].hasAttacked){
-                // if character not collapsed nor attacked put into array 
-                // console.log(`${this.characters[i].name}: ${this.characters[i].hasAttacked}`)
-                availableChar.push(this.characters[i].index) 
-            }
-        }
-        // if availableChar's length == 0 then end turn
+    // checkActive(){
+    //     let availableChar = Array(0);
+    //     for (let i = 0; i < this.characters.length; i++) {
+    //         if (!this.characters[i].hasAttacked){
+    //             // if character not collapsed nor attacked put into array 
+    //             // console.log(`${this.characters[i].name}: ${this.characters[i].hasAttacked}`)
+    //             availableChar.push(this.characters[i].index) 
+    //         }
+    //     }
+    //     // if availableChar's length == 0 then end turn
+    //     if (availableChar.length == 0){
+    //         console.log("TEST")
+    //     }
 
-        return availableChar
-    }
+    //     return availableChar
+    // }
 
     select() {
-        let availableChar = this.checkActive()
+        let availableChar = this.scene.checkActive()
         if (this.current_selection == 0 ){
-            console.log(this.characters[availableChar[this.current_player]].name + "   iS ATTACKING")
+            console.log(availableChar[this.current_player])
+            // console.log(this.characters[availableChar[this.current_player]].name + "   iS ATTACKING")
             // if cursor on the power selection
             // console.log('select')
             // Attack choice
-            if (this.characters[availableChar[this.current_player]].collapsed == false && !this.characters[availableChar[this.current_player]].hasAttacked){
+            if (availableChar.length != 1 && this.characters[availableChar[this.current_player]].collapsed == false && !this.characters[availableChar[this.current_player]].hasAttacked){
                 // NOTE: check if character has died
                 this.characters[availableChar[this.current_player]].willAttack = true
+                
                 this.charChange(1);
             }
             if (this.current_selection == 1){
             }
         }
+        // to set invisible per attack create a function
+
     }
+
+    setInvisble() {
+        // function to hide selection Menu after every attack
+    }
+
     lookChoice(input) {
         
         // selection menu options
@@ -73,13 +86,22 @@ class SelectionMenu{
     }
 
     charChange(input){
-        let availableChar = this.checkActive()
+        let availableChar = this.scene.checkActive()
         this.current_player += input
         if (this.current_player >= availableChar.length){
                 this.current_player = 0
         }
         else if (this.current_player < 0){
             this.current_player = availableChar.length - 1
+        }
+        while(this.characters[availableChar[this.current_player]].hasAttacked){
+            this.current_player += input
+            if (this.current_player >= availableChar.length){
+                this.current_player = 0
+            }
+            else if (this.current_player < 0){
+                this.current_player = availableChar.length - 1
+            }
         }
 
         console.log(this.characters[availableChar[this.current_player]].name + "is selected")

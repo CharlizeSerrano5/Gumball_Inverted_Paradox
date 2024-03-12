@@ -150,7 +150,23 @@ class Fighting extends Phaser.Scene {
             
         } 
     }
+    checkActive(){
+        let availableChar = Array(0);
+        for (let i = 0; i < this.characters.length; i++) {
+            if (!this.characters[i].hasAttacked){
+                // if character not collapsed nor attacked put into array 
+                // console.log(`${this.characters[i].name}: ${this.characters[i].hasAttacked}`)
+                availableChar.push(this.characters[i].index) 
+            }
+        }
+        // if availableChar's length == 0 then end turn
+        if (availableChar.length == 0){
+            console.log("TEST")
+        }
 
+        return availableChar
+    }
+    
     checkAttacked(){
         // check which characters has attacked
         let attackedCharacters = Array(3).fill(-1);

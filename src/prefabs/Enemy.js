@@ -120,7 +120,6 @@ class DamagedState extends State {
         scene.enemy_hp.match(enemy.health)
         
         
-        
         enemy.once('animationcomplete', () => {
             if (enemy.health > 0){
                 this.stateMachine.transition('default')
