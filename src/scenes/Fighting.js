@@ -135,13 +135,15 @@ class Fighting extends Phaser.Scene {
 
                 // select choice
                 if (Phaser.Input.Keyboard.JustDown(space)){
-                    if (this.characters[this.current_player].collapsed == false){
+                    if (this.characters[this.current_player].collapsed == false && !this.characters[this.current_player].hasAttacked){
                         // NOTE: check if character has died
                         this.characters[this.current_player].willAttack = true
                     }
                 }
             }
+            
 
+            // PROBLEM: the menu selection is spammable
             if (this.current_selection == 2){
                 if (Phaser.Input.Keyboard.JustDown(right)){
                     this.charChange(1)
@@ -230,6 +232,14 @@ class Fighting extends Phaser.Scene {
     }
     
     charChange(input){
+        // let availableChar = Array(3).fill(-1);
+        // for (let i = 0; i < this.characters.length; i++) {
+        //     if (this.characters[i].hasAttacked && !this.characters[i].collapsed){
+        //         // if character not collapsed put into array
+        //         availableChar[i] = this.characters[i].index
+        //     }
+        // }
+        
         // allow the character to move through the character options
         
         // probably make an active characters array to ensure that only those who have a turn can go
@@ -240,6 +250,9 @@ class Fighting extends Phaser.Scene {
         else if (this.current_player < 0){
             this.current_player = this.characters.length - 1
         }
+        
+        
+        
         this.charDisplay.text = this.characters[this.current_player].name
         this.powerDisplay.text = this.characters[this.current_player].power
     }

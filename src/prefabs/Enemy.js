@@ -43,6 +43,7 @@ class DefaultState extends State {
     // the enemy will be performing idle motion
     // in this state the enemy may only enter the attack and damaged state
     enter (scene, enemy) {
+        enemy.damaged = false
         // ensure enemy is not attacking in this scene
         enemy.hasAttacked = false
         enemy.dmgToPlayer = 0
@@ -51,7 +52,7 @@ class DefaultState extends State {
         // scene.player_turn = true
         enemy.clearTint()
         enemy.anims.play(`${enemy.name}_default`, true)
-
+        scene.choiceMenu.setVisible(true)
 
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
@@ -72,7 +73,6 @@ class DefaultState extends State {
 
         // if enemy has been damaged
         if ( enemy.damaged == true){
-            console.log('player is supposedly attacking enemy')
             this.stateMachine.transition('damaged')
         }
 
@@ -111,32 +111,26 @@ class SingleAttackState extends State {
 class DamagedState extends State {
     // animation play after finished character attack
     enter (scene, enemy) { 
+        scene.choiceMenu.setVisible(false)
         enemy.health -= scene.dmgToEnemy
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)
         scene.enemy_hp.match(enemy.health)
-        enemy.damaged = false
         
-        if (enemy.health > 0){
-            enemy.once('animationcomplete', () => {
-                console.log("back to default")
+        
+        
+        enemy.once('animationcomplete', () => {
+            if (enemy.health > 0){
                 this.stateMachine.transition('default')
-            })
-            
-        }        
-    }
-    execute(scene, enemy) {
-        console.log("damaged ENTERED")
-
-        if (enemy.health <= 0){
-            // if health depleted after damaged animation defeat this enemy
-            enemy.once('animationcomplete', () => {
+            }
+            if (enemy.health <= 0){
                 this.stateMachine.transition('defeat')
-            })
-            this.stateMachine.transition('defeat')
-        }
+            }
+        })
         
+                
     }
+
 }
 
 class DefeatState extends State {

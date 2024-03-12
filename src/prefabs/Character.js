@@ -36,7 +36,10 @@ class IdleState extends State {
         // player is not attacking in idle state
         scene.dmgToEnemy = 0
         character.clearTint()
-        console.log('no attack in stupid idle')
+        if (character.hasAttacked){
+            console.log('no attacky')
+        }
+        
         character.hasAttacked = false
         
 
@@ -47,14 +50,14 @@ class IdleState extends State {
         // perform idle animation
         character.anims.play(`${character.name}_idle`, true)
         // if attack was selected enter the attack animation
-        if (character.willAttack == true && character.hasAttacked == false){
+        if (character.willAttack == true && !character.hasAttacked && !scene.enemy.damaged){
             console.log('entering attack')
             this.stateMachine.transition('attack')
         }
         // if the enemy is attacking
-        // if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
-        //     this.stateMachine.transition('hurt')
-        // }
+        if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
+            this.stateMachine.transition('hurt')
+        }
 
     }
 }
@@ -68,6 +71,9 @@ class AttackState extends State {
         scene.enemy.damaged = true
         scene.dmgToEnemy = character.attack_dmg
         character.setTint(0xDB91EF)
+        
+        // scene.charChange(1)
+        
         while (character.projectile.x > scene.enemyX){
             character.projectile.move(scene.enemyX, scene.enemyY)
         }
