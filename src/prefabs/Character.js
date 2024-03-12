@@ -42,7 +42,9 @@ class IdleState extends State {
         }
         
         // character.hasAttacked = false
-        
+        if (character.hasAttacked){
+            // console.log(character.name + "ALREADY ATTACKED")
+        }
 
 
     }
@@ -52,13 +54,14 @@ class IdleState extends State {
         character.anims.play(`${character.name}_idle`, true)
         // if attack was selected enter the attack animation
         if (character.willAttack == true && !character.hasAttacked){
-            console.log('entering attack')
             this.stateMachine.transition('attack')
         }
         // if the enemy is attacking
         if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
             this.stateMachine.transition('hurt')
         }
+
+        
 
     }
 }
@@ -142,7 +145,6 @@ class CollapseState extends State {
         character.collapsed = true
         character.setTint(0xA020F0)
         scene.active_players -= 1
-        console.log(character.name + ' COLLAPSED')   
     }
     execute(scene, character) {
         

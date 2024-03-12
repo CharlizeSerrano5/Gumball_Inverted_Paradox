@@ -20,7 +20,7 @@ class Fighting extends Phaser.Scene {
         this.dmgToEnemy = 0
         this.enemy_dmg = 0
 
-
+        this.availableCharacters = 
         this.enemyX = leftPos - tileSize
         this.enemyY = floorY + tileSize
         
@@ -126,7 +126,6 @@ class Fighting extends Phaser.Scene {
             // PROBLEM: the menu selection is spammable
            
             if (this.selectionMenu.current_selection == 2){
-                console.log('selectingGGG')
                 if (Phaser.Input.Keyboard.JustDown(right)){
                     this.selectionMenu.charChange(1)
                 }
@@ -175,7 +174,6 @@ class Fighting extends Phaser.Scene {
                 this.characters[i].hasAttacked = false
             }
         }
-        // console.log(count)
         if (count == 3){
             this.player_turn = false
         }
@@ -195,8 +193,5 @@ class Fighting extends Phaser.Scene {
             
     }
 
-    
-    charAttack(){
 
-    }
 }
