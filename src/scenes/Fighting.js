@@ -178,6 +178,23 @@ class Fighting extends Phaser.Scene {
         } 
     }
 
+    checkAttacked(){
+        let attackedCharacters = Array(3).fill(-1);
+        for (let i = 0; i < this.characters.length; i++) {
+            if (this.characters[i].hasAttacked){
+                // if character not collapsed put into array
+                attackedCharacters[i] = this.characters[i].index
+            }
+        }
+        return attackedCharacters
+
+
+    }
+
+    resetAttack(){
+        
+    }
+
     checkLiving(){
         // function to update living characters
         let livingCharacters = Array(3).fill(-1);
