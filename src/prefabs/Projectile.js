@@ -56,10 +56,12 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
     
     handleCollision(){
         console.log("HANDLING COLLISION")
-        // this.x = this.startX
-        console.log("original x = " + this.x + "set x " + this.startX)
+        this.x = this.startX
+        // console.log("original x = " + this.x + "set x " + this.startX)
 
         // this.resetProj(this.startX)
+        
+        // set up animations for projectile LATER
         return true
     }
 

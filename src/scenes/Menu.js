@@ -34,9 +34,14 @@ class Menu extends Phaser.Scene{
             frameHeight: 35
         })
         this.load.spritesheet('penny', 'penny_spritesheet.png', {
-            frameWidth: 39,
-            frameHeight: 59
+            frameWidth: 43,
+            frameHeight: 60
         })
+        this.load.spritesheet('nicole', 'nicole_spritesheet.png', {
+            frameWidth: 40,
+            frameHeight: 72
+        })
+
         this.load.spritesheet('ANAIS_projectile', 'sci_proj_spritesheet.png', {
             frameWidth: 16,
             frameHeight: 16

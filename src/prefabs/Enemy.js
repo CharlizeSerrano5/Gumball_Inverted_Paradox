@@ -4,7 +4,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
         scene.add.existing(this)
         
         scene.physics.add.existing(this)
-        this.body.setImmovable = true;
+        this.body.setImmovable(true)
         // setting enemy properties
         this.health = health 
         this.name = name
@@ -72,7 +72,7 @@ class DefaultState extends State {
         if (scene.selectionMenu.attackingPlayer){
             // console.log(scene.selectionMenu.attackingPlayer.projectile)
             
-            scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, scene.selectionMenu.attackingPlayer.projectile.handleCollision, null, scene)
+            scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, scene.selectionMenu.attackingPlayer.projectile.handleCollision.bind(scene.selectionMenu.attackingPlayer.projectile), null, scene)
         }
         
     }
