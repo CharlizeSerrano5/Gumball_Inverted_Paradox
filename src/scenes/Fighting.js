@@ -39,8 +39,8 @@ class Fighting extends Phaser.Scene {
         this.music = this.sound.add('music').setLoop(true).setVolume(0.4)
         
         // adding a character to scene - each character should have their own HP
-        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 100, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
-        this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 400, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
+        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 72, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
+        this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 150, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
         this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 2).setOrigin(0,1)
         // adding each character health
         this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball, 0)
@@ -110,8 +110,6 @@ class Fighting extends Phaser.Scene {
             this.FSM_holder[1].step()
             this.FSM_holder[2].step()
             this.enemyFSM.step()
-            // CURRENT PROBLEM - attacks are checked inside of the scene
-            // if the enemy is attacking
 
             // probably put inside of the character
             if (this.enemy.attacking == false) {
@@ -140,14 +138,6 @@ class Fighting extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(down)){
                 this.selectionMenu.lookChoice(-1)
             }
-
-            // if (this.player_turn == false){
-            //     this.choiceMenu.setVisible(false)
-            // }
-            // else if (this.player_turn == true){
-            //     this.choiceMenu.setVisible(true)
-            // }
-            
         } 
     }
     checkActive(){
@@ -160,13 +150,12 @@ class Fighting extends Phaser.Scene {
             }
         }
         // if availableChar's length == 0 then end turn
-        if (availableChar.length == 0){
-            console.log("TEST")
-        }
+        
+        console.log(availableChar)
 
         return availableChar
     }
-    
+
     checkAttacked(){
         // check which characters has attacked
         let attackedCharacters = Array(3).fill(-1);

@@ -23,47 +23,31 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.powerDisplay = scene.add.bitmapText( x + -24, y + 4, 'font', this.characters[this.current_player].power, 8)
         this.selections = [ this.powerDisplay, this.item, this.charDisplay ]
         this.selections[this.current_selection].setTint(0xDFFF00);
-    }
-    // checkActive(){
-    //     let availableChar = Array(0);
-    //     for (let i = 0; i < this.characters.length; i++) {
-    //         if (!this.characters[i].hasAttacked){
-    //             // if character not collapsed nor attacked put into array 
-    //             // console.log(`${this.characters[i].name}: ${this.characters[i].hasAttacked}`)
-    //             availableChar.push(this.characters[i].index) 
-    //         }
-    //     }
-    //     // if availableChar's length == 0 then end turn
-    //     if (availableChar.length == 0){
-    //         console.log("TEST")
-    //     }
+        this.availableChar = this.scene.checkActive()
 
-    //     return availableChar
-    // }
+    }
 
     select() {
-        let availableChar = this.scene.checkActive()
+        this.availableChar = this.scene.checkActive()
         if (this.current_selection == 0 ){
-            console.log(availableChar[this.current_player])
-            // console.log(this.characters[availableChar[this.current_player]].name + "   iS ATTACKING")
+            console.log('we are on this index ' + this.availableChar[this.current_player])
+            // console.log(this.characters[this.availableChar[this.current_player]].name + "   iS ATTACKING")
             // if cursor on the power selection
-            // console.log('select')
             // Attack choice
-            if (availableChar.length != 1 && this.characters[availableChar[this.current_player]].collapsed == false && !this.characters[availableChar[this.current_player]].hasAttacked){
+            if ( this.characters[this.availableChar[this.current_player]].collapsed == false && !this.characters[this.availableChar[this.current_player]].hasAttacked){
                 // NOTE: check if character has died
-                this.characters[availableChar[this.current_player]].willAttack = true
+                this.characters[this.availableChar[this.current_player]].willAttack = true
                 
                 this.charChange(1);
             }
             if (this.current_selection == 1){
             }
         }
-        // to set invisible per attack create a function
-
     }
 
-    setInvisble() {
+    setInvisble(input) {
         // function to hide selection Menu after every attack
+        // input is used for a boolean value
     }
 
     lookChoice(input) {
@@ -85,29 +69,55 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.selections[this.current_selection].setTint(0xDFFF00)
     }
 
+    // PROBLEM: THE PROBLEM IS THAT WHEN THERE IS ONLY ONE CHARACTER ALIVE
     charChange(input){
-        let availableChar = this.scene.checkActive()
+        this.availableChar = this.scene.checkActive()
+        console.log("INSIDE OF CHAR CHANGE: " + this.availableChar)
+        // call a reset to the list - temporary solution
+        // PROBLEM THE ACTUAL CHARACTER DOES NOT RESET THEIR ATTACK
+        // IT DOES NOT AUTOMATICALLY CHANGE
+        if (this.availableChar.length == 0){
+            // console.log("TEST")
+            for (let i  = 0; i < this.characters.length ; i++){
+                // resetting
+                this.characters[i].resetAttack()
+                this.availableChar.push(this.characters[i].index)
+            }
+            
+        }
+        
         this.current_player += input
-        if (this.current_player >= availableChar.length){
+        
+        if (this.current_player >= this.availableChar.length){
                 this.current_player = 0
         }
         else if (this.current_player < 0){
-            this.current_player = availableChar.length - 1
+            this.current_player = this.availableChar.length - 1
         }
-        while(this.characters[availableChar[this.current_player]].hasAttacked){
-            this.current_player += input
-            if (this.current_player >= availableChar.length){
-                this.current_player = 0
-            }
-            else if (this.current_player < 0){
-                this.current_player = availableChar.length - 1
-            }
+        
+        // PROBLEM MIGHT BE THE WHILE LOOP
+        // while(this.characters[this.availableChar[this.current_player]].hasAttacked){
+        //     this.current_player += input
+        //     if (this.current_player >= this.availableChar.length){
+        //         this.current_player = 0
+        //     }
+        //     else if (this.current_player < 0){
+        //         this.current_player = this.availableChar.length - 1
+        //     }
+        // }
+        if( this.characters[this.availableChar[this.current_player]].hasAttacked){
+            this.charChange(1)
+        }
+        if (this.availableChar.length == 3){
+            console.log('is this reached')
         }
 
-        console.log(this.characters[availableChar[this.current_player]].name + "is selected")
+        // console.log(this.characters[this.availableChar[this.current_player]].name + "is selected")
 
-        this.charDisplay.text = this.characters[availableChar[this.current_player]].name
-        this.powerDisplay.text = this.characters[availableChar[this.current_player]].power
+        this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
+        this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].power
+
+        console.log("CURRENT CHARACTERS" + this.availableChar)
     }
 
 }

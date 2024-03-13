@@ -29,7 +29,13 @@ class Character extends Phaser.GameObjects.Sprite {
             collapse: new CollapseState(),
         },[scene, this])
     }
+    // possible solution
+    resetAttack() {
+        this.hasAttacked = false
+    }
 }
+
+
 
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
@@ -38,7 +44,7 @@ class IdleState extends State {
         scene.dmgToEnemy = 0
         character.clearTint()
         if (character.hasAttacked){
-            console.log('no attacky')
+            // console.log('no attacky')
         }
         
         // character.hasAttacked = false
@@ -76,7 +82,8 @@ class AttackState extends State {
         scene.dmgToEnemy = character.attack_dmg
         character.setTint(0xDB91EF)
         
-        // scene.charChange(1)
+        // console.log(character.name + "has attacked")
+        // scene.selectionMenu.charChange(1)
         
         while (character.projectile.x > scene.enemyX){
             character.projectile.move(scene.enemyX, scene.enemyY)
@@ -92,6 +99,7 @@ class AttackState extends State {
     execute(scene, character) {
         // reset to idle
         if (character.hasAttacked == true){
+            scene.selectionMenu.charChange(-1)
             character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
