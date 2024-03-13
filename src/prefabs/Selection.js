@@ -40,8 +40,9 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
                 
                 this.charChange(1);
             }
-            if (this.current_selection == 1){
-            }
+        }
+        if (this.current_selection == 1){
+            console.log("SUMMON")
         }
     }
 
@@ -72,19 +73,19 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     // PROBLEM: THE PROBLEM IS THAT WHEN THERE IS ONLY ONE CHARACTER ALIVE
     charChange(input){
         this.availableChar = this.scene.checkActive()
-        console.log("INSIDE OF CHAR CHANGE: " + this.availableChar)
+        // console.log("INSIDE OF CHAR CHANGE: " + this.availableChar)
         // call a reset to the list - temporary solution
         // PROBLEM THE ACTUAL CHARACTER DOES NOT RESET THEIR ATTACK
         // IT DOES NOT AUTOMATICALLY CHANGE
-        if (this.availableChar.length == 0){
-            // console.log("TEST")
-            for (let i  = 0; i < this.characters.length ; i++){
-                // resetting
-                this.characters[i].resetAttack()
-                this.availableChar.push(this.characters[i].index)
-            }
+        // if (this.availableChar.length == 0){
+        //     // console.log("TEST")
+        //     for (let i  = 0; i < this.characters.length ; i++){
+        //         // resetting
+        //         this.characters[i].resetAttack()
+        //         this.availableChar.push(this.characters[i].index)
+        //     }
             
-        }
+        // }
         
         this.current_player += input
         

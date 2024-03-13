@@ -118,9 +118,12 @@ class DamagedState extends State {
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)
         scene.enemy_hp.match(enemy.health)
-        
+        let damage = scene.add.bitmapText(enemy.x, enemy.x + tileSize*1.5, 'font', -scene.dmgToEnemy, 8).setOrigin(0, 0).setTint(0xFF0000)
+
+        // let damage = scene.add.bitmapText(character.x, centerY, 'font', scene.dmgToEnemy, 8).setOrigin(0.5)
         
         enemy.once('animationcomplete', () => {
+            damage.setVisible(false)
             if (enemy.health > 0){
                 this.stateMachine.transition('default')
             }

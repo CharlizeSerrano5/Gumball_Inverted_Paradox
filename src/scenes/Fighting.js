@@ -150,12 +150,25 @@ class Fighting extends Phaser.Scene {
             }
         }
         // if availableChar's length == 0 then end turn
-        
+        if (availableChar.length == 0){
+            availableChar = this.resetAttacks()
+        }
         console.log(availableChar)
 
         return availableChar
     }
 
+    resetAttacks() {
+        let availableCharacters = Array(0)
+        for (let i = 0; i < this.characters.length; i++) {
+            this.characters[i].hasAttacked = false
+            availableCharacters.push(this.characters[i].index)
+        }
+        return availableCharacters
+    }
+
+
+    // UNUSED
     checkAttacked(){
         // check which characters has attacked
         let attackedCharacters = Array(3).fill(-1);
@@ -168,6 +181,7 @@ class Fighting extends Phaser.Scene {
         return attackedCharacters
     }
 
+    // UNUSED
     changeTurn(){
         // changes turn if all characters have attacked
         let attackedCharacters = this.checkAttacked();
