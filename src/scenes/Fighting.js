@@ -111,18 +111,17 @@ class Fighting extends Phaser.Scene {
             this.FSM_holder[2].step()
             this.enemyFSM.step()
 
-            // probably put inside of the character
-            if (this.enemy.attacking == false) {
-                this.anais.hurt = false
-                this.darwin.hurt = false
-                this.gumball.hurt = false
-            }
+            // // probably put inside of the character
+            // if (this.enemy.attacking == false) {
+            //     this.anais.hurt = false
+            //     this.darwin.hurt = false
+            //     this.gumball.hurt = false
+            // }
         
             if (Phaser.Input.Keyboard.JustDown(space)){
                 this.selectionMenu.select()
             }
             // PROBLEM: the menu selection is spammable
-           
             if (this.selectionMenu.current_selection == 2){
                 if (Phaser.Input.Keyboard.JustDown(right)){
                     this.selectionMenu.charChange(1)
@@ -138,6 +137,10 @@ class Fighting extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(down)){
                 this.selectionMenu.lookChoice(-1)
             }
+
+            //this.physics.add.collider(this.p1Rocket, this.ship01, this.handleCollision, null, this)
+            // this.physics.add.collider(this.character[0].projectile, this.enemy, this.handleCollision, null, this)
+
         } 
     }
     checkActive(){
@@ -164,7 +167,6 @@ class Fighting extends Phaser.Scene {
                 this.characters[i].hasAttacked = false
                 availableCharacters.push(this.characters[i].index)
             }
-            
         }
         return availableCharacters
     }

@@ -11,12 +11,13 @@ class Character extends Phaser.GameObjects.Sprite {
         this.name = name // for prints
         this.hurtTimer = temp_timer
         this.power = power
+        // creating a boolean value to check if the current character has attacked
+
         this.hasAttacked = false
         // setting up fighting damage
         this.attack_dmg = attack_dmg
         
-        // creating a boolean value to check if the current character has attacked
-        this.hurt = false
+        // this.hurt = false
         this.collapsed = false
         // temporary check
         this.check = ''
@@ -35,23 +36,17 @@ class Character extends Phaser.GameObjects.Sprite {
     }
 }
 
-
-
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
         // player is not attacking in idle state
         scene.dmgToEnemy = 0
         character.clearTint()
-        if (character.hasAttacked){
-            // console.log('no attacky')
-        }
+        // if (character.hasAttacked){
+        //     // console.log('no attacky')
+        // }
         
         // character.hasAttacked = false
-        if (character.hasAttacked){
-            // console.log(character.name + "ALREADY ATTACKED")
-        }
-
 
     }
     execute(scene, character) {
@@ -80,12 +75,8 @@ class AttackState extends State {
         scene.dmgToEnemy = character.attack_dmg
         character.setTint(0xDB91EF)
         
-        // console.log(character.name + "has attacked")
-        // scene.selectionMenu.charChange(1)
-        
-        while (character.projectile.x > scene.enemyX){
-            character.projectile.move(scene.enemyX, scene.enemyY)
-        }
+        character.projectile.move(scene.enemyX, scene.enemyY)
+
         scene.time.delayedCall(character.hurtTimer, () => {
             
             character.willAttack = false
@@ -98,7 +89,7 @@ class AttackState extends State {
         // reset to idle
         if (character.hasAttacked == true){
             scene.selectionMenu.charChange(-1)
-            character.projectile.reset(character.x)
+            // character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
     }
@@ -129,7 +120,6 @@ class HurtState extends State {
         
     }
     execute(scene, character) {
-        console.log("HURTING")
         if (character.health <= 0){
             // if health depleted after hurt animation collapse this character
             this.stateMachine.transition('collapse')

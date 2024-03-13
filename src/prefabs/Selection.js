@@ -26,6 +26,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.availableChar = this.scene.checkActive()
 
         this.charCursor = scene.add.image(this.characters[this.current_player].x + 15, this.characters[this.current_player].y - tileSize * 1.5, 'char_cursor')
+        this.attackingPlayer
     }
 
     updateAvailable() {
@@ -45,7 +46,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
             if ( this.characters[this.availableChar[this.current_player]].collapsed == false && !this.characters[this.availableChar[this.current_player]].hasAttacked){
                 // NOTE: check if character has died
                 this.characters[this.availableChar[this.current_player]].willAttack = true
-                
+                this.attackingPlayer =this.characters[this.availableChar[this.current_player]]
                 this.charChange(1);
             }
         }

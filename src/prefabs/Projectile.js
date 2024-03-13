@@ -4,16 +4,22 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         // Note: might add health decrease in projectile
         // projectile will spawn on player
         scene.add.existing(this)
-        this.moveSpeed = 1
+        
+        scene.physics.add.existing(this)
+
+        
+        this.moveSpeed = 250
         this.character = character
         this.startX = this.x
         // console.log(this.character.name)
         // this.setVisible(false)
     }
 
+    
+
     move(landX, landY) {
-        // console.log('enemyX: ' + landX + 'enemyY:' + landY)
-        // console.log('thisX: ' + this.x + 'thisY:' + this.y)
+        console.log('enemyX: ' + landX + 'enemyY:' + landY)
+        console.log('thisX: ' + this.x + 'thisY:' + this.y)
         // this.setVisible(true)
         if(this.x >= landX){
             this.anims.play(`${this.character.name}_projectileAttack`)
@@ -29,21 +35,32 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
             // for the current scene
             if(landX < this.x){
                 console.log("landX < this.x")
-                this.x -= this.moveSpeed
-                // this.body.setVelocityX(this.moveSpeed)
+                // this.x -= this.moveSpeed
+                this.body.setVelocityX(-this.moveSpeed)
             }
         }
         if (this.x == landX){
             // this.setVisible(false)
         }
 
-        if (this.x == landX){
-            this.reset(this.startX)
+        if (this.x >= landX){
+            console.log(this.x)
+            this.resetProj(this.startX)
         }
     }
-    reset(x){
+    resetProj(x){
+        console.log("is being reached")
         this.x = x
         // this.setVisible(false)
+    }
+    
+    handleCollision(){
+        console.log("HANDLING COLLISION")
+        // this.x = this.startX
+        console.log("original x = " + this.x + "set x " + this.startX)
+
+        // this.resetProj(this.startX)
+        return true
     }
 
     // update() {

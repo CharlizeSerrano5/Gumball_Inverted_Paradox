@@ -3,8 +3,10 @@ class Enemy extends Phaser.GameObjects.Sprite {
         super(scene, x, y, texture)
         scene.add.existing(this)
         
+        scene.physics.add.existing(this)
+        this.body.setImmovable = true;
         // setting enemy properties
-        this.health = health // Note: enemy will not have health bar
+        this.health = health 
         this.name = name
         this.damagedTimer = temp_timer
         // set up an attack
@@ -40,10 +42,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
 // enemy specific state classes will be performed for each attack 
 class DefaultState extends State {
-    // the enemy will be performing idle motion
-    // in this state the enemy may only enter the attack and damaged state
     enter (scene, enemy) {
-        // scene.choiceMenu.setVisible(true)
         enemy.damaged = false
         // ensure enemy is not attacking in this scene
         enemy.hasAttacked = false
@@ -52,8 +51,7 @@ class DefaultState extends State {
         // scene.player_turn = true
         enemy.clearTint()
         enemy.anims.play(`${enemy.name}_default`, true)
-        
-
+    
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
     execute(scene, enemy) {       
@@ -65,9 +63,18 @@ class DefaultState extends State {
 
         // if enemy has been damaged
         if ( scene.dmgToEnemy ){
+            // console.log(scene.selectionMenu.attackingPlayer.name +  'has just attacked')
+
             this.stateMachine.transition('damaged')
         }
 
+        // save the used projectile from the input from selectionmenu
+        if (scene.selectionMenu.attackingPlayer){
+            // console.log(scene.selectionMenu.attackingPlayer.projectile)
+            
+            scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, scene.selectionMenu.attackingPlayer.projectile.handleCollision, null, scene)
+        }
+        
     }
 }
 
@@ -95,8 +102,6 @@ class SingleAttackState extends State {
             this.attackText.setVisible(false)
             this.stateMachine.transition('default')   
         }   
-        
-
     }
 }
 
@@ -110,7 +115,6 @@ class DamagedState extends State {
         scene.enemy_hp.match(enemy.health)
         let damage = scene.add.bitmapText(enemy.x, enemy.x + tileSize*1.5, 'font', -scene.dmgToEnemy, 8).setOrigin(0, 0).setTint(0xFF0000)
 
-        
         enemy.once('animationcomplete', () => {
             damage.setVisible(false)
             if (enemy.health > 0){
@@ -119,11 +123,8 @@ class DamagedState extends State {
             if (enemy.health <= 0){
                 this.stateMachine.transition('defeat')
             }
-        })
-        
-                
+        })      
     }
-
 }
 
 class DefeatState extends State {
