@@ -67,10 +67,6 @@ const HP = 999
 const MP = 99
 const temp_timer = 400
 
-// // initialize a boolean value to check if player has attacked 
-// let player_attack = false
-// // check if it is the player's turn (start off with the player going first)
-// let player_turn = true
 // let cursors = null
 
 

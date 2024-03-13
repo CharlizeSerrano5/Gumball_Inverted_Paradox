@@ -15,6 +15,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.cursor_pos = -20
 
         // initializing temporary selection button
+        
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         this.container_bg = scene.add.image(x,y - 4, 'container')
         this.cursorImage = scene.add.image(x + -36, y + this.cursor_pos, 'cursor').setOrigin(0.5, 0)
@@ -66,7 +67,6 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     }
 
     lookChoice(input) {
-        
         // selection menu options
         // if up and down selected then scroll through options
         this.selections[this.current_selection].clearTint()

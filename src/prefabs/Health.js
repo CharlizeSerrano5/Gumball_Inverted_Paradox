@@ -30,7 +30,6 @@ class HealthBar extends Phaser.GameObjects.Graphics{
         scene.add.bitmapText(this.name_pos, this.y + 1, 'font', character.name, 12).setTint(0x1a1200)
         scene.add.bitmapText(this.name_pos, this.y, 'font', character.name, 12).setTint(0xa8832a)
 
-        
         this.health_txt = scene.add.bitmapText(this.health_pos, this.y - 8, 'font', character.health, 8)
     }
 
@@ -49,14 +48,6 @@ class HealthBar extends Phaser.GameObjects.Graphics{
         }
 
     draw() {
-        // this.bar.clear()
-        
-        // BG of the bar - a container for the health
-        // Note: should design a container for health
-        // this.bar.fillStyle(0x000000)
-        // this.bar.fillRect(this.x, this.y, this.width, this.height);
-        // health
-        // this.add.image(this.x, this.y, 'health_bar')
         
         this.bar.fillStyle(0xabaca7)
         //#cb3938
@@ -70,9 +61,7 @@ class HealthBar extends Phaser.GameObjects.Graphics{
             this.bar.fillStyle(0xcb3938)
         }
 
-
         var health_width = Math.floor(this.value / 8.7)
-
         this.bar.fillRect(this.x + 2, this.y + 2, health_width, this.height - this.padding)
     }
 }

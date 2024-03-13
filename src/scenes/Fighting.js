@@ -6,10 +6,8 @@ class Fighting extends Phaser.Scene {
     init() {
         this.hp = HP
         this.mp = MP
-
-        // check if it is the player's turn (start off with the player going first)
+        // boolean to check if it is the player's turn (start off with the player going first)
         this.player_turn = true
-
 
         this.active_players = 3 // Note: with more scenes turn this into a global variable
         this.active_enemies = 1 // Note: in future scenes it may change the amount
@@ -72,6 +70,7 @@ class Fighting extends Phaser.Scene {
         }
         // restart game if game over
         if (this.gameOver){
+            // check gameover condition
             if (this.active_enemies == 0){
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'YOU WIN', 20).setOrigin(0.5)
@@ -80,18 +79,15 @@ class Fighting extends Phaser.Scene {
                     
                 }
             }
-            // use boolean value to ensure that browser does not lag
             if (this.active_players == 0){
+                // use boolean value to ensure that browser does not lag
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'GAME OVER', 20).setOrigin(0.5)
                     this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
 
                     this.textAdded = true
-
                 }
             }
-
-
             if (up.isDown){
                 this.music.stop()
                 this.scene.start('menuScene')
@@ -110,13 +106,6 @@ class Fighting extends Phaser.Scene {
             this.FSM_holder[1].step()
             this.FSM_holder[2].step()
             this.enemyFSM.step()
-
-            // // probably put inside of the character
-            // if (this.enemy.attacking == false) {
-            //     this.anais.hurt = false
-            //     this.darwin.hurt = false
-            //     this.gumball.hurt = false
-            // }
         
             if (Phaser.Input.Keyboard.JustDown(space)){
                 this.selectionMenu.select()

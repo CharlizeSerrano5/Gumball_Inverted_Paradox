@@ -1,13 +1,11 @@
 class Projectile extends Phaser.Physics.Arcade.Sprite{
     constructor(scene, x, y, texture, character){
         super(scene, x, y, texture)
-        // Note: might add health decrease in projectile
         // projectile will spawn on player
         scene.add.existing(this)
         
         scene.physics.add.existing(this)
-
-        
+        // initialize variables
         this.moveSpeed = 250
         this.character = character
         this.startX = this.x
@@ -65,7 +63,4 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         return true
     }
 
-    // update() {
-    //     this.move(scene.enemyX, scene.enemyY)
-    // }
 }
