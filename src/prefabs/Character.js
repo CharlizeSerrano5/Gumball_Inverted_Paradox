@@ -101,10 +101,6 @@ class AttackState extends State {
             character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
-        // if (scene.enemy.damaged == false){
-        //     character.projectile.reset(character.x)
-        //     this.stateMachine.transition('idle')
-        // }
     }
 }
 
@@ -115,11 +111,13 @@ class HurtState extends State {
         // decrease health and update bar
         character.health -= scene.enemy.dmgToPlayer
         scene.characters_hp[scene.enemy.selectedChar].match(character.health)
+        let damage = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
 
         if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
                 scene.enemy.attacking = false
+                damage.setVisible(false)
 
                 if (character.health > 0){
                     this.stateMachine.transition('idle')
@@ -131,7 +129,6 @@ class HurtState extends State {
         
     }
     execute(scene, character) {
-        // PROBLEM FOREVER IN HURT STATE
         console.log("HURTING")
         if (character.health <= 0){
             // if health depleted after hurt animation collapse this character

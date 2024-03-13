@@ -21,10 +21,14 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
             // increase if going to the right
             // decrease if going to the left
             if (landX > this.x){
+                console.log("landX > this.x")
                 this.x += this.moveSpeed
                 // this.body.setVelocityX(this.moveSpeed)
             }
+
+            // for the current scene
             if(landX < this.x){
+                console.log("landX < this.x")
                 this.x -= this.moveSpeed
                 // this.body.setVelocityX(this.moveSpeed)
             }

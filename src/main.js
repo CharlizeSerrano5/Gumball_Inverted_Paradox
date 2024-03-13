@@ -34,7 +34,7 @@ let config = {
     type: Phaser.AUTO,
     width: 352,
     height: 220,
-    backgroundColor: '#CDC7FF',
+    backgroundColor: '#c7caf4',
     pixelArt: true,
     zoom: 3,
     // see: https://phaser.discourse.group/t/how-do-i-move-phaser-game-to-the-center-of-a-browser/8577/9

@@ -16,15 +16,16 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
 
         // initializing temporary selection button
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
-        const container_bg = scene.add.image(x,y, 'container')
-        this.cursorImage = scene.add.image(x + -32, y + this.cursor_pos, 'cursor').setOrigin(0.5, 0)
-        this.charDisplay = scene.add.bitmapText(x + -24, y + -20, 'font', this.characters[this.current_player].name, 8)
-        this.item = scene.add.bitmapText(x + -24, y + -8, 'font', "PHONE", 8)
-        this.powerDisplay = scene.add.bitmapText( x + -24, y + 4, 'font', this.characters[this.current_player].power, 8)
+        this.container_bg = scene.add.image(x,y - 4, 'container')
+        this.cursorImage = scene.add.image(x + -36, y + this.cursor_pos, 'cursor').setOrigin(0.5, 0)
+        this.charDisplay = scene.add.bitmapText(x + -28, y + -20, 'font', this.characters[this.current_player].name, 8)
+        this.item = scene.add.bitmapText(x + -28, y + -8, 'font', "PHONE", 8)
+        this.powerDisplay = scene.add.bitmapText( x + -28, y + 4, 'font', this.characters[this.current_player].power, 8)
         this.selections = [ this.powerDisplay, this.item, this.charDisplay ]
         this.selections[this.current_selection].setTint(0xDFFF00);
         this.availableChar = this.scene.checkActive()
 
+        this.charCursor = scene.add.image(this.characters[this.current_player].x + 15, this.characters[this.current_player].y - tileSize * 1.5, 'char_cursor')
     }
 
     updateAvailable() {
@@ -53,9 +54,14 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         }
     }
 
-    setInvisble(input) {
+    setVisibility(input) {
         // function to hide selection Menu after every attack
         // input is used for a boolean value
+        this.container_bg.setVisible(input)
+        this.cursorImage.setVisible(input)
+        this.charDisplay.setVisible(input)
+        this.item.setVisible(input)
+        this.powerDisplay.setVisible(input)
     }
 
     lookChoice(input) {
@@ -64,6 +70,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         // if up and down selected then scroll through options
         this.selections[this.current_selection].clearTint()
         this.cursor_pos += -input*12
+        
         this.current_selection += input
         if (this.current_selection > 2){
             this.current_selection = 0
@@ -87,25 +94,16 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         else if (this.current_player < 0){
             this.current_player = this.availableChar.length - 1
         }
-        
-        // PROBLEM MIGHT BE THE WHILE LOOP
-        // while(this.characters[this.availableChar[this.current_player]].hasAttacked){
-        //     this.current_player += input
-        //     if (this.current_player >= this.availableChar.length){
-        //         this.current_player = 0
-        //     }
-        //     else if (this.current_player < 0){
-        //         this.current_player = this.availableChar.length - 1
-        //     }
-        // }
         if( this.characters[this.availableChar[this.current_player]].hasAttacked){
             this.charChange(1)
         }
+        this.charCursor.x = this.characters[this.availableChar[this.current_player]].x+ 15
 
         this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
         this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].power
 
         console.log("CURRENT CHARACTERS" + this.availableChar)
+    
     }
 
 }

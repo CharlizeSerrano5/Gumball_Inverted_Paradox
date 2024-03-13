@@ -9,11 +9,16 @@ class Menu extends Phaser.Scene{
         this.load.path = './assets/'
         // setting up backgrounds
         this.load.image('background', 'gumball_side_walk_2.png')
+        this.load.image('title_image', 'Title.png')
         this.load.image('container', 'container_1.png')
         this.load.image('cursor', 'cursor.png')
+        this.load.image('char_cursor', 'char_cursor.png')
+        this.load.image('health_bar', 'health_bar.png')
 
         // setting up audio
         this.load.audio('music', '8BitArcade.mp3')
+        this.load.audio('fight_music', '80s_Fight_Music_1.mp3')
+
 
         //setting up character sprite sheet
         this.load.spritesheet('gumball', 'gumball_spritesheet.png', {
@@ -51,12 +56,15 @@ class Menu extends Phaser.Scene{
     }
 
     create() {
+        // adding title background
+        this.add.image(centerX, centerY - tileSize / 2, 'title_image').setScale(2).setOrigin(0.5)
+
         // add title text
-        this.add.bitmapText(centerX, centerY - 32, 'font', 'Gumball Inverted Paradox', 12).setOrigin(0.5)
-        this.add.bitmapText(centerX, centerY , 'font', 'up and down to change choice', 8).setOrigin(0.5)
-        this.add.bitmapText(centerX, centerY  - 20, 'font', 'change characters <- ->', 8).setOrigin(0.5)
-        this.add.bitmapText(centerX, centerY  + 12, 'font', 'SPACE to select choice', 8).setOrigin(0.5)
-        this.add.bitmapText(centerX, floorY  + tileSize, 'font', 'arrow keys to START', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, centerY + tileSize * 2.5, 'font', 'The Amazing World of Gumball', 12).setOrigin(0.5)
+        // this.add.bitmapText(centerX, centerY , 'font', 'up and down to change choice', 8).setOrigin(0.5)
+        // this.add.bitmapText(centerX, centerY  + tileSize*3, 'font', 'change characters <- ->', 8).setOrigin(0.5)
+        // this.add.bitmapText(centerX, centerY  + 12, 'font', 'SPACE to select choice', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, centerY + tileSize * 3, 'font', 'arrow keys to START', 8).setOrigin(0.5)
 
         // setting up inputs
         this.keys = this.input.keyboard.createCursorKeys()

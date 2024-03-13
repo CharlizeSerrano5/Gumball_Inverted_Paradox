@@ -62,17 +62,6 @@ class DefaultState extends State {
         if(scene.player_turn == false && enemy.hasAttacked == false){
             this.stateMachine.transition('single_attack')
         }
-        // if(Phaser.Input.Keyboard.JustDown(shift)){
-        //     this.stateMachine.transition('single_attack')
-        // }
-
-        
-
-        // CURRENT PROBLEM - the enemy is trapped inside of attack state
-        // if (scene.player_turn == false){
-        //     // if the player's turn is finished
-        //     this.stateMachine.transition('single_attack')
-        // }
 
         // if enemy has been damaged
         if ( scene.dmgToEnemy ){
@@ -82,29 +71,28 @@ class DefaultState extends State {
     }
 }
 
-// Note: create an attack where it only attacks one person using the array and randomizing it
-// and create an attack where it attacks every character
-// the attacks should be randomized after each character hits
 class SingleAttackState extends State {
-    // enemy will play a temporary attack animation where they throw their enemy specific attack
+    // enemy will randomize their attack on a character
     enter (scene, enemy) {
         // the damage to player becomes the attack power of this enemy
         scene.time.delayedCall(enemy.damagedTimer, () => {
             enemy.dmgToPlayer = enemy.attack_dmg
             enemy.hasAttacked = true
         })
-        console.log("THE PLAYERS TURN IS " + scene.player_turn)
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
         scene.characters[enemy.selectedChar].hurt = true
         // enemy.hasAttacked = true
+        this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${scene.characters[enemy.selectedChar].name} takes ${enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
+        this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${scene.characters[enemy.selectedChar].name} takes ${enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
+
     }
     execute(scene, enemy) {
         if (enemy.hasAttacked == true) {
             // reset the selected char here (TEMP)
             this.selectedChar = -1
             scene.changeTurn()
-                // NOT BEING REACHED
-            console.log(" NOW TURN IS " + scene.player_turn)
+            this.attackText_below.setVisible(false)
+            this.attackText.setVisible(false)
             this.stateMachine.transition('default')   
         }   
         
@@ -122,7 +110,6 @@ class DamagedState extends State {
         scene.enemy_hp.match(enemy.health)
         let damage = scene.add.bitmapText(enemy.x, enemy.x + tileSize*1.5, 'font', -scene.dmgToEnemy, 8).setOrigin(0, 0).setTint(0xFF0000)
 
-        // let damage = scene.add.bitmapText(character.x, centerY, 'font', scene.dmgToEnemy, 8).setOrigin(0.5)
         
         enemy.once('animationcomplete', () => {
             damage.setVisible(false)

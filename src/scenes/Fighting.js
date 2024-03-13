@@ -36,7 +36,7 @@ class Fighting extends Phaser.Scene {
         // see: https://www.youtube.com/watch?v=OOo69t_-uok
         this.background = this.add.image(this.scale.width / 2,this.scale.height / 2, 'background')
         // adding music
-        this.music = this.sound.add('music').setLoop(true).setVolume(0.4)
+        this.music = this.sound.add('fight_music').setLoop(true).setVolume(0.4)
         
         // adding a character to scene - each character should have their own HP
         this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 72, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
@@ -169,26 +169,14 @@ class Fighting extends Phaser.Scene {
         return availableCharacters
     }
 
-    // UNUSED
     changeTurn(){
-        // changes turn if all characters have attacked
-        // let attackedCharacters = this.checkAttacked();
-        // let count = 0
-        // for (let i = 0; i < attackedCharacters.length; i++) {
-        //     if (attackedCharacters[i].hasAttacked){
-        //         // if character has attacked
-        //         count += 1
-        //         this.characters[i].hasAttacked = false
-        //     }
-        // }
-        // if (count == 3){
-            // this.player_turn = false
-        // }
         if (this.player_turn == false){
             this.player_turn = true
+            this.selectionMenu.setVisibility(true)
         }
         else if (this.player_turn == true){
             this.player_turn = false
+            this.selectionMenu.setVisibility(false)
         }
         
     }
