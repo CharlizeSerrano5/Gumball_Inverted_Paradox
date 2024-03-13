@@ -48,7 +48,6 @@ class DefaultState extends State {
         // ensure enemy is not attacking in this scene
         enemy.hasAttacked = false
         enemy.dmgToPlayer = 0
-        enemy.attacking = false
         scene.enemy_attacking
         // scene.player_turn = true
         enemy.clearTint()
@@ -91,20 +90,23 @@ class SingleAttackState extends State {
     enter (scene, enemy) {
         // the damage to player becomes the attack power of this enemy
         scene.time.delayedCall(enemy.damagedTimer, () => {
-            enemy.attacking = true
             enemy.dmgToPlayer = enemy.attack_dmg
+            enemy.hasAttacked = true
         })
-        
+        console.log("THE PLAYERS TURN IS " + scene.player_turn)
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
         scene.characters[enemy.selectedChar].hurt = true
-        enemy.hasAttacked = true
+        // enemy.hasAttacked = true
     }
     execute(scene, enemy) {
-        if (enemy.attacking == false) {
+        if (enemy.hasAttacked == true) {
             // reset the selected char here (TEMP)
             this.selectedChar = -1
+            scene.changeTurn()
+                // NOT BEING REACHED
+            console.log(" NOW TURN IS " + scene.player_turn)
             this.stateMachine.transition('default')   
-        }
+        }   
         
 
     }

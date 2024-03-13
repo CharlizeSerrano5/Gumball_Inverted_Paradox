@@ -27,11 +27,18 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
 
     }
 
-    select() {
+    updateAvailable() {
+        // just to update available Char
         this.availableChar = this.scene.checkActive()
+        return this.availableChar
+    }
+
+    // CURRENT PROBLEM - if the character we are looking at dies, they do not change characters
+    // possible solution have a function updates the display or use charChange()
+    select() {
+        this.availableChar = this.updateAvailable()
         if (this.current_selection == 0 ){
-            console.log('we are on this index ' + this.availableChar[this.current_player])
-            // console.log(this.characters[this.availableChar[this.current_player]].name + "   iS ATTACKING")
+            console.log('we have selected' + this.characters[this.availableChar[this.current_player]].name )
             // if cursor on the power selection
             // Attack choice
             if ( this.characters[this.availableChar[this.current_player]].collapsed == false && !this.characters[this.availableChar[this.current_player]].hasAttacked){
@@ -70,23 +77,8 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.selections[this.current_selection].setTint(0xDFFF00)
     }
 
-    // PROBLEM: THE PROBLEM IS THAT WHEN THERE IS ONLY ONE CHARACTER ALIVE
     charChange(input){
-        this.availableChar = this.scene.checkActive()
-        // console.log("INSIDE OF CHAR CHANGE: " + this.availableChar)
-        // call a reset to the list - temporary solution
-        // PROBLEM THE ACTUAL CHARACTER DOES NOT RESET THEIR ATTACK
-        // IT DOES NOT AUTOMATICALLY CHANGE
-        // if (this.availableChar.length == 0){
-        //     // console.log("TEST")
-        //     for (let i  = 0; i < this.characters.length ; i++){
-        //         // resetting
-        //         this.characters[i].resetAttack()
-        //         this.availableChar.push(this.characters[i].index)
-        //     }
-            
-        // }
-        
+        this.availableChar = this.updateAvailable()
         this.current_player += input
         
         if (this.current_player >= this.availableChar.length){
@@ -109,11 +101,6 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         if( this.characters[this.availableChar[this.current_player]].hasAttacked){
             this.charChange(1)
         }
-        if (this.availableChar.length == 3){
-            console.log('is this reached')
-        }
-
-        // console.log(this.characters[this.availableChar[this.current_player]].name + "is selected")
 
         this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
         this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].power

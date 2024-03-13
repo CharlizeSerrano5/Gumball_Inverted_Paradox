@@ -143,59 +143,54 @@ class Fighting extends Phaser.Scene {
     checkActive(){
         let availableChar = Array(0);
         for (let i = 0; i < this.characters.length; i++) {
-            if (!this.characters[i].hasAttacked){
+            if (!this.characters[i].hasAttacked && !this.characters[i].collapsed){
                 // if character not collapsed nor attacked put into array 
-                // console.log(`${this.characters[i].name}: ${this.characters[i].hasAttacked}`)
                 availableChar.push(this.characters[i].index) 
             }
         }
         // if availableChar's length == 0 then end turn
         if (availableChar.length == 0){
+            this.changeTurn()
             availableChar = this.resetAttacks()
         }
-        console.log(availableChar)
-
         return availableChar
     }
 
     resetAttacks() {
         let availableCharacters = Array(0)
         for (let i = 0; i < this.characters.length; i++) {
-            this.characters[i].hasAttacked = false
-            availableCharacters.push(this.characters[i].index)
+            // if this character has not attacked
+            if (!this.characters[i].collapsed){
+                this.characters[i].hasAttacked = false
+                availableCharacters.push(this.characters[i].index)
+            }
+            
         }
         return availableCharacters
-    }
-
-
-    // UNUSED
-    checkAttacked(){
-        // check which characters has attacked
-        let attackedCharacters = Array(3).fill(-1);
-        for (let i = 0; i < this.characters.length; i++) {
-            if (this.characters[i].hasAttacked && !this.characters[i].collapsed){
-                // if character not collapsed put into array
-                attackedCharacters[i] = this.characters[i].index
-            }
-        }
-        return attackedCharacters
     }
 
     // UNUSED
     changeTurn(){
         // changes turn if all characters have attacked
-        let attackedCharacters = this.checkAttacked();
-        let count = 0
-        for (let i = 0; i < attackedCharacters.length; i++) {
-            if (attackedCharacters[i].hasAttacked){
-                // if character has attacked
-                count += 1
-                this.characters[i].hasAttacked = false
-            }
+        // let attackedCharacters = this.checkAttacked();
+        // let count = 0
+        // for (let i = 0; i < attackedCharacters.length; i++) {
+        //     if (attackedCharacters[i].hasAttacked){
+        //         // if character has attacked
+        //         count += 1
+        //         this.characters[i].hasAttacked = false
+        //     }
+        // }
+        // if (count == 3){
+            // this.player_turn = false
+        // }
+        if (this.player_turn == false){
+            this.player_turn = true
         }
-        if (count == 3){
+        else if (this.player_turn == true){
             this.player_turn = false
         }
+        
     }
 
     checkLiving(){

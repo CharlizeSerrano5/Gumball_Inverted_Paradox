@@ -72,8 +72,6 @@ class IdleState extends State {
     }
 }
 
-// problem character forever in attack state    
-// IN PROGRESS - character has to go before boss can go
 class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
@@ -92,7 +90,7 @@ class AttackState extends State {
             
             character.willAttack = false
             character.hasAttacked = true
-            scene.changeTurn();
+            
         })
         
     }
@@ -149,6 +147,7 @@ class HurtState extends State {
 class CollapseState extends State {
     // the character will be knocked out in this state
     enter (scene, character) {
+        scene.selectionMenu.updateAvailable()
         character.anims.play(`${character.name}_collapse`, true)
         character.collapsed = true
         character.setTint(0xA020F0)
