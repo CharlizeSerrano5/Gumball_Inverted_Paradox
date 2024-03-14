@@ -147,16 +147,22 @@ class Menu extends Phaser.Scene{
             frames: this.anims.generateFrameNumbers('penny', { start: 0, end:7}),
         })
         this.anims.create({
-            key: 'PENNY_damaged',
+            key: 'PENNY_singleAttack',
             frameRate: 8,
             repeat: 0,
             frames: this.anims.generateFrameNumbers('penny', { start: 8, end:15}),
         })
         this.anims.create({
+            key: 'PENNY_damaged',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('penny', { start: 16, end:23}),
+        })
+        this.anims.create({
             key: 'PENNY_defeat',
             frameRate: 8,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers('penny', { start: 16, end: 16}),
+            frames: this.anims.generateFrameNumbers('penny', { start: 24, end: 24}),
         })
 
     }

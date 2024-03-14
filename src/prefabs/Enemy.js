@@ -18,7 +18,6 @@ class Enemy extends Phaser.GameObjects.Sprite {
 
         // setting up the character to attack
         this.selectedChar = -1
-        // this.damaged = false
 
         // setting up state machines
         scene.enemyFSM = new StateMachine('default', {
@@ -47,7 +46,7 @@ class DefaultState extends State {
         // ensure enemy is not attacking in this scene
         enemy.hasAttacked = false
         enemy.dmgToPlayer = 0
-        scene.enemy_attacking
+        
         // scene.player_turn = true
         enemy.clearTint()
         enemy.anims.play(`${enemy.name}_default`, true)
@@ -82,24 +81,23 @@ class SingleAttackState extends State {
     // enemy will randomize their attack on a character
     enter (scene, enemy) {
         // the damage to player becomes the attack power of this enemy
+        enemy.anims.play(`${enemy.name}_singleAttack`, true)
+
         scene.time.delayedCall(enemy.damagedTimer, () => {
             enemy.dmgToPlayer = enemy.attack_dmg
             enemy.hasAttacked = true
         })
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
         scene.characters[enemy.selectedChar].hurt = true
-        // enemy.hasAttacked = true
-        this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${scene.characters[enemy.selectedChar].name} takes ${enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
-        this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${scene.characters[enemy.selectedChar].name} takes ${enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
-
+        
     }
     execute(scene, enemy) {
         if (enemy.hasAttacked == true) {
-            // reset the selected char here (TEMP)
+            // PROBLEM
+
+            // reset the selected char here
             this.selectedChar = -1
             scene.changeTurn()
-            this.attackText_below.setVisible(false)
-            this.attackText.setVisible(false)
             this.stateMachine.transition('default')   
         }   
     }
@@ -130,7 +128,6 @@ class DamagedState extends State {
 class DefeatState extends State {
     // the enemy will be knocked out in this state
     enter (scene, enemy) {
-        // maybe increase a variable to check how many players have defeatd
         enemy.anims.play(`${enemy.name}_defeat`, true)
         // enemy.setTint('#A020F0')
         scene.active_enemies -= 1

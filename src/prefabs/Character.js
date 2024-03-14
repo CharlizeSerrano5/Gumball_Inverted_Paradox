@@ -42,11 +42,6 @@ class IdleState extends State {
         // player is not attacking in idle state
         scene.dmgToEnemy = 0
         character.clearTint()
-        // if (character.hasAttacked){
-        //     // console.log('no attacky')
-        // }
-        
-        // character.hasAttacked = false
 
     }
     execute(scene, character) {
@@ -102,13 +97,17 @@ class HurtState extends State {
         // decrease health and update bar
         character.health -= scene.enemy.dmgToPlayer
         scene.characters_hp[scene.enemy.selectedChar].match(character.health)
-        let damage = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
-
+        let damage_txt = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
+        
+        this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
+        this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
         if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
                 scene.enemy.attacking = false
-                damage.setVisible(false)
+                damage_txt.setVisible(false)
+                this.attackText_below.setVisible(false)
+                this.attackText.setVisible(false)
 
                 if (character.health > 0){
                     this.stateMachine.transition('idle')

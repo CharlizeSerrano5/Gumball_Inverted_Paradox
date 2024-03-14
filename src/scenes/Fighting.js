@@ -13,7 +13,6 @@ class Fighting extends Phaser.Scene {
         this.active_enemies = 1 // Note: in future scenes it may change the amount
         this.FSM_holder = Array(3).fill(0)
         this.textAdded = false
-        this.temp_dmg = 200
         // initializing the amt the player will do to the enemy
         this.dmgToEnemy = 0
         this.enemy_dmg = 0

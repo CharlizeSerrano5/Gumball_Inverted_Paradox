@@ -14,7 +14,6 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.current_selection = 2 // what the cursor is pointing at
         this.cursor_pos = -20
 
-        // initializing temporary selection button
         
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         this.container_bg = scene.add.image(x,y - 4, 'container')
@@ -27,7 +26,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.availableChar = this.scene.checkActive()
 
         this.charCursor = scene.add.image(this.characters[this.current_player].x + 15, this.characters[this.current_player].y - tileSize * 1.5, 'char_cursor')
-        this.attackingPlayer
+        this.attackingPlayer  = undefined // initialize an attacking Player
     }
 
     updateAvailable() {
