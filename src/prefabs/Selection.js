@@ -28,6 +28,8 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
 
         this.charCursor = scene.add.image(this.characters[this.current_player].x + 15, this.characters[this.current_player].y - tileSize * 1.5, 'char_cursor')
         this.attackingPlayer  = undefined // initialize an attacking Player
+    
+        this.summonSelect = false
     }
 
     updateAvailable() {
@@ -40,7 +42,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     // possible solution have a function updates the display or use charChange()
     select() {
         // only allow select if active
-        console.log('trying to select and the turn is ' + this.scene.player_turn + ' and we are allowed to select? ' + this.allowSelect)
+        // console.log('trying to select and the turn is ' + this.scene.player_turn + ' and we are allowed to select? ' + this.allowSelect)
         if (this.scene.player_turn == true && this.allowSelect == true){
             this.availableChar = this.updateAvailable()
             if (this.current_selection == 0 ){
@@ -50,11 +52,21 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
                     // NOTE: check if character has died
                     this.characters[this.availableChar[this.current_player]].willAttack = true
                     this.attackingPlayer =this.characters[this.availableChar[this.current_player]]
-                    this.charChange(1);
+                    this.charChange(0);
                 }
             }
-            if (this.current_selection == 1){
-                console.log("SUMMON")
+            if (this.current_selection == 1 && !this.scene.summon.hasAttacked && this.scene.summon.summonUses && this.availableChar.length == 3){
+                // call the summon attack 
+                // set the selection to false
+                this.allowSelect = false
+                this.setVisibility(false)
+                this.scene.changeTurn()
+                console.log(this.scene.enemy.hasAttacked)
+                this.scene.summon.attack()
+                this.summonSelect = true
+
+                // if the summon has been selected do not let the enemy attack
+
             }
         }
     }
@@ -92,6 +104,8 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.availableChar = this.updateAvailable()
         this.current_player += input
         
+        console.log(this.availableChar)
+        console.log(this.current_player)
         if (this.current_player >= this.availableChar.length){
                 this.current_player = 0
         }

@@ -56,6 +56,8 @@ class Fighting extends Phaser.Scene {
         this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize / 1.5, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
 
+        this.summon = new Summon(this, rightPos - tileSize * 3, centerY, 'nicole', 200).setOrigin(0,1)
+
 
         // setting up keyboard inputs
         this.keys = this.input.keyboard.createCursorKeys()
@@ -143,6 +145,7 @@ class Fighting extends Phaser.Scene {
         // if availableChar's length == 0 then end turn
         if (availableChar.length == 0){
             this.changeTurn()
+            // reset the move amount
             availableChar = this.resetAttacks()
         }
         return availableChar
@@ -161,7 +164,10 @@ class Fighting extends Phaser.Scene {
     }
 
     changeTurn(){
+        // when turn is changed reset the count of how many times character can be used
         if (this.player_turn == false){
+            this.selectionMenu.moves = 3
+
             this.player_turn = true
             this.selectionMenu.setVisibility(true)
             // this.selectionMenu.allowSelect = true

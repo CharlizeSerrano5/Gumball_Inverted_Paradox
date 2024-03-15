@@ -39,7 +39,24 @@
 		},
 		{
 			"speaker" : "darwin",
-			"dialog" : "Here is some healing ointment to help Gumball in the heat of battle."
+			"dialog" : "Looks like we will need to defeat the main boss to escape."
+		},
+		{
+			"speaker" : "anais",
+			"dialog" : "Look at your console and navigate through.",
+			"newSpeaker": "true"
+		},
+		{
+			"speaker" : "anais",
+			"dialog" : "To switch between us you must move left <- and right -> when looking at our names."
+		},
+		{
+			"speaker" : "anais",
+			"dialog" : "To attack go to the bottom of the menu and press attack."
+		},
+		{
+			"speaker" : "anais",
+			"dialog" : "We will be obtaining items to use later on so keep an eye on that."
 		}
 		
 	]

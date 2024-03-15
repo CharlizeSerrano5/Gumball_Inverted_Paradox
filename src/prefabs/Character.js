@@ -24,7 +24,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.collapsed = false
         // temporary check
         this.check = ''
-        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - 5, `${this.name}_projectile`, this)
+        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height/2, `${this.name}_projectile`, this)
 
         scene.FSM_holder[index] = new StateMachine('idle', {
             idle: new IdleState(),
@@ -92,17 +92,15 @@ class AttackState extends State {
         character.projectile.move(scene.enemy)
 
         scene.time.delayedCall(character.hurtTimer, () => {
-            
             character.willAttack = false
             character.hasAttacked = true
-            
         })
         
     }
     execute(scene, character) {
         // reset to idle
         if (character.hasAttacked == true){
-            scene.selectionMenu.charChange(-1)
+            scene.selectionMenu.charChange(0)
             // character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }

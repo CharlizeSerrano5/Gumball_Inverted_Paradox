@@ -61,8 +61,8 @@ class DefaultState extends State {
 
         // Note: might make a brand new state
         
-        // if it is not the player's turn and there exists no currently attacking player
-        if(scene.player_turn == false && enemy.hasAttacked == false && !scene.selectionMenu.attackingPlayer){
+        // if it is not the player's turn and there exists no currently attacking player AND there exists no summon
+        if(scene.player_turn == false && enemy.hasAttacked == false && !scene.selectionMenu.attackingPlayer && !scene.selectionMenu.summonSelect){
             console.log("ENEMY ENTERING ATTACK")
             // entered once
             this.stateMachine.transition('single_attack')
@@ -75,6 +75,22 @@ class DefaultState extends State {
                 let collision = scene.selectionMenu.attackingPlayer.projectile.handleCollision(enemy, scene.dmgToEnemy)
                 if ( collision == true){
                     scene.selectionMenu.attackingPlayer.projectile.resetProj(scene.selectionMenu.attackingPlayer.projectile.startX, scene.selectionMenu.attackingPlayer.projectile.startY)
+                    this.stateMachine.transition('damaged')
+                }
+            }, null, scene)
+        }
+
+        // check if the summon was selected instead
+        if (scene.selectionMenu.summonSelect){
+            console.log('summon selected now checking enemy collision')
+            scene.physics.add.collider(scene.summon.projectile, enemy, () => {
+                let collision = scene.summon.projectile.handleCollision(enemy, scene.dmgToEnemy)
+                if ( collision == true){
+                    scene.summon.projectile.resetProj(scene.summon.projectile.startX, scene.summon.projectile.startY)
+                    // reset the selection menu
+                    // for debugging
+                    // scene.summon.hasAttacked = true
+                    // scene.selectionMenu.summonSelect = false
                     this.stateMachine.transition('damaged')
                 }
             }, null, scene)
@@ -101,6 +117,7 @@ class SingleAttackState extends State {
         if (enemy.y <= centerY){
             if (enemy.hasAttacked == false){
                 enemy.body.setVelocityY(0)
+                // console.log("STOPPED")
                 enemy.anims.play(`${enemy.name}_singleAttack`, true)
                 enemy.once('animationcomplete', ()=> {
                     enemy.projectile.move(scene.characters[enemy.selectedChar])
@@ -142,15 +159,25 @@ class DamagedState extends State {
     enter (scene, enemy) { 
         // scene.choiceMenu.setVisible(false)
         scene.selectionMenu.attackingPlayer = undefined
-        enemy.health -= scene.dmgToEnemy
+        let damageTaken
+        if (scene.selectionMenu.summonSelect){
+            // if the summon was selected then
+            damageTaken = scene.summon.damage
+        }
+        else{
+            damageTaken = scene.dmgToEnemy
+        }
+        enemy.health -= damageTaken
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)
         scene.enemy_hp.match(enemy.health)
-        let damage = scene.add.bitmapText(enemy.x, enemy.x + tileSize*1.5, 'font', -scene.dmgToEnemy, 8).setOrigin(0, 0).setTint(0xFF0000)
+        let damage = scene.add.bitmapText(enemy.x, enemy.x + tileSize*1.5, 'font', -damageTaken, 8).setOrigin(0, 0).setTint(0xFF0000)
 
         enemy.once('animationcomplete', () => {
             damage.setVisible(false)
             scene.selectionMenu.allowSelect = true
+            scene.selectionMenu.summonSelect = false
+
             if (enemy.health > 0){
                 this.stateMachine.transition('default')
             }

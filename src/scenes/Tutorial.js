@@ -34,6 +34,10 @@ class Tutorial extends Phaser.Scene {
 
         this.OFFSCREEN_X = -500         // x,y coordinates used to place characters offscreen
         this.OFFSCREEN_Y = 1000
+
+
+        this.FSM_holder = Array(3).fill(0)
+
     }
 
     create() {
@@ -58,12 +62,17 @@ class Tutorial extends Phaser.Scene {
 
         // start first dialog conversation
         this.typeText()        
+
     }
 
     update() {
         // check for spacebar press
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && !this.dialogTyping) {
             this.typeText() // trigger dialog
+        }
+        if (this.dialogConvo == 1 && this.dialogLine == 3){
+            console.log('we are now discussing the tutorial')
+            // add pngs and gifs describing tutorial
         }
     }
 
@@ -92,10 +101,7 @@ class Tutorial extends Phaser.Scene {
             // ..but you could create logic to exit if each conversation was self-contained
             this.dialogConvo++
         }
-        // console.log(this.dialogConvo)
-        if (this.dialogConvo == 1){
-            console.log('we have reached the second convo')
-        }
+        
         // make sure we haven't run out of conversations...
         if(this.dialogConvo >= this.dialog.length) {
             // here I'm exiting the final conversation to return to the title...
