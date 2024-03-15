@@ -14,13 +14,16 @@ class Summon extends Phaser.Physics.Arcade.Sprite {
 
     attack(){
         // float up to a certain point and cast a projectile
+        this.y = centerY
+        this.projectile.y = this.y - this.height/2
         this.summonUses -= 1
         console.log("attack")
         // this.hasAttacked = true // for now remove
-
+        if (this.y == centerY){
+            this.projectile.move(this.scene.enemy)
+        }
         // attacking position:  rightPos - tileSize * 3, centerY
         // move summon towards the position
 
-        this.projectile.move(this.scene.enemy)
     }
 }

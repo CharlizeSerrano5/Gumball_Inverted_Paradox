@@ -26,6 +26,8 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         // might make a dictionary
         this.attackList = Array(2).fill(-1)
         
+        // debugging
+        this.state = 'idle'
         
         
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height/2, `${this.name}_projectile`, this)
@@ -44,11 +46,14 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
+        character.state = 'idle'
         console.log(character.attackList)
+        // console.log(character.name  + 'has entered the IDLE state')
         // player is not attacking in idle state
         character.clearTint()
         // player is not hurt
         character.hurt = false
+        console.log(character.name + ' is hurt?: ' + character.hurt)
 
     }
     execute(scene, character) {
@@ -83,6 +88,7 @@ class AttackState extends State {
     enter (scene, character) {
         // remove the enemies health
         // scene.enemy.damaged = true
+        character.state = 'attack'
         character.mana -= 10
         // change mana amt later
         scene.characters_mp[character.index].match(character.mana)
@@ -114,6 +120,7 @@ class AttackState extends State {
 class HurtState extends State {
     enter (scene, character) {
         // scene.enemy.hasAttacked = false
+        character.state = 'hurt'
         character.hurt = true
         // character.anims.play(`${character.name}_hurt`, true)
         character.setTint(0xFF0000)
@@ -132,7 +139,9 @@ class HurtState extends State {
                 damage_txt.setVisible(false)
                 this.attackText_below.setVisible(false)
                 this.attackText.setVisible(false)
+                console.log("\n\n enemy attacked= " + scene.enemy.hasAttacked + '\n\n')
                 if (character.health > 0 && scene.enemy.hasAttacked == false){
+                    console.log(`${character.name} has reached idle`)
                     this.stateMachine.transition('idle')
                 }
                 // character.checkCollision.none = true
@@ -159,6 +168,7 @@ class HurtState extends State {
 class CollapseState extends State {
     // the character will be knocked out in this state
     enter (scene, character) {
+        character.state = 'collapse'
         scene.selectionMenu.updateAvailable()
         character.anims.play(`${character.name}_collapse`, true)
         character.collapsed = true

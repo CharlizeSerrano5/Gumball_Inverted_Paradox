@@ -63,7 +63,7 @@ class Fighting extends Phaser.Scene {
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
         // enemy does not need mana
 
-        this.summon = new Summon(this, rightPos - tileSize * 3, centerY, 'nicole', 200).setOrigin(0,1)
+        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 200).setOrigin(0,1)
 
 
         // setting up keyboard inputs
@@ -113,6 +113,14 @@ class Fighting extends Phaser.Scene {
             }
         }
         if (!this.gameOver){
+            // for debugging
+            console.log("enemy attacked=" + this.enemy.hasAttacked +', ' + this.characters[0].name + this.characters[0].state + ' , ' + this.characters[1].name + this.characters[1].state + ' , ' + this.characters[2].name + this.characters[2].state)
+            // console.log(this.characters[1].name + this.characters[1].state + )
+            // console.log(this.characters[2].name + this.characters[2].state)
+
+
+
+
             if (!this.music_playing){
                 this.music.play()
                 this.music_playing = true

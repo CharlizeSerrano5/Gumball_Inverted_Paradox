@@ -47,6 +47,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         // console.log('trying to select and the turn is ' + this.scene.player_turn + ' and we are allowed to select? ' + this.allowSelect)
         if (this.scene.player_turn == true && this.allowSelect == true){
             this.availableChar = this.updateAvailable()
+            console.log(`THIS ${this.availableChar}\n\n`)
             if (this.current_selection == 0 ){
                 // if cursor on the power selection
                 // Attack choice
@@ -108,8 +109,9 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         // when character is changed auto set the current attack to 0
         this.current_attack = 0
         
-        console.log(this.availableChar)
-        console.log(this.current_player)
+        // console.log(this.availableChar)
+        // console.log(this.current_player)
+        // console.log(this.characters[this.availableChar[this.current_player]])
         if (this.current_player >= this.availableChar.length){
                 this.current_player = 0
         }
@@ -120,6 +122,9 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
             this.charChange(1)
         }
         this.charCursor.x = this.characters[this.availableChar[this.current_player]].x+ 15
+        console.log(this.availableChar)
+        console.log(this.current_player)
+        console.log(this.characters[this.availableChar[this.current_player]])
 
         this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
         this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].attackList[this.current_attack]
