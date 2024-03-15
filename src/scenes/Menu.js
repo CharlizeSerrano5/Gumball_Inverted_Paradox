@@ -14,17 +14,31 @@ class Menu extends Phaser.Scene{
         this.load.image('cursor', 'cursor.png')
         this.load.image('char_cursor', 'char_cursor.png')
         this.load.image('health_bar', 'health_bar.png')
+        this.load.image('mana_bar', 'mana_bar.png')
+
+        // loading fonts
+        this.load.bitmapFont('font', 'font/atari-classic.png', 'font/atari-classic.xml')
+        // this.load.bitmapFont('font', 'font/gumball_font.png', 'font/gumball_font.xml')
+        this.load.bitmapFont('skinnyfont', 'font/SkinnyFont.png', 'font/SkinnyFont.xml')
 
         // setting up audio
-        this.load.audio('music', '8BitArcade.mp3')
-        this.load.audio('fight_music', '80s_Fight_Music_1.mp3')
+        this.load.audio('music', 'sound/8BitArcade.mp3')
+        this.load.audio('fight_music', 'sound/80s_Fight_Music_1.mp3')
 
+
+        // load JSON (ie dialog text)
+        this.load.json('dialog', 'json/dialog.json')
+        // loading dialog box
+        this.load.image('dialogbox', 'text_box.png')
 
         //setting up character sprite sheet
         this.load.spritesheet('gumball', 'gumball_spritesheet.png', {
             frameWidth: 30,
             frameHeight: 42
         })
+
+        this.load.image('gumball_talk', 'gumball_talking.png')
+
         this.load.spritesheet('anais', 'anais_spritesheet.png', {
             frameWidth: 33,
             frameHeight: 34
@@ -55,9 +69,7 @@ class Menu extends Phaser.Scene{
             frameHeight: 16
         })
 
-        // loading fonts
-        this.load.bitmapFont('font', 'atari-classic.png', 'atari-classic.xml')
-        // this.load.bitmapFont('font', 'gumball_font.png', 'gumball_font.xml')
+        
     }
 
     create() {
@@ -74,8 +86,9 @@ class Menu extends Phaser.Scene{
         // setting up inputs
         this.keys = this.input.keyboard.createCursorKeys()
 
-        // setting up animations
+        
 
+        // setting up animations
         this.anims.create({
             key: 'GUMBALL_idle',
             frameRate: 8,
@@ -170,8 +183,12 @@ class Menu extends Phaser.Scene{
     update() {
         const { left, right, up, down, space, shift } = this.keys   
 
-        if (left.isDown || right.isDown || up.isDown || down.isDown){
+        if (left.isDown || right.isDown || up.isDown ){
             this.scene.start('fightingScene')
+        }
+
+        if (down.isDown){
+            this.scene.start('tutorialScene')
         }
     }
 }

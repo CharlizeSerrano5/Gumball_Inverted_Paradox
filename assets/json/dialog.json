@@ -1,9 +1,46 @@
 [
-    {
-        "speaker": "gumball",
-        "dialog" : "poop",
-        "newSpeaker": "true"
-    }
+	[
+		{
+			"speaker" : "gumball",
+			"dialog" : "I've trapped us inside a video game.",
+			"newSpeaker" : "true"
+		},
+		
+		{
+			"speaker" : "gumball",
+			"dialog" : "AWESOMEEE"
+		},
+		{	
+			"speaker" : "darwin",
+			"dialog" : "Please tell me what has been going on.",
+			"newSpeaker" : "true"
+		},
+		{	
+			"speaker" : "anais",
+			"dialog" : "A fowl curse has been released by Gumball.",
+			"newSpeaker": "true"
+		},
+		{	
+			"speaker" : "darwin",
+			"dialog" : "You mean the gates of doom were opened by Gumball.",
+            "newSpeaker": "true"
 
-
+		},
+		{	
+			"speaker" : "anais",
+			"dialog" : "The fabric of the universe was ripped apart by Gumball."
+		}
+	],
+	[
+		{
+			"speaker" : "darwin",
+			"dialog" : "Gumball has made quite a mess.",
+			"newSpeaker" : "true"
+		},
+		{
+			"speaker" : "darwin",
+			"dialog" : "Here is some healing ointment to help Gumball in the heat of battle."
+		}
+		
+	]
 ]

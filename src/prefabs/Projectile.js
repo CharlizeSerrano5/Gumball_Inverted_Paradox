@@ -6,9 +6,10 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         
         scene.physics.add.existing(this)
         // initialize variables
-        this.moveSpeed = 250
+        this.moveSpeed = 350
         this.character = character
         this.startX = this.x
+        this.startY = this.y
         // console.log(this.character.name)
         // this.setVisible(false)
     }
@@ -16,47 +17,70 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
     
 
     move(landX, landY) {
-        console.log('enemyX: ' + landX + 'enemyY:' + landY)
-        console.log('thisX: ' + this.x + 'thisY:' + this.y)
+        // console.log('moving ' + this.character.name)
+        // console.log('opposingX: ' + landX + 'thisX:' + this.x)
+        // console.log('thisX: ' + this.x + 'thisY:' + this.y)
         // this.setVisible(true)
+        let direction
         if(this.x >= landX){
+            direction = 'left'
             this.anims.play(`${this.character.name}_projectileAttack`)
-
-            // increase if going to the right
-            // decrease if going to the left
-            if (landX > this.x){
-                console.log("landX > this.x")
-                this.x += this.moveSpeed
-                // this.body.setVelocityX(this.moveSpeed)
-            }
-
-            // for the current scene
-            if(landX < this.x){
-                console.log("landX < this.x")
-                // this.x -= this.moveSpeed
-                this.body.setVelocityX(-this.moveSpeed)
-            }
+            this.body.setVelocityX(-this.moveSpeed)
         }
+        else if (landX >= this.x){
+            direction = 'right'
+            this.body.setVelocityX(this.moveSpeed)
+            // this.body.setVelocityX(this.moveSpeed)
+        }
+
+        // console.log('this height: ' + this.y + 'land destination ' +landY)
+        if (this.y > landY){    
+            this.body.setVelocityY(-20)
+        }
+        else if (this.y < landY){
+            // console.log('this.y = ' + this.y + 'landY = ' + landY)
+            // probably use pythagorean to ensure that it always lands at the character
+            this.body.setVelocityY(60)
+        }
+
+
         if (this.x == landX){
             // this.setVisible(false)
         }
 
-        if (this.x >= landX){
-            console.log(this.x)
-            this.resetProj(this.startX)
+        // console.log(this.width)
+        // console.log(landX)
+        // console.log(this.scene.enemy.x)
+        // console.log(this.scene.enemy.width)
+
+        if (this.x - this.width <= landX && direction == 'left'){
+            this.body.setVelocityY(0)
+            this.resetProj(this.startX, this.startY)
+            
         }
+
+        else if (this.x - this.width >= landX && direction == 'right'){
+            console.log("REACHED? lanDX" + landX + 'this.x: ' + this.x) 
+            this.body.setVelocityY(0)
+            this.resetProj(this.startX, this.startY)
+            
+        }
+
     }
-    resetProj(x){
-        console.log("is being reached")
+    resetProj(x, y){
+        // console.log('reset velocity' + this.body.velocity)
+        this.body.setVelocityY(0)
+        this.body.setVelocityX(0)
         this.x = x
+        this.y = y
+        
         // this.setVisible(false)
     }
     
-    handleCollision(){
-        console.log("HANDLING COLLISION")
+    handleCollision(currently_Attacked, dmgDealt){
         this.x = this.startX
         // console.log("original x = " + this.x + "set x " + this.startX)
-
+        currently_Attacked.health -= dmgDealt
         // this.resetProj(this.startX)
         
         // set up animations for projectile LATER

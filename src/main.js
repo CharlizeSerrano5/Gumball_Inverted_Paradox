@@ -42,7 +42,7 @@ let config = {
     physics: {
         default: "arcade",
         arcade: {
-            // debug: true,
+            debug: true,
             // gravity not needed
             // gravity: {
             //     x: 0,
@@ -50,7 +50,7 @@ let config = {
             // }
         }
     },
-    scene: [ Menu, Fighting]
+    scene: [ Menu, Tutorial, Fighting]
 
 }
 
@@ -64,9 +64,9 @@ const floorY = game.config.height / 10 * 6
 const leftPos = game.config.width / 5
 const rightPos = game.config.width / 5 * 4
 const HP = 999
-const MP = 99
+const MP = 50
 const temp_timer = 400
 
-// let cursors = null
+let cursors = null
 
 

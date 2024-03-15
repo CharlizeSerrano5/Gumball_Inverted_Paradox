@@ -1,27 +1,30 @@
-class Character extends Phaser.GameObjects.Sprite {
+class Character extends Phaser.Physics.Arcade.Sprite {
     // poop
     constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, index) {
         super(scene, x, y, texture)
         scene.add.existing(this)
+        scene.physics.add.existing(this)
+        this.body.setImmovable(true)
         this.x = x
         this.y = y
+        console.log('the y value is : ' + this.y)
         // setting character properties
         this.index = index
         this.health = health
+        this.mana = mana
         this.name = name // for prints
         this.hurtTimer = temp_timer
         this.power = power
         // creating a boolean value to check if the current character has attacked
-
+        this.hurt = false
         this.hasAttacked = false
         // setting up fighting damage
         this.attack_dmg = attack_dmg
         
-        // this.hurt = false
         this.collapsed = false
         // temporary check
         this.check = ''
-        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
+        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - 5, `${this.name}_projectile`, this)
 
         scene.FSM_holder[index] = new StateMachine('idle', {
             idle: new IdleState(),
@@ -30,18 +33,16 @@ class Character extends Phaser.GameObjects.Sprite {
             collapse: new CollapseState(),
         },[scene, this])
     }
-    // possible solution
-    resetAttack() {
-        this.hasAttacked = false
-    }
+
 }
 
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
         // player is not attacking in idle state
-        scene.dmgToEnemy = 0
         character.clearTint()
+        // player is not hurt
+        character.hurt = false
 
     }
     execute(scene, character) {
@@ -52,10 +53,22 @@ class IdleState extends State {
         if (character.willAttack == true && !character.hasAttacked){
             this.stateMachine.transition('attack')
         }
-        // if the enemy is attacking
-        if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { // test one character at a time
-            this.stateMachine.transition('hurt')
+        // if the enemy is attacking add a collider
+        if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { 
+            scene.physics.add.collider(scene.enemy.projectile, character, () => {
+                let collision = scene.enemy.projectile.handleCollision(character, scene.dmgToEnemy)
+                if ( collision == true){
+                    // reset that projectile once the collision is true
+                    console.log('collision was true')
+                    scene.enemy.projectile.resetProj(scene.enemy.projectile.startX, scene.enemy.projectile.startY)
+                    this.stateMachine.transition('hurt')
+                    // is entered
+                }
+            }, null, scene)
         }
+
+        
+
 
         
 
@@ -68,9 +81,11 @@ class AttackState extends State {
         // remove the enemies health
         // scene.enemy.damaged = true
         scene.dmgToEnemy = character.attack_dmg
+        scene.selectionMenu.allowSelect = false
+        // console.log("selection allow is "+ scene.selectionMenu.allowSelect)
         character.setTint(0xDB91EF)
         
-        character.projectile.move(scene.enemyX, scene.enemyY)
+        character.projectile.move(scene.enemy.x + scene.enemy.width, scene.enemyY - scene.enemy.height)
 
         scene.time.delayedCall(character.hurtTimer, () => {
             
@@ -92,13 +107,16 @@ class AttackState extends State {
 
 class HurtState extends State {
     enter (scene, character) {
+        // scene.enemy.hasAttacked = false
+        character.hurt = true
         // character.anims.play(`${character.name}_hurt`, true)
         character.setTint(0xFF0000)
         // decrease health and update bar
         character.health -= scene.enemy.dmgToPlayer
+        console.log(scene.enemy.selectedChar + "selected CHARACTER")
         scene.characters_hp[scene.enemy.selectedChar].match(character.health)
         let damage_txt = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
-        
+        scene.changeTurn()
         this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
         this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
         if (character.health > 0){
@@ -108,13 +126,15 @@ class HurtState extends State {
                 damage_txt.setVisible(false)
                 this.attackText_below.setVisible(false)
                 this.attackText.setVisible(false)
-
+                scene.enemy.selectedChar = -1
                 if (character.health > 0){
+                    
                     this.stateMachine.transition('idle')
                 }
+                
             })
         }
-
+        
         console.log('HURT')
         
     }
@@ -123,6 +143,7 @@ class HurtState extends State {
             // if health depleted after hurt animation collapse this character
             this.stateMachine.transition('collapse')
             character.once('animationcomplete', () => {
+                
                 this.stateMachine.transition('collapse')
             })
         }

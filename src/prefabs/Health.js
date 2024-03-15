@@ -27,8 +27,8 @@ class HealthBar extends Phaser.GameObjects.Graphics{
         scene.add.bitmapText(this.hp_pos, this.y, 'font', 'HP', 12)
 
         scene.add.bitmapText(this.name_pos, this.y - 1, 'font', character.name, 12).setTint(0xf5f576)
-        scene.add.bitmapText(this.name_pos, this.y + 1, 'font', character.name, 12).setTint(0x1a1200)
-        scene.add.bitmapText(this.name_pos, this.y, 'font', character.name, 12).setTint(0xa8832a)
+        scene.add.bitmapText(this.name_pos +  1, this.y + 1, 'font', character.name, 12).setTint(0x1a1200)
+        scene.add.bitmapText(this.name_pos, this.y, 'font', character.name, 12).setTint(0xaf904c)
 
         this.health_txt = scene.add.bitmapText(this.health_pos, this.y - 8, 'font', character.health, 8)
     }

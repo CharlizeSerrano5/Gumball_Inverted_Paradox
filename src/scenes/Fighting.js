@@ -31,30 +31,37 @@ class Fighting extends Phaser.Scene {
     create() {
         // initializing a background
         // see: https://www.youtube.com/watch?v=OOo69t_-uok
-        this.background = this.add.image(this.scale.width / 2,this.scale.height / 2, 'background')
+        this.background = this.add.image(this.scale.width / 2,this.scale.height / 2 - tileSize * 1.55, 'background')
         // adding music
         this.music = this.sound.add('fight_music').setLoop(true).setVolume(0.4)
         
         // adding a character to scene - each character should have their own HP
-        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize, 'gumball', 0, this.hp, MP, 72, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
-        this.anais = new Character(this, rightPos, floorY +tileSize, 'anais', 0, this.hp, MP, 150, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
-        this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 2).setOrigin(0,1)
+        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 72, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
+        this.anais = new Character(this, rightPos, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 150, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
+        this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 2).setOrigin(0,1)
         // adding each character health
         this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball, 0)
+        this.gumball_mp = new ManaBar(this, centerX + tileSize * 3 + 12, floorY + tileSize, this.gumball, 0)
+
         this.anais_hp = new HealthBar(this, centerX,floorY+ tileSize *1.5, this.anais, 0)
+        this.anais_mp = new ManaBar(this, centerX + tileSize * 3 + 12, floorY+ tileSize *1.5, this.anais, 1)
+
         this.darwin_hp = new HealthBar(this, centerX, floorY + tileSize * 2, this.darwin, 2)
+        this.darwin_mp = new ManaBar(this, centerX + tileSize * 3 + 12, floorY + tileSize * 2, this.darwin, 1)
+
         // adding all characters into an array to loop all the characters
         this.characters = [ this.gumball, this.anais, this.darwin ]
         this.characters_hp = [ this.gumball_hp, this.anais_hp, this.darwin_hp ]
         // adding enemy to scene - enemy has their own prefab
-        this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
+        this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize / 1.5, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
 
 
         // setting up keyboard inputs
         this.keys = this.input.keyboard.createCursorKeys()
 
-        this.selectionMenu = new SelectionMenu(this, rightPos + tileSize / 2, floorY + tileSize + 25, this.characters)
+        // this.selectionMenu = new SelectionMenu(this, game.config.width - tileSize - 5, floorY + tileSize + 25, this.characters)
+        this.selectionMenu = new SelectionMenu(this, game.config.width - tileSize - 5,  tileSize + 25, this.characters)
 
         // Game OVER flag
         this.gameOver = false
@@ -109,7 +116,6 @@ class Fighting extends Phaser.Scene {
             if (Phaser.Input.Keyboard.JustDown(space)){
                 this.selectionMenu.select()
             }
-            // PROBLEM: the menu selection is spammable
             if (this.selectionMenu.current_selection == 2){
                 if (Phaser.Input.Keyboard.JustDown(right)){
                     this.selectionMenu.charChange(1)
@@ -118,17 +124,12 @@ class Fighting extends Phaser.Scene {
                     this.selectionMenu.charChange(-1)
                 }
             }
-            
             if (Phaser.Input.Keyboard.JustDown(up)){
                 this.selectionMenu.lookChoice(1)
             }
             if (Phaser.Input.Keyboard.JustDown(down)){
                 this.selectionMenu.lookChoice(-1)
             }
-
-            //this.physics.add.collider(this.p1Rocket, this.ship01, this.handleCollision, null, this)
-            // this.physics.add.collider(this.character[0].projectile, this.enemy, this.handleCollision, null, this)
-
         } 
     }
     checkActive(){
@@ -163,10 +164,12 @@ class Fighting extends Phaser.Scene {
         if (this.player_turn == false){
             this.player_turn = true
             this.selectionMenu.setVisibility(true)
+            // this.selectionMenu.allowSelect = true
         }
         else if (this.player_turn == true){
             this.player_turn = false
             this.selectionMenu.setVisibility(false)
+            // this.selectionMenu.allowSelect = true
         }
         
     }

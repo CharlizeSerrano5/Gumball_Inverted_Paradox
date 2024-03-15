@@ -14,6 +14,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.current_selection = 2 // what the cursor is pointing at
         this.cursor_pos = -20
 
+        this.allowSelect = true // to keep track if the player has attacked
         
         //see: https://github.com/phaserjs/examples/blob/master/public/src/game%20objects/text/simple%20text%20button.js
         this.container_bg = scene.add.image(x,y - 4, 'container')
@@ -38,20 +39,22 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     // CURRENT PROBLEM - if the character we are looking at dies, they do not change characters
     // possible solution have a function updates the display or use charChange()
     select() {
-        this.availableChar = this.updateAvailable()
-        if (this.current_selection == 0 ){
-            console.log('we have selected' + this.characters[this.availableChar[this.current_player]].name )
-            // if cursor on the power selection
-            // Attack choice
-            if ( this.characters[this.availableChar[this.current_player]].collapsed == false && !this.characters[this.availableChar[this.current_player]].hasAttacked){
-                // NOTE: check if character has died
-                this.characters[this.availableChar[this.current_player]].willAttack = true
-                this.attackingPlayer =this.characters[this.availableChar[this.current_player]]
-                this.charChange(1);
+        // only allow select if active
+        if (this.scene.player_turn == true && this.allowSelect == true){
+            this.availableChar = this.updateAvailable()
+            if (this.current_selection == 0 ){
+                // if cursor on the power selection
+                // Attack choice
+                if ( this.characters[this.availableChar[this.current_player]].collapsed == false && !this.characters[this.availableChar[this.current_player]].hasAttacked){
+                    // NOTE: check if character has died
+                    this.characters[this.availableChar[this.current_player]].willAttack = true
+                    this.attackingPlayer =this.characters[this.availableChar[this.current_player]]
+                    this.charChange(1);
+                }
             }
-        }
-        if (this.current_selection == 1){
-            console.log("SUMMON")
+            if (this.current_selection == 1){
+                console.log("SUMMON")
+            }
         }
     }
 
@@ -101,8 +104,6 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
 
         this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
         this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].power
-
-        console.log("CURRENT CHARACTERS" + this.availableChar)
     
     }
 

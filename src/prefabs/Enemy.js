@@ -1,8 +1,7 @@
-class Enemy extends Phaser.GameObjects.Sprite {
+class Enemy extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y , texture, frame, health, mana, power, name) {
         super(scene, x, y, texture)
         scene.add.existing(this)
-        
         scene.physics.add.existing(this)
         this.body.setImmovable(true)
         // setting enemy properties
@@ -17,7 +16,10 @@ class Enemy extends Phaser.GameObjects.Sprite {
         this.hasAttacked = false
 
         // setting up the character to attack
-        this.selectedChar = -1
+        // this.selectedChar = -1
+
+        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
+        this.startY = y
 
         // setting up state machines
         scene.enemyFSM = new StateMachine('default', {
@@ -25,6 +27,7 @@ class Enemy extends Phaser.GameObjects.Sprite {
             single_attack: new SingleAttackState(),
             damaged: new DamagedState(),
             defeat: new DefeatState(),
+            reset: new ResetState(),
         },[scene, this])
     }
 
@@ -42,71 +45,102 @@ class Enemy extends Phaser.GameObjects.Sprite {
 // enemy specific state classes will be performed for each attack 
 class DefaultState extends State {
     enter (scene, enemy) {
+        // enemy.selectedChar = -1
+        console.log("ENEMY ENTERING DEFAULT")
         enemy.damaged = false
         // ensure enemy is not attacking in this scene
-        enemy.hasAttacked = false
+        // enemy.hasAttacked = false
         enemy.dmgToPlayer = 0
-        
+        scene.dmgToEnemy = 0
         // scene.player_turn = true
         enemy.clearTint()
         enemy.anims.play(`${enemy.name}_default`, true)
-    
+        
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
     execute(scene, enemy) {       
         const { left, right, up, down, space, shift } = scene.keys
-        // if it is not the player's turn attack
-        if(scene.player_turn == false && enemy.hasAttacked == false){
-            this.stateMachine.transition('single_attack')
+        // if the enemy's y is not at the original location move it back
+
+        // Note: might make a brand new state
+        if (enemy.y < enemy.startY){
+            enemy.body.setVelocityY(10)
         }
-
-        // if enemy has been damaged
-        if ( scene.dmgToEnemy ){
-            // console.log(scene.selectionMenu.attackingPlayer.name +  'has just attacked')
-
-            this.stateMachine.transition('damaged')
-        }
-
-        // save the used projectile from the input from selectionmenu
-        if (scene.selectionMenu.attackingPlayer){
-            // console.log(scene.selectionMenu.attackingPlayer.projectile)
-            
-            scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, scene.selectionMenu.attackingPlayer.projectile.handleCollision.bind(scene.selectionMenu.attackingPlayer.projectile), null, scene)
+        else if (enemy.y >= enemy.startY){
+            enemy.body.setVelocityY(0)
         }
         
+        // if it is not the player's turn and there exists no currently attacking player
+        if(scene.player_turn == false && enemy.hasAttacked == false && !scene.selectionMenu.attackingPlayer){
+            console.log("ENEMY ENTERING ATTACK")
+            // entered once
+            this.stateMachine.transition('single_attack')
+            
+        }  
+        // save the used projectile from the input from selectionmenu
+        if (scene.selectionMenu.attackingPlayer){         
+            // console.log(scene.selectionMenu.attackingPlayer.projectile.x)      
+            scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, () => {
+                let collision = scene.selectionMenu.attackingPlayer.projectile.handleCollision(enemy, scene.dmgToEnemy)
+                if ( collision == true){
+                    scene.selectionMenu.attackingPlayer.projectile.resetProj(scene.selectionMenu.attackingPlayer.projectile.startX, scene.selectionMenu.attackingPlayer.projectile.startY)
+                    this.stateMachine.transition('damaged')
+                }
+            }, null, scene)
+        }
     }
 }
 
 class SingleAttackState extends State {
     // enemy will randomize their attack on a character
     enter (scene, enemy) {
-        // the damage to player becomes the attack power of this enemy
+        // turn off player selection
+        scene.selectionMenu.allowSelect = false
         enemy.anims.play(`${enemy.name}_singleAttack`, true)
-
-        scene.time.delayedCall(enemy.damagedTimer, () => {
-            enemy.dmgToPlayer = enemy.attack_dmg
-            enemy.hasAttacked = true
-        })
+        // select a character
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
-        scene.characters[enemy.selectedChar].hurt = true
         
+        console.log('character x is ' + scene.characters[enemy.selectedChar].x + 'enemy X' + enemy.x)
     }
     execute(scene, enemy) {
-        if (enemy.hasAttacked == true) {
-            // PROBLEM
+        // move enemy to the top
+        if (enemy.y > centerY){
+            enemy.body.setVelocityY(-50)
+        }
+        // once we have reached the top 
+        if (enemy.y <= centerY){
+            // set the position
+            enemy.body.setVelocityY(0)
+            // move a projectile
+            enemy.projectile.move(scene.characters[enemy.selectedChar].x, scene.characters[enemy.selectedChar].y + scene.characters[enemy.selectedChar].height)
+            enemy.hasAttacked = true
+            enemy.dmgToPlayer = enemy.attack_dmg
+            // console.log('projectile is moving towards ' + scene.characters[enemy.selectedChar].name + 'at the y coordinate ' + scene.characters[enemy.selectedChar].y)
+        }
 
-            // reset the selected char here
-            this.selectedChar = -1
-            scene.changeTurn()
-            this.stateMachine.transition('default')   
+        // if the character has been hit
+        if (scene.characters[enemy.selectedChar].hurt == true) {
+            //selection menu 
+            scene.selectionMenu.allowSelect = true
+            // scene.changeTurn()
+            console.log(scene.player_turn)
+            console.log('character has been hurt')
+            // enemy.hasAttacked = false
+            this.stateMachine.transition('default')
+            // go back to default
         }   
     }
+}
+
+class ResetState extends State {
+
 }
 
 class DamagedState extends State {
     // animation play after finished character attack
     enter (scene, enemy) { 
         // scene.choiceMenu.setVisible(false)
+        scene.selectionMenu.attackingPlayer = undefined
         enemy.health -= scene.dmgToEnemy
         enemy.setTint(0xFF0000)    
         enemy.anims.play(`${enemy.name}_damaged`, true)
@@ -115,6 +149,7 @@ class DamagedState extends State {
 
         enemy.once('animationcomplete', () => {
             damage.setVisible(false)
+            scene.selectionMenu.allowSelect = true
             if (enemy.health > 0){
                 this.stateMachine.transition('default')
             }
