@@ -36,8 +36,8 @@ class Fighting extends Phaser.Scene {
         this.music = this.sound.add('fight_music').setLoop(true).setVolume(0.4)
         
         // adding a character to scene - each character should have their own HP
-        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 72, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
-        this.anais = new Character(this, rightPos, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 150, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
+        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 0).setOrigin(0,1)
+        this.anais = new Character(this, rightPos, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 50, 'ANAIS', 'SCIENCE', 1).setOrigin(0,1)
         this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 2).setOrigin(0,1)
         // adding each character health
         this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball, 0)

@@ -36,6 +36,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 
 }
 
+
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
@@ -55,6 +56,9 @@ class IdleState extends State {
         }
         // if the enemy is attacking add a collider
         if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { 
+            // turning on and off collision
+            // see: https://phaser.discourse.group/t/toggle-on-off-collisions-based-on-setcollisionbyproperty/2735
+            character.body.enable = true
             scene.physics.add.collider(scene.enemy.projectile, character, () => {
                 let collision = scene.enemy.projectile.handleCollision(character, scene.dmgToEnemy)
                 if ( collision == true){
@@ -85,7 +89,7 @@ class AttackState extends State {
         // console.log("selection allow is "+ scene.selectionMenu.allowSelect)
         character.setTint(0xDB91EF)
         
-        character.projectile.move(scene.enemy.x + scene.enemy.width, scene.enemyY - scene.enemy.height)
+        character.projectile.move(scene.enemy)
 
         scene.time.delayedCall(character.hurtTimer, () => {
             
@@ -116,9 +120,9 @@ class HurtState extends State {
         console.log(scene.enemy.selectedChar + "selected CHARACTER")
         scene.characters_hp[scene.enemy.selectedChar].match(character.health)
         let damage_txt = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
-        scene.changeTurn()
         this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
         this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
+        
         if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
@@ -126,12 +130,11 @@ class HurtState extends State {
                 damage_txt.setVisible(false)
                 this.attackText_below.setVisible(false)
                 this.attackText.setVisible(false)
-                scene.enemy.selectedChar = -1
-                if (character.health > 0){
-                    
+                if (character.health > 0 && scene.enemy.hasAttacked == false){
                     this.stateMachine.transition('idle')
                 }
-                
+                // character.checkCollision.none = true
+                character.body.enable = false
             })
         }
         

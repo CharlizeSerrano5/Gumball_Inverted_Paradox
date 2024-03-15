@@ -92,7 +92,10 @@ class Tutorial extends Phaser.Scene {
             // ..but you could create logic to exit if each conversation was self-contained
             this.dialogConvo++
         }
-        
+        console.log(this.dialogConvo)
+        if (this.dialogConvo == 1){
+            
+        }
         // make sure we haven't run out of conversations...
         if(this.dialogConvo >= this.dialog.length) {
             // here I'm exiting the final conversation to return to the title...

@@ -16,11 +16,15 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
 
     
 
-    move(landX, landY) {
+    move(character) {
         // console.log('moving ' + this.character.name)
         // console.log('opposingX: ' + landX + 'thisX:' + this.x)
         // console.log('thisX: ' + this.x + 'thisY:' + this.y)
         // this.setVisible(true)
+        let landX = character.x + character.width
+        let landY = character.y - character.height
+
+        // scene.enemy.x + scene.enemy.width, scene.enemyY - scene.enemy.height
         let direction
         if(this.x >= landX){
             direction = 'left'
@@ -34,12 +38,16 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         }
 
         // console.log('this height: ' + this.y + 'land destination ' +landY)
-        if (this.y > landY){    
-            this.body.setVelocityY(-20)
+        if (this.y > landY){
+            let distance = landY*landY + landX*landX    
+            this.body.setVelocityY(-Math.sqrt(distance) + character.height)
         }
         else if (this.y < landY){
             // console.log('this.y = ' + this.y + 'landY = ' + landY)
-            // probably use pythagorean to ensure that it always lands at the character
+            // c^2 = a^2 + b^2
+            //Math.sqrt
+            let distance = landX*landX - landY*landY     
+            console.log('distance sqrt - ' + Math.sqrt(distance))
             this.body.setVelocityY(60)
         }
 

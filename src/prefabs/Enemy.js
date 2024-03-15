@@ -45,11 +45,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 // enemy specific state classes will be performed for each attack 
 class DefaultState extends State {
     enter (scene, enemy) {
-        // enemy.selectedChar = -1
         console.log("ENEMY ENTERING DEFAULT")
         enemy.damaged = false
-        // ensure enemy is not attacking in this scene
-        // enemy.hasAttacked = false
         enemy.dmgToPlayer = 0
         scene.dmgToEnemy = 0
         // scene.player_turn = true
@@ -63,12 +60,6 @@ class DefaultState extends State {
         // if the enemy's y is not at the original location move it back
 
         // Note: might make a brand new state
-        if (enemy.y < enemy.startY){
-            enemy.body.setVelocityY(10)
-        }
-        else if (enemy.y >= enemy.startY){
-            enemy.body.setVelocityY(0)
-        }
         
         // if it is not the player's turn and there exists no currently attacking player
         if(scene.player_turn == false && enemy.hasAttacked == false && !scene.selectionMenu.attackingPlayer){
@@ -96,39 +87,49 @@ class SingleAttackState extends State {
     enter (scene, enemy) {
         // turn off player selection
         scene.selectionMenu.allowSelect = false
-        enemy.anims.play(`${enemy.name}_singleAttack`, true)
         // select a character
         enemy.selectedChar = enemy.charAttacking(scene.checkLiving())
         
-        console.log('character x is ' + scene.characters[enemy.selectedChar].x + 'enemy X' + enemy.x)
-    }
-    execute(scene, enemy) {
         // move enemy to the top
         if (enemy.y > centerY){
             enemy.body.setVelocityY(-50)
         }
+    }
+    execute(scene, enemy) {
+        
         // once we have reached the top 
         if (enemy.y <= centerY){
-            // set the position
-            enemy.body.setVelocityY(0)
-            // move a projectile
-            enemy.projectile.move(scene.characters[enemy.selectedChar].x, scene.characters[enemy.selectedChar].y + scene.characters[enemy.selectedChar].height)
-            enemy.hasAttacked = true
-            enemy.dmgToPlayer = enemy.attack_dmg
-            // console.log('projectile is moving towards ' + scene.characters[enemy.selectedChar].name + 'at the y coordinate ' + scene.characters[enemy.selectedChar].y)
+            if (enemy.hasAttacked == false){
+                enemy.body.setVelocityY(0)
+                enemy.anims.play(`${enemy.name}_singleAttack`, true)
+                enemy.once('animationcomplete', ()=> {
+                    enemy.projectile.move(scene.characters[enemy.selectedChar])
+                    enemy.hasAttacked = true
+                    enemy.dmgToPlayer = enemy.attack_dmg
+                })
+            }
+            else{
+                if (enemy.y < enemy.startY){
+                    enemy.body.setVelocityY(50)
+                }
+            }
         }
-
-        // if the character has been hit
-        if (scene.characters[enemy.selectedChar].hurt == true) {
-            //selection menu 
-            scene.selectionMenu.allowSelect = true
-            // scene.changeTurn()
-            console.log(scene.player_turn)
-            console.log('character has been hurt')
-            // enemy.hasAttacked = false
-            this.stateMachine.transition('default')
-            // go back to default
-        }   
+        else{
+            if (enemy.y >= enemy.startY && enemy.hasAttacked == true){
+                enemy.body.setVelocity(0)
+            }
+            if (scene.characters[enemy.selectedChar].hurt == true && enemy.y >= enemy.startY) {
+                //selection menu 
+                scene.selectionMenu.allowSelect = true
+                scene.changeTurn()
+                console.log('player turn is ' + scene.player_turn)
+                console.log('character has been hurt')
+                enemy.hasAttacked = false
+                this.stateMachine.transition('default')
+                // go back to default
+            }   
+        }
+        
     }
 }
 

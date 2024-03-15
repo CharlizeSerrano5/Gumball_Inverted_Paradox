@@ -40,6 +40,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     // possible solution have a function updates the display or use charChange()
     select() {
         // only allow select if active
+        console.log('trying to select and the turn is ' + this.scene.player_turn + ' and we are allowed to select? ' + this.allowSelect)
         if (this.scene.player_turn == true && this.allowSelect == true){
             this.availableChar = this.updateAvailable()
             if (this.current_selection == 0 ){
