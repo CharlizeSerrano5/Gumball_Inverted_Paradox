@@ -11,7 +11,9 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         
         // set the current player at the first one
         this.current_player = 0 // which character player is on
+        this.current_attack = 0 // which attack is shown first
         this.current_selection = 2 // what the cursor is pointing at
+        
         this.cursor_pos = -20
 
         this.allowSelect = true // to keep track if the player has attacked
@@ -21,7 +23,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.cursorImage = scene.add.image(x + -36, y + this.cursor_pos, 'cursor').setOrigin(0.5, 0)
         this.charDisplay = scene.add.bitmapText(x + -28, y + -20, 'font', this.characters[this.current_player].name, 8)
         this.item = scene.add.bitmapText(x + -28, y + -8, 'font', "PHONE", 8)
-        this.powerDisplay = scene.add.bitmapText( x + -28, y + 4, 'font', this.characters[this.current_player].power, 8)
+        this.powerDisplay = scene.add.bitmapText( x + -28, y + 4, 'font', this.characters[this.current_player].attackList[this.current_attack], 8)
         this.selections = [ this.powerDisplay, this.item, this.charDisplay ]
         this.selections[this.current_selection].setTint(0xDFFF00);
         this.availableChar = this.scene.checkActive()
@@ -103,6 +105,8 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     charChange(input){
         this.availableChar = this.updateAvailable()
         this.current_player += input
+        // when character is changed auto set the current attack to 0
+        this.current_attack = 0
         
         console.log(this.availableChar)
         console.log(this.current_player)
@@ -118,8 +122,23 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.charCursor.x = this.characters[this.availableChar[this.current_player]].x+ 15
 
         this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
-        this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].power
-    
+        this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].attackList[this.current_attack]
+        
+    }
+
+    attackChange(input){
+        // using the same logic as charChange()
+        // manuever through the selected characters attacks
+        console.log(input)
+        this.current_attack += input
+        if (this.current_attack >= this.characters[this.availableChar[this.current_player]].attackList.length){
+                this.current_attack = 0
+        }
+        else if (this.current_attack < 0){
+            this.current_attack = this.characters[this.availableChar[this.current_player]].attackList.length - 1
+        }
+        console.log('current attack' + this.current_attack)
+        this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].attackList[this.current_attack]
     }
 
 }

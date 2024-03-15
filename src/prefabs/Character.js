@@ -1,29 +1,33 @@
 class Character extends Phaser.Physics.Arcade.Sprite {
     // poop
-    constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, index) {
+    constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, type, index) {
         super(scene, x, y, texture)
         scene.add.existing(this)
         scene.physics.add.existing(this)
         this.body.setImmovable(true)
         this.x = x
         this.y = y
-        console.log('the y value is : ' + this.y)
+        // console.log('the y value is : ' + this.y)
         // setting character properties
         this.index = index
         this.health = health
         this.mana = mana
         this.name = name // for prints
         this.hurtTimer = temp_timer
-        this.power = power
-        // creating a boolean value to check if the current character has attacked
+        this.power = power // the abilities
+        this.type = type
+        this.attack_dmg = attack_dmg // for dmg
+        // setting boolean values for state checking
         this.hurt = false
         this.hasAttacked = false
-        // setting up fighting damage
-        this.attack_dmg = attack_dmg
-        
         this.collapsed = false
-        // temporary check
-        this.check = ''
+        
+        // creating an array of attacks
+        // might make a dictionary
+        this.attackList = Array(2).fill(-1)
+        
+        
+        
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height/2, `${this.name}_projectile`, this)
 
         scene.FSM_holder[index] = new StateMachine('idle', {
@@ -40,6 +44,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
 class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
+        console.log(character.attackList)
         // player is not attacking in idle state
         character.clearTint()
         // player is not hurt
@@ -69,13 +74,7 @@ class IdleState extends State {
                     // is entered
                 }
             }, null, scene)
-        }
-
-        
-
-
-        
-
+        }  
     }
 }
 
@@ -84,6 +83,11 @@ class AttackState extends State {
     enter (scene, character) {
         // remove the enemies health
         // scene.enemy.damaged = true
+        character.mana -= 10
+        // change mana amt later
+        scene.characters_mp[character.index].match(character.mana)
+
+        
         scene.dmgToEnemy = character.attack_dmg
         scene.selectionMenu.allowSelect = false
         // console.log("selection allow is "+ scene.selectionMenu.allowSelect)

@@ -183,8 +183,11 @@ class Menu extends Phaser.Scene{
     update() {
         const { left, right, up, down, space, shift } = this.keys   
 
-        if (left.isDown || right.isDown || up.isDown ){
+        if (right.isDown || up.isDown ){
             this.scene.start('fightingScene')
+        }
+        if (left.isDown){
+            this.scene.start('creditsScene')  
         }
 
         if (down.isDown){
