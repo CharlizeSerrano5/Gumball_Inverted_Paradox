@@ -50,7 +50,7 @@ let config = {
             // }
         }
     },
-    scene: [ Menu, Tutorial, Fighting, Credits]
+    scene: [ Menu, Tutorial, Fighting, BossFighting, Credits]
 
 }
 

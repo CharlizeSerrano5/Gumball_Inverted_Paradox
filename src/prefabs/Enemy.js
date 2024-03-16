@@ -8,18 +8,17 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.health = health 
         this.name = name
         this.damagedTimer = temp_timer
-        // set up an attack
-        this.attacking = false
-        this.dmgToPlayer = 0
+        this.dmgToPlayer = 0 // init to allow the dmgToPlayer to change
         this.attack_dmg = power
-        // variable to check
+        this.startY = y
+        // boolean values to check
+        this.attacking = false
         this.hasAttacked = false
 
         // setting up the character to attack
         // this.selectedChar = -1
 
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
-        this.startY = y
 
         // setting up state machines
         scene.enemyFSM = new StateMachine('default', {
@@ -56,11 +55,7 @@ class DefaultState extends State {
         // console.log(`${enemy.name} (boss) defaulting, damage = ${enemy.dmgToPlayer}`)
     }
     execute(scene, enemy) {       
-        const { left, right, up, down, space, shift } = scene.keys
-        // if the enemy's y is not at the original location move it back
-
-        // Note: might make a brand new state
-        
+        const { left, right, up, down, space, shift } = scene.keys        
         // if it is not the player's turn and there exists no currently attacking player AND there exists no summon
         if(scene.player_turn == false && enemy.hasAttacked == false && !scene.selectionMenu.attackingPlayer && !scene.selectionMenu.summonSelect){
             console.log("ENEMY ENTERING ATTACK")
@@ -68,10 +63,11 @@ class DefaultState extends State {
             this.stateMachine.transition('single_attack')
             
         }  
-        // save the used projectile from the input from selectionmenu
+        // if a character has been selected to attack
         if (scene.selectionMenu.attackingPlayer){         
-            // console.log(scene.selectionMenu.attackingPlayer.projectile.x)      
+            // add a collider to collide with the incoming player projectile
             scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, () => {
+                // create a collision to transition into damaged
                 let collision = scene.selectionMenu.attackingPlayer.projectile.handleCollision(enemy, scene.dmgToEnemy)
                 if ( collision == true){
                     scene.selectionMenu.attackingPlayer.projectile.resetProj(scene.selectionMenu.attackingPlayer.projectile.startX, scene.selectionMenu.attackingPlayer.projectile.startY)
@@ -134,9 +130,6 @@ class SingleAttackState extends State {
         else{
             if (enemy.y >= enemy.startY && enemy.hasAttacked == true){
                 enemy.body.setVelocity(0)
-            }
-            if (scene.characters[enemy.selectedChar].hurt == true && enemy.y >= enemy.startY) {
-                //selection menu 
                 scene.selectionMenu.allowSelect = true
                 scene.changeTurn()
                 console.log('player turn is ' + scene.player_turn)

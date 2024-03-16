@@ -7,7 +7,6 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.body.setImmovable(true)
         this.x = x
         this.y = y
-        // console.log('the y value is : ' + this.y)
         // setting character properties
         this.index = index
         this.health = health
@@ -23,8 +22,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.collapsed = false
         
         // creating an array of attacks
-        // might make a dictionary
-        this.attackList = Array(2).fill(-1)
+        this.attackList = Array(2).fill(-1) // Note: might make a dictionary
         
         // debugging
         this.state = 'idle'
@@ -87,11 +85,15 @@ class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
         // remove the enemies health
-        // scene.enemy.damaged = true
+        console.log(scene.selectionMenu.current_attack)
+        if (scene.selectionMenu.current_attack == 1){
+            // if you have selected a magic attack then play the magic attack
+            character.mana -= 10
+            scene.characters_mp[character.index].match(character.mana)
+
+        } 
         character.state = 'attack'
-        character.mana -= 10
-        // change mana amt later
-        scene.characters_mp[character.index].match(character.mana)
+        
 
         
         scene.dmgToEnemy = character.attack_dmg
@@ -132,6 +134,7 @@ class HurtState extends State {
         this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
         this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
         
+        this.ready = false
         if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
@@ -144,6 +147,7 @@ class HurtState extends State {
                     console.log(`${character.name} has reached idle`)
                     this.stateMachine.transition('idle')
                 }
+                this.ready = true
                 // character.checkCollision.none = true
                 character.body.enable = false
             })
@@ -160,6 +164,9 @@ class HurtState extends State {
                 
                 this.stateMachine.transition('collapse')
             })
+        }
+        if(this.ready == true){
+            this.stateMachine.transition('idle')
         }
         
     }

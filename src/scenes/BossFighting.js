@@ -1,6 +1,6 @@
-class Fighting extends Phaser.Scene {
+class BossFighting extends Phaser.Scene {
     constructor(){
-        super('fightingScene')
+        super('bossfightingScene')
     }
 
     init() {
@@ -115,10 +115,6 @@ class Fighting extends Phaser.Scene {
         if (!this.gameOver){
             // for debugging
             // console.log("enemy attacked=" + this.enemy.hasAttacked +', ' + this.characters[0].name + this.characters[0].state + ' , ' + this.characters[1].name + this.characters[1].state + ' , ' + this.characters[2].name + this.characters[2].state)
-            // DEBUGGING
-            if (Phaser.Input.Keyboard.JustDown(shift)){
-                this.scene.start('bossfightingScene')
-            }
 
             if (!this.music_playing){
                 this.music.play()
@@ -128,7 +124,7 @@ class Fighting extends Phaser.Scene {
             this.FSM_holder[1].step()
             this.FSM_holder[2].step()
             this.enemyFSM.step()
-
+        
             if (Phaser.Input.Keyboard.JustDown(space)){
                 this.selectionMenu.select()
             }
