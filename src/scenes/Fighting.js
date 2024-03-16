@@ -36,6 +36,7 @@ class Fighting extends Phaser.Scene {
         
         // adding a character to scene - each character should have their own HP
         this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 'physical', 0).setOrigin(0,1)
+        // this.gumball.body.setSize(this.width / 2, this.height/2).setOffset(3, 0)
         // this.gumball.attackList = [ 'SCRATCH', 'MAGIC']
         this.gumball.addAttack("SCRATCH", 120, 0);
         this.gumball.addAttack("MAGIC", 50, 10, 1);

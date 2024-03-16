@@ -4,6 +4,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this)
         scene.physics.add.existing(this)
         this.body.setImmovable(true)
+        this.body.setSize(this.width /1.5, this.height)
         this.startX = x
         this.startY = y
         // setting character properties
