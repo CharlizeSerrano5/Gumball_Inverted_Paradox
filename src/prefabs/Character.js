@@ -1,12 +1,11 @@
 class Character extends Phaser.Physics.Arcade.Sprite {
-    // poop
     constructor(scene, x, y , texture, frame, health, mana, attack_dmg, name, power, type, index) {
         super(scene, x, y, texture)
         scene.add.existing(this)
         scene.physics.add.existing(this)
         this.body.setImmovable(true)
-        this.x = x
-        this.y = y
+        this.startX = x
+        this.startY = y
         // setting character properties
         this.index = index
         this.health = health
@@ -22,12 +21,13 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         this.collapsed = false
         
         // creating an array of attacks
-        this.attackList = Array(2).fill(-1) // Note: might make a dictionary
-        
+        // this.attackList = Array(2).fill(-1) // Note: might make a dictionary
+        this.attackList = {}
+        this.selectedAttack = 0
+
         // debugging
         this.state = 'idle'
-        
-        
+
         this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height/2, `${this.name}_projectile`, this)
 
         scene.FSM_holder[index] = new StateMachine('idle', {
@@ -38,6 +38,13 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         },[scene, this])
     }
 
+    addAttack(name, power, mana_cost, type = 0) {
+        // this.attackList[Object.keys(this.attackList).length] = [name, power, mana_cost]
+
+        // type 0 = physical, type 1 = mana
+        this.attackList[name] = [power, mana_cost, type]
+    }
+
 }
 
 
@@ -45,7 +52,7 @@ class IdleState extends State {
     // in this state the character may only enter the attack and hurt state
     enter (scene, character) {
         character.state = 'idle'
-        console.log(character.attackList)
+        // console.log(character.attackList)
         // console.log(character.name  + 'has entered the IDLE state')
         // player is not attacking in idle state
         character.clearTint()
@@ -85,37 +92,77 @@ class AttackState extends State {
     // character will play a temporary attack animation where they throw their character specific attack
     enter (scene, character) {
         // remove the enemies health
-        console.log(scene.selectionMenu.current_attack)
-        if (scene.selectionMenu.current_attack == 1){
-            // if you have selected a magic attack then play the magic attack
-            character.mana -= 10
-            scene.characters_mp[character.index].match(character.mana)
+        // character.state = 'attack'
+        console.log("current attack: " + character.selectedAttack)
+        // if (scene.selectionMenu.current_attack == 1){
+        //     // if you have selected a magic attack then play the magic attack
+        //     character.mana -= 10
+        //     scene.characters_mp[character.index].match(character.mana)
 
-        } 
-        character.state = 'attack'
-        
+        // } 
+
+        // console.log("MANA COST: " + Object.entries(character.attackList)[scene.selectionMenu.current_attack][1][1])
+        // character.mana -= Object.entries(character.attackList)[scene.selectionMenu.current_attack][1][1]
+        console.log("MANA COST: " + Object.entries(character.attackList)[character.selectedAttack][1][1])
+        character.mana -= Object.entries(character.attackList)[character.selectedAttack][1][1]
+        scene.characters_mp[character.index].match(character.mana)
 
         
-        scene.dmgToEnemy = character.attack_dmg
+        // scene.dmgToEnemy = character.attack_dmg
+        // console.log("DAMAGE: " + Object.entries(character.attackList)[scene.selectionMenu.current_attack][1][0])
+        // scene.dmgToEnemy = Object.entries(character.attackList)[scene.selectionMenu.current_attack][1][0]
+        console.log("DAMAGE: " + Object.entries(character.attackList)[character.selectedAttack][1][0])
+        scene.dmgToEnemy = Object.entries(character.attackList)[character.selectedAttack][1][0]
+
         scene.selectionMenu.allowSelect = false
         // console.log("selection allow is "+ scene.selectionMenu.allowSelect)
         character.setTint(0xDB91EF)
-        
-        character.projectile.move(scene.enemy)
 
-        scene.time.delayedCall(character.hurtTimer, () => {
-            character.willAttack = false
-            character.hasAttacked = true
-        })
+        
+        console.log(Object.entries(character.attackList)[character.selectedAttack][1][2] == 0)
+        if (Object.entries(character.attackList)[character.selectedAttack][1][2] == 0) {
+            character.body.setVelocityX(scene.enemy.x - character.x)
+            this.collision = false;
+        }
+        else {
+            character.projectile.move(scene.enemy)            
+        }
+
+        // scene.time.delayedCall(character.hurtTimer, () => {
+        //     character.willAttack = false
+        //     character.hasAttacked = true
+        // })
         
     }
     execute(scene, character) {
         // reset to idle
-        if (character.hasAttacked == true){
+        if (character.hasAttacked == true && character.x >= character.startX){
+            character.body.setVelocityX(0)
             scene.selectionMenu.charChange(0)
             // character.projectile.reset(character.x)
             this.stateMachine.transition('idle')
         }
+
+        scene.physics.add.collider(character, scene.enemy, () => {
+            // let collision = scene.enemy.projectile.handleCollision(character, scene.dmgToEnemy)
+            // if ( collision == true){
+            //     // reset that projectile once the collision is true
+            //     console.log('collision was true')
+            //     scene.enemy.projectile.resetProj(scene.enemy.projectile.startX, scene.enemy.projectile.startY)
+            //     this.stateMachine.transition('hurt')
+            //     // is entered
+            // }
+            if (this.collision == false) {
+                character.body.setVelocityX(0)
+                this.collision = true;                
+            }
+            character.anims.play(`${character.name}_melee`, true)
+            character.once('animationcomplete', () => {
+                character.willAttack = false
+                character.hasAttacked = true
+                character.setVelocityX(-1 * (scene.enemy.x - character.x))
+            })      
+        }, null, scene)
     }
 }
 

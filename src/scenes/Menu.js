@@ -33,7 +33,7 @@ class Menu extends Phaser.Scene{
 
         //setting up character sprite sheet
         this.load.spritesheet('gumball', 'gumball_spritesheet.png', {
-            frameWidth: 30,
+            frameWidth: 38,
             frameHeight: 42
         })
 
@@ -47,6 +47,8 @@ class Menu extends Phaser.Scene{
             frameWidth: 46,
             frameHeight: 35
         })
+        this.load.image('darwin_talk', 'darwin_talking.png')
+
         this.load.spritesheet('penny', 'penny_spritesheet.png', {
             frameWidth: 43,
             frameHeight: 60
@@ -94,6 +96,12 @@ class Menu extends Phaser.Scene{
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('gumball', { start: 0, end: 7}),
+        })
+        this.anims.create({
+            key: 'GUMBALL_melee',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('gumball', { start: 8, end: 15}),
         })
         this.anims.create({
             key: 'GUMBALL_collapse',

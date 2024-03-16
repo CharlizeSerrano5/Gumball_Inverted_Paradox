@@ -23,7 +23,8 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.cursorImage = scene.add.image(x + -36, y + this.cursor_pos, 'cursor').setOrigin(0.5, 0)
         this.charDisplay = scene.add.bitmapText(x + -28, y + -20, 'font', this.characters[this.current_player].name, 8)
         this.item = scene.add.bitmapText(x + -28, y + -8, 'font', "PHONE", 8)
-        this.powerDisplay = scene.add.bitmapText( x + -28, y + 4, 'font', this.characters[this.current_player].attackList[this.current_attack], 8)
+        // this.powerDisplay = scene.add.bitmapText( x + -28, y + 4, 'font', this.characters[this.current_player].attackList[this.current_attack], 8)
+        this.powerDisplay = scene.add.bitmapText( x + -28, y + 4, 'font', Object.entries(this.characters[this.current_player].attackList)[this.current_attack][0], 8)
         this.selections = [ this.powerDisplay, this.item, this.charDisplay ]
         this.selections[this.current_selection].setTint(0xDFFF00);
         this.availableChar = this.scene.checkActive()
@@ -53,9 +54,26 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
                 // Attack choice
                 if ( this.characters[this.availableChar[this.current_player]].collapsed == false && !this.characters[this.availableChar[this.current_player]].hasAttacked){
                     // NOTE: check if character has died
-                    this.characters[this.availableChar[this.current_player]].willAttack = true
-                    this.attackingPlayer =this.characters[this.availableChar[this.current_player]]
-                    this.charChange(0);
+                    // if (this.current_attack == 1) {
+                    //     if (this.characters[this.availableChar[this.current_player]].mana > ) {
+
+                    //     }
+                    // }
+
+                    if (this.characters[this.availableChar[this.current_player]].mana >= Object.entries(this.characters[this.availableChar[this.current_player]].attackList)[this.current_attack][1][1]) {
+                        this.characters[this.availableChar[this.current_player]].willAttack = true
+                        this.characters[this.availableChar[this.current_player]].selectedAttack = this.current_attack
+                        this.attackingPlayer = this.characters[this.availableChar[this.current_player]]
+                        this.allowSelect = false
+                        this.charChange(0)
+                    }
+                    else {
+                        return
+                    }
+
+                    // this.characters[this.availableChar[this.current_player]].willAttack = true
+                    // this.attackingPlayer =this.characters[this.availableChar[this.current_player]]
+                    // this.charChange(0);
                 }
             }
             if (this.current_selection == 1 && !this.scene.summon.hasAttacked && this.scene.summon.summonUses && this.availableChar.length == 3){
@@ -122,12 +140,15 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
             this.charChange(1)
         }
         this.charCursor.x = this.characters[this.availableChar[this.current_player]].x+ 15
-        console.log(this.availableChar)
-        console.log(this.current_player)
-        console.log(this.characters[this.availableChar[this.current_player]])
+        // console.log(this.availableChar)
+        // console.log(this.current_player)
+        // console.log(this.characters[this.availableChar[this.current_player]])
 
         this.charDisplay.text = this.characters[this.availableChar[this.current_player]].name
-        this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].attackList[this.current_attack]
+        // this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].attackList[this.current_attack]
+        this.powerDisplay.text = Object.entries(this.characters[this.availableChar[this.current_player]].attackList)[this.current_attack][0]
+
+        // this.attackChange(0)
         
     }
 
@@ -136,14 +157,15 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         // manuever through the selected characters attacks
         console.log(input)
         this.current_attack += input
-        if (this.current_attack >= this.characters[this.availableChar[this.current_player]].attackList.length){
+        if (this.current_attack >= Object.entries(this.characters[this.availableChar[this.current_player]].attackList).length){
                 this.current_attack = 0
         }
         else if (this.current_attack < 0){
-            this.current_attack = this.characters[this.availableChar[this.current_player]].attackList.length - 1
+            this.current_attack = Object.entries(this.characters[this.availableChar[this.current_player]].attackList).length - 1
         }
-        console.log('current attack' + this.current_attack)
-        this.powerDisplay.text = this.characters[this.availableChar[this.current_player]].attackList[this.current_attack]
+        // console.log('current attack' + this.current_attack)
+        console.log('current attack: ' + Object.entries(this.characters[this.availableChar[this.current_player]].attackList)[this.current_attack][0])
+        this.powerDisplay.text = Object.entries(this.characters[this.availableChar[this.current_player]].attackList)[this.current_attack][0]
     }
 
 }

@@ -36,13 +36,21 @@ class Fighting extends Phaser.Scene {
         
         // adding a character to scene - each character should have their own HP
         this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 'physical', 0).setOrigin(0,1)
-        this.gumball.attackList = [ 'SCRATCH', 'MAGIC']
+        // this.gumball.attackList = [ 'SCRATCH', 'MAGIC']
+        this.gumball.addAttack("SCRATCH", 120, 0);
+        this.gumball.addAttack("MAGIC", 50, 10, 1);
+        console.log(Object.entries(this.gumball.attackList))
 
         this.anais = new Character(this, rightPos, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 50, 'ANAIS', 'SCIENCE', 'mage', 1).setOrigin(0,1)
-        this.anais.attackList = [ 'PUNCH', 'SCIENCE' ]
+        // this.anais.attackList = [ 'PUNCH', 'SCIENCE' ]
+        this.anais.addAttack("PUNCH", 25, 0);
+        this.anais.addAttack("SCIENCE", 200, 25, 1);
 
         this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 'mage', 2).setOrigin(0,1)
-        this.darwin.attackList = [ 'SLAP', 'SUPPORT' ]
+        // this.darwin.attackList = [ 'SLAP', 'SUPPORT' ]
+        this.darwin.addAttack("SLAP", 40, 0);
+        this.darwin.addAttack("SUPPORT", 40, 15, 1);
+
         // adding each character health
         this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball, 0)
         this.gumball_mp = new ManaBar(this, centerX + tileSize * 3 + 12, floorY + tileSize, this.gumball, 0)
@@ -129,32 +137,36 @@ class Fighting extends Phaser.Scene {
             this.FSM_holder[2].step()
             this.enemyFSM.step()
 
-            if (Phaser.Input.Keyboard.JustDown(space)){
-                this.selectionMenu.select()
-            }
-            if (this.selectionMenu.current_selection == 0){
-                if (Phaser.Input.Keyboard.JustDown(right)){
-                    this.selectionMenu.attackChange(1)
+            // console.log(this.selectionMenu.allowSelect)
+
+            if (this.selectionMenu.allowSelect) {
+                if (Phaser.Input.Keyboard.JustDown(space)){
+                    this.selectionMenu.select()
                 }
-                if (Phaser.Input.Keyboard.JustDown(left)){
-                    this.selectionMenu.attackChange(-1)
+                if (this.selectionMenu.current_selection == 0){
+                    if (Phaser.Input.Keyboard.JustDown(right)){
+                        this.selectionMenu.attackChange(1)
+                    }
+                    if (Phaser.Input.Keyboard.JustDown(left)){
+                        this.selectionMenu.attackChange(-1)
+                    }
                 }
-            }
-            
-            if (this.selectionMenu.current_selection == 2){
-                if (Phaser.Input.Keyboard.JustDown(right)){
-                    this.selectionMenu.charChange(1)
+                
+                if (this.selectionMenu.current_selection == 2){
+                    if (Phaser.Input.Keyboard.JustDown(right)){
+                        this.selectionMenu.charChange(1)
+                    }
+                    if (Phaser.Input.Keyboard.JustDown(left)){
+                        this.selectionMenu.charChange(-1)
+                    }
                 }
-                if (Phaser.Input.Keyboard.JustDown(left)){
-                    this.selectionMenu.charChange(-1)
+                
+                if (Phaser.Input.Keyboard.JustDown(up)){
+                    this.selectionMenu.lookChoice(1)
                 }
-            }
-            
-            if (Phaser.Input.Keyboard.JustDown(up)){
-                this.selectionMenu.lookChoice(1)
-            }
-            if (Phaser.Input.Keyboard.JustDown(down)){
-                this.selectionMenu.lookChoice(-1)
+                if (Phaser.Input.Keyboard.JustDown(down)){
+                    this.selectionMenu.lookChoice(-1)
+                }
             }
         } 
     }
