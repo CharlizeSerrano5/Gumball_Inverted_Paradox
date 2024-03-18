@@ -28,7 +28,8 @@
 		},
 		{	
 			"speaker" : "anais",
-			"dialog" : "The fabric of the universe was ripped apart by Gumball."
+			"dialog" : "The fabric of the universe was ripped apart by Gumball.",
+			"newSpeaker": "true"
 		}
 	],
 	[
@@ -39,11 +40,11 @@
 		},
 		{
 			"speaker" : "darwin",
-			"dialog" : "Looks like we will need to defeat the main boss to escape."
+			"dialog" : "Looks like we will need to beat the game to escape."
 		},
 		{
 			"speaker" : "anais",
-			"dialog" : "Look at your console and navigate through.",
+			"dialog" : "Sigh, can't be helped. Look at your console and navigate through.",
 			"newSpeaker": "true"
 		},
 		{
@@ -52,11 +53,24 @@
 		},
 		{
 			"speaker" : "anais",
-			"dialog" : "To attack go to the bottom of the menu and press attack."
+			"dialog" : "Try it, look at our names and scroll through with <- and ->."
 		},
 		{
 			"speaker" : "anais",
-			"dialog" : "We will be obtaining items to use later on so keep an eye on that."
+			"dialog" : "Remember each one of us has different attacks as well."
+		},
+		{
+			"speaker" : "anais",
+			"dialog" : "To attack go to the bottom of the menu and press SPACE."
+		},
+		{
+			"speaker" : "anais",
+			"dialog" : "To attack go to the bottom of the menu and press SPACE."
+		},
+		{
+			"speaker" : "darwin",
+			"dialog" : "Oh yeah, by the way you can use the phone to summon friends in battle!!",
+			"newSpeaker": "true"
 		}
 		
 	]

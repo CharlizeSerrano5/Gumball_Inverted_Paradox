@@ -9,6 +9,8 @@ class Menu extends Phaser.Scene{
         this.load.path = './assets/'
         // setting up backgrounds
         this.load.image('background', 'gumball_side_walk_2.png')
+        this.load.image('livingroom', 'livingroom.jpg')
+
         this.load.image('title_image', 'Title.png')
         this.load.image('container', 'container_1.png')
         this.load.image('cursor', 'cursor.png')
@@ -43,8 +45,11 @@ class Menu extends Phaser.Scene{
             frameWidth: 33,
             frameHeight: 34
         })
+
+        this.load.image('anais_talk', 'anais_talking.png')
+
         this.load.spritesheet('darwin', 'darwin_spritesheet.png', {
-            frameWidth: 46,
+            frameWidth: 42,
             frameHeight: 35
         })
         this.load.image('darwin_talk', 'darwin_talking.png')
@@ -54,9 +59,10 @@ class Menu extends Phaser.Scene{
             frameHeight: 60
         })
         this.load.spritesheet('nicole', 'nicole_spritesheet.png', {
-            frameWidth: 40,
-            frameHeight: 72
+            frameWidth: 32,
+            frameHeight: 66
         })
+        
 
         this.load.spritesheet('ANAIS_projectile', 'sci_proj_spritesheet.png', {
             frameWidth: 16,
@@ -100,7 +106,7 @@ class Menu extends Phaser.Scene{
         this.anims.create({
             key: 'GUMBALL_melee',
             frameRate: 8,
-            repeat: -1,
+            repeat: 0,
             frames: this.anims.generateFrameNumbers('gumball', { start: 8, end: 15}),
         })
         this.anims.create({
@@ -109,12 +115,12 @@ class Menu extends Phaser.Scene{
             repeat: -1,
             frames: this.anims.generateFrameNumbers('gumball', { start: 8, end: 8}),
         })
-        this.anims.create({
-            key: 'GUMBALL_projectileAttack',
-            frameRate: 8,
-            repeat: 0,
-            frames: this.anims.generateFrameNumbers('GUMBALL_projectile', { start: 0, end: 0}),
-        })
+        // this.anims.create({
+        //     key: 'GUMBALL_projectileAttack',
+        //     frameRate: 8,
+        //     repeat: 0,
+        //     frames: this.anims.generateFrameNumbers('GUMBALL_projectile', { start: 0, end: 0}),
+        // })
 
         this.anims.create({
             key: 'ANAIS_idle',
@@ -128,12 +134,12 @@ class Menu extends Phaser.Scene{
             repeat: -1,
             frames: this.anims.generateFrameNumbers('anais', { start: 8, end: 8}),
         })
-        this.anims.create({
-            key: 'ANAIS_projectileAttack',
-            frameRate: 8,
-            repeat: 0,
-            frames: this.anims.generateFrameNumbers('ANAIS_projectile', { start: 0, end: 7}),
-        })
+        // this.anims.create({
+        //     key: 'ANAIS_projectileAttack',
+        //     frameRate: 8,
+        //     repeat: 0,
+        //     frames: this.anims.generateFrameNumbers('ANAIS_projectile', { start: 0, end: 7}),
+        // })
 
         this.anims.create({
             key: 'DARWIN_idle',
@@ -147,12 +153,12 @@ class Menu extends Phaser.Scene{
             repeat: -1,
             frames: this.anims.generateFrameNumbers('darwin', { start: 8, end: 8}),
         })
-        this.anims.create({
-            key: 'DARWIN_projectileAttack',
-            frameRate: 8,
-            repeat: 0,
-            frames: this.anims.generateFrameNumbers('DARWIN_projectile', { start: 0, end: 0}),
-        })
+        // this.anims.create({
+        //     key: 'DARWIN_projectileAttack',
+        //     frameRate: 8,
+        //     repeat: 0,
+        //     frames: this.anims.generateFrameNumbers('DARWIN_projectile', { start: 0, end: 0}),
+        // })
 
         this.anims.create({
             key: 'PENNY_attack',
@@ -184,6 +190,13 @@ class Menu extends Phaser.Scene{
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('penny', { start: 24, end: 24}),
+        })
+
+        this.anims.create({
+            key: 'NICOLE_attack',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('nicole', { start: 0, end: 7}),
         })
 
     }

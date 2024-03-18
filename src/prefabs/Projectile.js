@@ -28,7 +28,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         let direction
         if(this.x >= landX){
             direction = 'left'
-            this.anims.play(`${this.character.name}_projectileAttack`)
+            // this.anims.play(`${this.character.name}_projectileAttack`)
             this.body.setVelocityX(-this.moveSpeed)
         }
         else if (landX >= this.x){

@@ -72,7 +72,7 @@ class Fighting extends Phaser.Scene {
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
         // enemy does not need mana
 
-        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 200).setOrigin(0,1)
+        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 200, 'NICOLE').setOrigin(0,1)
 
 
         // setting up keyboard inputs
@@ -92,7 +92,7 @@ class Fighting extends Phaser.Scene {
         if (this.active_players == 0 || this.active_enemies == 0){
             this.gameOver = true
         }
-        // restart game if game over
+        // restart game if g    ame over
         if (this.gameOver){
             // check gameover condition
             if (this.active_enemies == 0){

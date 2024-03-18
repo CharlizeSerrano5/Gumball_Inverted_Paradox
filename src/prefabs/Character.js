@@ -123,6 +123,7 @@ class AttackState extends State {
         console.log(Object.entries(character.attackList)[character.selectedAttack][1][2] == 0)
         if (Object.entries(character.attackList)[character.selectedAttack][1][2] == 0) {
             character.body.setVelocityX(scene.enemy.x - character.x)
+            // character.body.setVelocityX(-1 * 350)
             this.collision = false;
         }
         else {
@@ -144,25 +145,25 @@ class AttackState extends State {
             this.stateMachine.transition('idle')
         }
 
+        // console.log(character.willAttack + " " + character.hasAttacked)
+
         scene.physics.add.collider(character, scene.enemy, () => {
-            // let collision = scene.enemy.projectile.handleCollision(character, scene.dmgToEnemy)
-            // if ( collision == true){
-            //     // reset that projectile once the collision is true
-            //     console.log('collision was true')
-            //     scene.enemy.projectile.resetProj(scene.enemy.projectile.startX, scene.enemy.projectile.startY)
-            //     this.stateMachine.transition('hurt')
-            //     // is entered
-            // }
             if (this.collision == false) {
                 character.body.setVelocityX(0)
-                this.collision = true;                
+                this.collision = true;
+                character.anims.play(`${character.name}_melee`, true)
+                // character.projectile.move(scene.enemy)            
+                character.once('animationcomplete', () => {
+                    // character.projectile.x = centerX
+                    // character.projectile.y = centerY
+                    // character.projectile.resetProj(character.projectile.startX, character.projectile.startY)
+                    console.log("finished melee attack")
+                    character.anims.play(`${character.name}_idle`)
+                    character.willAttack = false
+                    character.hasAttacked = true
+                    character.setVelocityX(-1 * (scene.enemy.x - character.startX))
+                })            
             }
-            character.anims.play(`${character.name}_melee`, true)
-            character.once('animationcomplete', () => {
-                character.willAttack = false
-                character.hasAttacked = true
-                character.setVelocityX(-1 * (scene.enemy.x - character.x))
-            })      
         }, null, scene)
     }
 }

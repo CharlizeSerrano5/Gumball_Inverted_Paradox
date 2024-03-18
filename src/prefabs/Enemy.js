@@ -68,12 +68,19 @@ class DefaultState extends State {
             // add a collider to collide with the incoming player projectile
             scene.physics.add.collider(scene.selectionMenu.attackingPlayer.projectile, enemy, () => {
                 // create a collision to transition into damaged
+                console.log(scene.selectionMenu.attackingPlayer)
                 let collision = scene.selectionMenu.attackingPlayer.projectile.handleCollision(enemy, scene.dmgToEnemy)
                 if ( collision == true){
                     scene.selectionMenu.attackingPlayer.projectile.resetProj(scene.selectionMenu.attackingPlayer.projectile.startX, scene.selectionMenu.attackingPlayer.projectile.startY)
                     this.stateMachine.transition('damaged')
                 }
             }, null, scene)
+
+            if (Object.entries(scene.selectionMenu.characters[scene.selectionMenu.availableChar[scene.selectionMenu.current_player]].attackList)[scene.selectionMenu.current_attack][1][2] == 0) {
+                if (scene.selectionMenu.characters[scene.selectionMenu.availableChar[scene.selectionMenu.current_player]].hasAttacked == true) {
+                    this.stateMachine.transition('damaged')
+                }
+            }
         }
 
         // check if the summon was selected instead

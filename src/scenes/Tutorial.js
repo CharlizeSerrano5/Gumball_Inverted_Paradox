@@ -35,12 +35,17 @@ class Tutorial extends Phaser.Scene {
         this.OFFSCREEN_X = -500         // x,y coordinates used to place characters offscreen
         this.OFFSCREEN_Y = 1000
 
-
+        this.hp = HP
+        this.mp = MP
+        this.placement = 2
         this.FSM_holder = Array(3).fill(0)
 
     }
 
     create() {
+        this.background = this.add.image(this.scale.width / 1.5,this.scale.height / 2.5 , 'livingroom').setScale(0.4)
+
+
         // parse dialog from JSON file
         this.dialog = this.cache.json.get('dialog')
         //console.log(this.dialog)
@@ -54,11 +59,43 @@ class Tutorial extends Phaser.Scene {
 
         // ready the character dialog images offscreen
         this.gumball = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'gumball_talk').setOrigin(0, 1)
-        this.anais = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'anais_talk').setOrigin(0, 1).setScale(0.20)
+        this.anais = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'anais_talk').setOrigin(0, 1)
         this.darwin = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'darwin_talk').setOrigin(0, 1)
+        
+        this.gumball_char = new Character(this, centerX  + tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 'physical', 0).setOrigin(0,1)
+        this.gumball_char.addAttack("SCRATCH", 120, 0);
+        this.gumball_char.addAttack("MAGIC", 50, 10, 1);
+        this.anais_char = new Character(this, leftPos +tileSize, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 50, 'ANAIS', 'SCIENCE', 'mage', 1).setOrigin(0,1).setFlipX(true)
+        this.anais_char.addAttack("PUNCH", 25, 0);
+        this.anais_char.addAttack("SCIENCE", 200, 25, 1);
+        this.darwin_char = new Character(this, leftPos + tileSize * 2, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 'mage', 2).setOrigin(0,1).setFlipX(true)
+        this.darwin_char.addAttack("SLAP", 40, 0);
+        this.darwin_char.addAttack("SUPPORT", 40, 15, 1);
 
-        // input
-        cursors = this.input.keyboard.createCursorKeys()
+        this.gumball_hp = new HealthBar(this, centerX,  tileSize - this.placement, this.gumball_char, 0)
+        this.gumball_mp = new ManaBar(this, centerX + tileSize * 3 + 12, tileSize - this.placement , this.gumball_char, 0)
+        
+        // this.anais_hp = new HealthBar(this, centerX, tileSize *1.5 -this.placement *1.5, this.anais_char, 0)
+        // this.anais_mp = new ManaBar(this, centerX + tileSize * 3 + 12, tileSize *1.5 - this.placement *1.5, this.anais_char, 1)
+
+        // this.darwin_hp = new HealthBar(this, centerX,  tileSize * 2 - this.placement *2, this.darwin_char, 2)
+        // this.darwin_mp = new ManaBar(this, centerX + tileSize * 3 + 12,  tileSize * 2 - this.placement *2, this.darwin_char, 1)
+        this.characters = [ this.gumball_char, this.anais_char, this.darwin_char ]
+        // this.characters_hp = [ this.gumball_hp, this.anais_hp, this.darwin_hp ]
+        // this.characters_mp = [ this.gumball_mp, this.anais_mp, this.darwin_mp ]
+
+
+        
+        // place a hidden enemy
+        this.enemy = new Enemy(this, centerX, -1000, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
+
+        // setting up keyboard inputs
+        this.keys = this.input.keyboard.createCursorKeys()
+        this.selectionMenu = new SelectionMenu(this, centerX + tileSize * 2,  floorY - tileSize * 2, this.characters)
+        this.selectionMenu.setVisibility(false)
+        this.selectionMenu.allowSelect = false
+        this.tutorial = this.add.bitmapText(centerX , 10 , 'font', "Note: Navigate with Arrow Keys", 8).setOrigin(0.5)
+ 
 
         // start first dialog conversation
         this.typeText()        
@@ -67,13 +104,73 @@ class Tutorial extends Phaser.Scene {
 
     update() {
         // check for spacebar press
-        if(Phaser.Input.Keyboard.JustDown(cursors.space) && !this.dialogTyping) {
-            this.typeText() // trigger dialog
+        const { left, right, up, down, space, shift } = this.keys
+        this.FSM_holder[0].step()
+        this.FSM_holder[1].step()
+        this.FSM_holder[2].step()
+        if(!this.dialogTyping) {
+            if (this.dialogConvo == 1 && this.dialogLine == 3){
+                // console.log('we are now discussing the tutorial')
+                this.selectionMenu.allowSelect = true
+                this.selectionMenu.setVisibility(true)
+                this.tutorial.setVisible(true)
+                // add pngs and gifs describing tutorial
+            }
+            if (this.dialogConvo == 1 && this.dialogLine == 5){
+                // tutorial
+                if (this.selectionMenu.current_selection == 2){
+                        
+                        if (Phaser.Input.Keyboard.JustDown(right)){
+                            this.selectionMenu.charChange(1)
+                            this.typeText()
+
+                        }
+                        if (Phaser.Input.Keyboard.JustDown(left)){
+                            this.selectionMenu.charChange(-1)
+                            this.typeText()
+                        }
+                    
+                }
+            }
+            else if (Phaser.Input.Keyboard.JustDown(space)){
+                this.typeText() // trigger dialog
+            }
+            
+        
         }
-        if (this.dialogConvo == 1 && this.dialogLine == 3){
-            console.log('we are now discussing the tutorial')
-            // add pngs and gifs describing tutorial
+        
+
+
+        if (this.selectionMenu.allowSelect) {
+            if (Phaser.Input.Keyboard.JustDown(space)){
+                this.selectionMenu.select()
+            }
+            if (this.selectionMenu.current_selection == 0){
+                if (Phaser.Input.Keyboard.JustDown(right)){
+                    this.selectionMenu.attackChange(1)
+                }
+                if (Phaser.Input.Keyboard.JustDown(left)){
+                    this.selectionMenu.attackChange(-1)
+                }
+            }
+            
+            if (this.selectionMenu.current_selection == 2){
+                if (Phaser.Input.Keyboard.JustDown(right)){
+                    this.selectionMenu.charChange(1)
+                }
+                if (Phaser.Input.Keyboard.JustDown(left)){
+                    this.selectionMenu.charChange(-1)
+                }
+            }
+            
+            if (Phaser.Input.Keyboard.JustDown(up)){
+                this.selectionMenu.lookChoice(1)
+            }
+            if (Phaser.Input.Keyboard.JustDown(down)){
+                this.selectionMenu.lookChoice(-1)
+            }
         }
+        
     }
 
     typeText() {
@@ -178,5 +275,65 @@ class Tutorial extends Phaser.Scene {
             this.dialogLine++                               // increment dialog line
             this.dialogLastSpeaker = this.dialogSpeaker     // set past speaker
         }
+    }
+
+    checkActive(){
+        let availableChar = Array(0);
+        for (let i = 0; i < this.characters.length; i++) {
+            if (!this.characters[i].hasAttacked && !this.characters[i].collapsed){
+                // if character not collapsed nor attacked put into array 
+                availableChar.push(this.characters[i].index) 
+            }
+        }
+        // if availableChar's length == 0 then end turn
+        if (availableChar.length == 0){
+            this.changeTurn()
+            // reset the move amount
+            availableChar = this.resetAttacks()
+        }
+        return availableChar
+    }
+
+    resetAttacks() {
+        let availableCharacters = Array(0)
+        for (let i = 0; i < this.characters.length; i++) {
+            // if this character has not attacked
+            if (!this.characters[i].collapsed){
+                this.characters[i].hasAttacked = false
+                availableCharacters.push(this.characters[i].index)
+            }
+        }
+        return availableCharacters
+    }
+
+    changeTurn(){
+        // when turn is changed reset the count of how many times character can be used
+        if (this.player_turn == false){
+            this.selectionMenu.moves = 3
+
+            this.player_turn = true
+            this.selectionMenu.setVisibility(true)
+            // this.selectionMenu.allowSelect = true
+        }
+        else if (this.player_turn == true){
+            this.player_turn = false
+            this.selectionMenu.setVisibility(false)
+            // this.selectionMenu.allowSelect = true
+        }
+        
+    }
+
+    checkLiving(){
+        // function to update living characters
+        let livingCharacters = Array(3).fill(-1);
+
+        for (let i = 0; i < this.characters.length; i++) {
+            if (!this.characters[i].collapsed){
+                // if character not collapsed put into array
+                livingCharacters[i] = this.characters[i].index
+            }
+        }
+        return livingCharacters
+            
     }
 }
