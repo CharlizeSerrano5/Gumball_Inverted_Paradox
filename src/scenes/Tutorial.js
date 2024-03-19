@@ -95,7 +95,10 @@ class Tutorial extends Phaser.Scene {
         this.selectionMenu.setVisibility(false)
         this.selectionMenu.allowSelect = false
         this.tutorial = this.add.bitmapText(centerX , 10 , 'font', "Note: Navigate with Arrow Keys", 8).setOrigin(0.5)
- 
+        
+
+        this.cursor_demo = this.add.image(rightPos, floorY + tileSize *2, 'cursor')
+        this.char_cursor_demo = this.add.image(rightPos + tileSize, floorY +tileSize *2, 'char_cursor')
 
         // start first dialog conversation
         this.typeText()        
