@@ -97,11 +97,15 @@ class Tutorial extends Phaser.Scene {
         this.tutorial = this.add.bitmapText(centerX , 10 , 'font', "Note: Navigate with Arrow Keys", 8).setOrigin(0.5)
         
 
-        this.cursor_demo = this.add.image(rightPos, floorY + tileSize *2, 'cursor')
-        this.char_cursor_demo = this.add.image(rightPos + tileSize, floorY +tileSize *2, 'char_cursor')
+        this.cursor_demo = this.add.image(rightPos, floorY + tileSize *2, 'cursor').setVisible(false)
+        // this.char_cursor_demo = this.add.image(rightPos + tileSize, floorY +tileSize *2, 'char_cursor')
 
         // start first dialog conversation
-        this.typeText()        
+        this.typeText()
+        
+        // setting up convo sound
+        this.talking_sound = this.sound.add('talking').setVolume(2)
+
 
     }
 
@@ -112,17 +116,19 @@ class Tutorial extends Phaser.Scene {
         this.FSM_holder[1].step()
         this.FSM_holder[2].step()
         if(!this.dialogTyping) {
+            this.cursor_demo.setVisible(false)
             if (this.dialogConvo == 1 && this.dialogLine == 3){
                 // console.log('we are now discussing the tutorial')
                 this.selectionMenu.allowSelect = true
                 this.selectionMenu.setVisibility(true)
                 this.tutorial.setVisible(true)
+                this.cursor_demo.setVisible(true)
                 // add pngs and gifs describing tutorial
             }
             if (this.dialogConvo == 1 && this.dialogLine == 5){
                 // tutorial
                 if (this.selectionMenu.current_selection == 2){
-                        
+                    this.cursor_demo.setVisible(true)
                         if (Phaser.Input.Keyboard.JustDown(right)){
                             this.selectionMenu.charChange(1)
                             this.typeText()
@@ -130,6 +136,22 @@ class Tutorial extends Phaser.Scene {
                         }
                         if (Phaser.Input.Keyboard.JustDown(left)){
                             this.selectionMenu.charChange(-1)
+                            this.typeText()
+                        }
+                    
+                }
+            }
+            else if (this.dialogConvo == 1 && this.dialogLine == 7){
+                // tutorial
+                if (this.selectionMenu.current_selection == 0){
+                        
+                        if (Phaser.Input.Keyboard.JustDown(right)){
+                            this.selectionMenu.attackChange(1)
+                            this.typeText()
+
+                        }
+                        if (Phaser.Input.Keyboard.JustDown(left)){
+                            this.selectionMenu.attackChange(-1)
                             this.typeText()
                         }
                     
@@ -177,6 +199,7 @@ class Tutorial extends Phaser.Scene {
     }
 
     typeText() {
+        // this.talking_sound.play()
         console.log('typing')
         // lock input while typing
         this.dialogTyping = true

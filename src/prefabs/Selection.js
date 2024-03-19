@@ -33,6 +33,9 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         this.attackingPlayer  = undefined // initialize an attacking Player
     
         this.summonSelect = false
+
+        this.select_sound = this.scene.sound.add('select').setVolume(2)
+
     }
 
     updateAvailable() {
@@ -47,6 +50,8 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
         // only allow select if active
         // console.log('trying to select and the turn is ' + this.scene.player_turn + ' and we are allowed to select? ' + this.allowSelect)
         if (this.scene.player_turn == true && this.allowSelect == true){
+            
+
             this.availableChar = this.updateAvailable()
             console.log(`THIS ${this.availableChar}\n\n`)
             if (this.current_selection == 0 ){
@@ -59,6 +64,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
 
                     //     }
                     // }
+                    
 
                     if (this.characters[this.availableChar[this.current_player]].mana >= Object.entries(this.characters[this.availableChar[this.current_player]].attackList)[this.current_attack][1][1]) {
                         this.characters[this.availableChar[this.current_player]].willAttack = true
@@ -103,6 +109,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     }
 
     lookChoice(input) {
+        this.select_sound.play()
         // selection menu options
         // if up and down selected then scroll through options
         this.selections[this.current_selection].clearTint()
@@ -122,6 +129,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     }
 
     charChange(input){
+        this.select_sound.play()
         this.availableChar = this.updateAvailable()
         this.current_player += input
         // when character is changed auto set the current attack to 0
@@ -153,6 +161,7 @@ class SelectionMenu extends Phaser.GameObjects.Graphics{
     }
 
     attackChange(input){
+        this.select_sound.play()
         // using the same logic as charChange()
         // manuever through the selected characters attacks
         console.log(input)

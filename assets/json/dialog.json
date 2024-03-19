@@ -44,12 +44,12 @@
 		},
 		{
 			"speaker" : "anais",
-			"dialog" : "Sigh, can't be helped. Look at your console and navigate through.",
+			"dialog" : "Sigh, can't be helped. Look at your console and navigate through looking at this hand.",
 			"newSpeaker": "true"
 		},
 		{
 			"speaker" : "anais",
-			"dialog" : "To switch between us you must move left <- and right -> when looking at our names."
+			"dialog" : "To switch between us you must move left <- and right -> when looking at our names with the hand."
 		},
 		{
 			"speaker" : "anais",
@@ -61,7 +61,7 @@
 		},
 		{
 			"speaker" : "anais",
-			"dialog" : "To attack go to the bottom of the menu and press SPACE."
+			"dialog" : "Trying scrolling through our attacks using left <- and right ->."
 		},
 		{
 			"speaker" : "anais",
@@ -69,7 +69,7 @@
 		},
 		{
 			"speaker" : "darwin",
-			"dialog" : "Oh yeah, by the way you can use the phone to summon friends in battle!!",
+			"dialog" : "By the way you can use the phone to summon friends twice in battle!",
 			"newSpeaker": "true"
 		}
 		

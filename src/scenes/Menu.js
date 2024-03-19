@@ -26,6 +26,8 @@ class Menu extends Phaser.Scene{
         // setting up audio
         this.load.audio('music', 'sound/8BitArcade.mp3')
         this.load.audio('fight_music', 'sound/80s_Fight_Music_1.mp3')
+        this.load.audio('select', 'sound/select.mp3')
+        this.load.audio('talking', 'sound/talking.mp3')
 
 
         // load JSON (ie dialog text)
@@ -89,11 +91,12 @@ class Menu extends Phaser.Scene{
         this.add.image(centerX, centerY - tileSize / 2, 'title_image').setScale(2).setOrigin(0.5)
 
         // add title text
-        this.add.bitmapText(centerX, centerY + tileSize * 2.5, 'font', 'The Amazing World of Gumball', 12).setOrigin(0.5)
+        this.add.bitmapText(centerX, tileSize / 2, 'font', 'The Amazing World of Gumball', 12).setOrigin(0.5)
         // this.add.bitmapText(centerX, centerY , 'font', 'up and down to change choice', 8).setOrigin(0.5)
         // this.add.bitmapText(centerX, centerY  + tileSize*3, 'font', 'change characters <- ->', 8).setOrigin(0.5)
         // this.add.bitmapText(centerX, centerY  + 12, 'font', 'SPACE to select choice', 8).setOrigin(0.5)
         this.add.bitmapText(centerX, centerY + tileSize * 3, 'font', 'arrow keys to START', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, centerY + tileSize * 2.5, 'font', 'space for CREDITS', 8).setOrigin(0.5)
 
         // setting up inputs
         this.keys = this.input.keyboard.createCursorKeys()
@@ -240,15 +243,18 @@ class Menu extends Phaser.Scene{
     update() {
         const { left, right, up, down, space, shift } = this.keys   
 
-        if (right.isDown || up.isDown ){
-            this.scene.start('fightingScene')
-        }
-        if (left.isDown){
-            this.scene.start('creditsScene')  
-        }
+        // if (right.isDown || up.isDown ){
+        //     this.scene.start('fightingScene')
+        // }
+        // if (left.isDown){
+        //     this.scene.start('creditsScene')  
+        // }
 
-        if (down.isDown){
+        if (down.isDown || right.isDown || left.isDown || up.isDown){
             this.scene.start('tutorialScene')
+        }
+        if (space.isDown){
+            this.scene.start('creditsScene')
         }
     }
 }

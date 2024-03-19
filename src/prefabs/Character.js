@@ -57,6 +57,8 @@ class IdleState extends State {
         // console.log(character.name  + 'has entered the IDLE state')
         // player is not attacking in idle state
         character.clearTint()
+        // character.willAttack = true
+        // character.hasAttacked = false
         // player is not hurt
         character.hurt = false
         console.log(character.name + ' is hurt?: ' + character.hurt)

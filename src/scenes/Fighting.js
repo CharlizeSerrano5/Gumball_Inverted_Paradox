@@ -112,6 +112,10 @@ class Fighting extends Phaser.Scene {
                     this.textAdded = true
                 }
             }
+            if ( right.isDown || left.isDown ){
+                this.music.stop()
+                this.scene.start('creditsScene')
+            }
             if (up.isDown){
                 this.music.stop()
                 this.scene.start('menuScene')
