@@ -96,6 +96,7 @@ class AttackState extends State {
     enter (scene, character) {
         // remove the enemies health
         // character.state = 'attack'
+        character.body.enable = true
         console.log("current attack: " + character.selectedAttack)
         // if (scene.selectionMenu.current_attack == 1){
         //     // if you have selected a magic attack then play the magic attack
@@ -149,6 +150,7 @@ class AttackState extends State {
             character.body.setVelocityX(0)
             scene.selectionMenu.charChange(0)
             // character.projectile.reset(character.x)
+            character.body.enable = false
             this.stateMachine.transition('idle')
         }
 
