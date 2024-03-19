@@ -18,7 +18,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         // setting up the character to attack
         // this.selectedChar = -1
 
-        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `${this.name}_projectile`, this)
+        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height * 1.5, `enemy_projectile`, this).setScale(2)
 
         // setting up state machines
         scene.enemyFSM = new StateMachine('default', {

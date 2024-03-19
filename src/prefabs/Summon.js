@@ -4,7 +4,7 @@ class Summon extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y , texture, damage, name) {
         super(scene, x, y, texture)
         scene.add.existing(this)
-        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height/2, `${this.name}_projectile`, this)
+        this.projectile = new Projectile(scene, this.x + this.width/2, this.y - this.height/2, `enemy_projectile`, this)
         this.name = name
         this.scene = scene
         this.hasAttacked = false

@@ -10,6 +10,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         this.character = character
         this.startX = this.x
         this.startY = this.y
+        this.setVisible(false)
         // console.log(this.character.name)
         // this.setVisible(false)
     }
@@ -23,7 +24,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
         // this.setVisible(true)
         let landX = character.x + character.width
         let landY = character.y - character.height
-
+        this.setVisible(true)
         // scene.enemy.x + scene.enemy.width, scene.enemyY - scene.enemy.height
         let direction
         if(this.x >= landX){
@@ -77,6 +78,7 @@ class Projectile extends Phaser.Physics.Arcade.Sprite{
     }
     resetProj(x, y){
         // console.log('reset velocity' + this.body.velocity)
+        this.setVisible(false)
         this.body.setVelocityY(0)
         this.body.setVelocityX(0)
         this.x = x

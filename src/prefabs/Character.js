@@ -127,7 +127,12 @@ class AttackState extends State {
             this.collision = false;
         }
         else {
-            character.projectile.move(scene.enemy)            
+            character.anims.play(`${character.name}_magic`, true)
+            character.once('animationcomplete', () => {
+                character.projectile.move(scene.enemy)
+                character.willAttack = false
+                character.hasAttacked = true
+            })       
         }
 
         // scene.time.delayedCall(character.hurtTimer, () => {
