@@ -42,8 +42,8 @@ class Menu extends Phaser.Scene{
         this.load.image('gumball_talk', 'gumball_talking.png')
 
         this.load.spritesheet('anais', 'anais_spritesheet.png', {
-            frameWidth: 33,
-            frameHeight: 34
+            frameWidth: 38,
+            frameHeight: 36
         })
 
         this.load.image('anais_talk', 'anais_talking.png')
@@ -133,6 +133,12 @@ class Menu extends Phaser.Scene{
             frameRate: 8,
             repeat: -1,
             frames: this.anims.generateFrameNumbers('anais', { start: 8, end: 8}),
+        })
+        this.anims.create({
+            key: 'ANAIS_magic',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('anais', { start: 8, end: 15}),
         })
         // this.anims.create({
         //     key: 'ANAIS_projectileAttack',
