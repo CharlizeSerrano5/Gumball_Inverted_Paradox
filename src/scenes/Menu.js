@@ -97,6 +97,7 @@ class Menu extends Phaser.Scene{
         // this.add.bitmapText(centerX, centerY  + 12, 'font', 'SPACE to select choice', 8).setOrigin(0.5)
         this.add.bitmapText(centerX, centerY + tileSize * 3, 'font', 'arrow keys to START', 8).setOrigin(0.5)
         this.add.bitmapText(centerX, centerY + tileSize * 2.5, 'font', 'space for CREDITS', 8).setOrigin(0.5)
+        this.add.bitmapText(centerX, centerY + tileSize * 2, 'font', 'shift to RESTART', 8).setOrigin(0.5)
 
         // setting up inputs
         this.keys = this.input.keyboard.createCursorKeys()

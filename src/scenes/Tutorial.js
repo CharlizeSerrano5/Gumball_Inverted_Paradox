@@ -110,8 +110,12 @@ class Tutorial extends Phaser.Scene {
     }
 
     update() {
+        
         // check for spacebar press
         const { left, right, up, down, space, shift } = this.keys
+        if (Phaser.Input.Keyboard.JustDown(shift)){
+            this.scene.start('menuScene')
+        }
         this.FSM_holder[0].step()
         this.FSM_holder[1].step()
         this.FSM_holder[2].step()

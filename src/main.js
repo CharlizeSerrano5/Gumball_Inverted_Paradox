@@ -1,6 +1,6 @@
 // Charlize Serrano
 // Title: Inverted Paradox
-// Hours: Currently ~15 Hours 
+// Hours: Currently ~30 Hours 
 
 // Notes for myself:
     // For Friday: Submit the fighting scene

@@ -80,7 +80,7 @@ class Fighting extends Phaser.Scene {
 
         // this.selectionMenu = new SelectionMenu(this, game.config.width - tileSize - 5, floorY + tileSize + 25, this.characters)
         this.selectionMenu = new SelectionMenu(this, game.config.width - tileSize - 5,  tileSize + 25, this.characters)
-
+        this.add.bitmapText(centerX,  game.config.height - 9 , 'font', "[SHIFT] for Menu", 8).setOrigin(0.5)
         // Game OVER flag
         this.gameOver = false
         
@@ -130,7 +130,7 @@ class Fighting extends Phaser.Scene {
             // console.log("enemy attacked=" + this.enemy.hasAttacked +', ' + this.characters[0].name + this.characters[0].state + ' , ' + this.characters[1].name + this.characters[1].state + ' , ' + this.characters[2].name + this.characters[2].state)
             // DEBUGGING
             if (Phaser.Input.Keyboard.JustDown(shift)){
-                this.scene.start('bossfightingScene')
+                this.scene.start('menuScene')
             }
 
             if (!this.music_playing){
