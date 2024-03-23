@@ -3,7 +3,7 @@ class Character extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture)
         scene.add.existing(this)
         scene.physics.add.existing(this)
-        this.body.setImmovable(true)
+        this.body.pushable = false
         this.body.setSize(this.width /1.5, this.height)
         this.startX = x
         this.startY = y
@@ -73,20 +73,23 @@ class IdleState extends State {
             this.stateMachine.transition('attack')
         }
         // if the enemy is attacking add a collider
-        if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) { 
+        // if(scene.enemy.hasAttacked && scene.enemy.selectedChar == character.index) {
+        // console.log(character.hurt)
+        if (character.hurt == true) {
             // turning on and off collision
             // see: https://phaser.discourse.group/t/toggle-on-off-collisions-based-on-setcollisionbyproperty/2735
             character.body.enable = true
-            scene.physics.add.collider(scene.enemy.projectile, character, () => {
-                let collision = scene.enemy.projectile.handleCollision(character, scene.dmgToEnemy)
-                if ( collision == true){
-                    // reset that projectile once the collision is true
-                    console.log('collision was true')
-                    scene.enemy.projectile.resetProj(scene.enemy.projectile.startX, scene.enemy.projectile.startY)
-                    this.stateMachine.transition('hurt')
-                    // is entered
-                }
-            }, null, scene)
+            // scene.physics.add.collider(scene.enemy.projectile, character, () => {
+            //     let collision = scene.enemy.projectile.handleCollision(character, scene.dmgToEnemy)
+            //     if ( collision == true){
+            //         // reset that projectile once the collision is true
+            //         console.log('collision was true')
+            //         scene.enemy.projectile.resetProj(scene.enemy.projectile.startX, scene.enemy.projectile.startY)
+            //         this.stateMachine.transition('hurt')
+            //         // is entered
+            //     }
+            // }, null, scene)
+            this.stateMachine.transition('hurt')
         }  
     }
 }
@@ -125,7 +128,9 @@ class AttackState extends State {
         
         console.log(Object.entries(character.attackList)[character.selectedAttack][1][2] == 0)
         if (Object.entries(character.attackList)[character.selectedAttack][1][2] == 0) {
-            character.body.setVelocityX(scene.enemy.x - character.x)
+            // character.body.setVelocityX(scene.enemy.x - character.x)
+            console.log(scene.enemy.x, scene.enemy.y)
+            scene.physics.moveTo(character, scene.enemy.x, scene.enemy.y, 250)
             // character.body.setVelocityX(-1 * 350)
             this.collision = false;
         }
@@ -148,6 +153,7 @@ class AttackState extends State {
         // reset to idle
         if (character.hasAttacked == true && character.x >= character.startX){
             character.body.setVelocityX(0)
+            character.body.setVelocityY(0)
             scene.selectionMenu.charChange(0)
             // character.projectile.reset(character.x)
             character.body.enable = false
@@ -158,8 +164,9 @@ class AttackState extends State {
 
         scene.physics.add.collider(character, scene.enemy, () => {
             if (this.collision == false) {
-                character.body.setVelocityX(0)
                 this.collision = true;
+                character.body.setVelocityX(0)
+                character.body.setVelocityY(0)
                 character.anims.play(`${character.name}_melee`, true)
                 // character.projectile.move(scene.enemy)            
                 character.once('animationcomplete', () => {
@@ -170,7 +177,9 @@ class AttackState extends State {
                     character.anims.play(`${character.name}_idle`)
                     character.willAttack = false
                     character.hasAttacked = true
-                    character.setVelocityX(-1 * (scene.enemy.x - character.startX))
+                    scene.enemy.hurt = true
+                    // character.setVelocityX(-1 * (scene.enemy.x - character.startX))
+                    scene.physics.moveTo(character, character.startX, character.startY, 250)
                 })            
             }
         }, null, scene)
@@ -181,23 +190,24 @@ class HurtState extends State {
     enter (scene, character) {
         // scene.enemy.hasAttacked = false
         character.state = 'hurt'
-        character.hurt = true
+        // character.hurt = true
         // character.anims.play(`${character.name}_hurt`, true)
         character.setTint(0xFF0000)
         // decrease health and update bar
+        console.log("enemy damage: " + scene.enemy.dmgToPlayer)
         character.health -= scene.enemy.dmgToPlayer
         console.log(scene.enemy.selectedChar + "selected CHARACTER")
         scene.characters_hp[scene.enemy.selectedChar].match(character.health)
-        let damage_txt = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
+        character.damage_txt = scene.add.bitmapText(character.x, character.y - tileSize*1.5, 'font',  -scene.enemy.dmgToPlayer, 8).setOrigin(0, 0).setTint(0xFF0000)
         this.attackText_below = scene.add.bitmapText(centerX, centerY+1, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5).setTint(0x1a1200)
         this.attackText = scene.add.bitmapText(centerX, centerY, 'font',  `${character.name} takes ${-scene.enemy.dmgToPlayer} damage`, 12).setOrigin(0.5)
         
         this.ready = false
-        if (character.health > 0){
+        // if (character.health > 0){
             scene.time.delayedCall(character.hurtTimer, () => {
                 character.clearTint()
                 scene.enemy.attacking = false
-                damage_txt.setVisible(false)
+                character.damage_txt.setVisible(false)
                 this.attackText_below.setVisible(false)
                 this.attackText.setVisible(false)
                 console.log("\n\n enemy attacked= " + scene.enemy.hasAttacked + '\n\n')
@@ -205,11 +215,11 @@ class HurtState extends State {
                     console.log(`${character.name} has reached idle`)
                     this.stateMachine.transition('idle')
                 }
-                this.ready = true
+                // this.ready = true
                 // character.checkCollision.none = true
                 character.body.enable = false
             })
-        }
+        // }
         
         console.log('HURT')
         
@@ -219,11 +229,12 @@ class HurtState extends State {
             // if health depleted after hurt animation collapse this character
             this.stateMachine.transition('collapse')
             character.once('animationcomplete', () => {
-                
+                character.hurt = false
                 this.stateMachine.transition('collapse')
             })
         }
-        if(this.ready == true){
+        if(scene.enemy.hasAttacked == true){
+            character.hurt = false
             this.stateMachine.transition('idle')
         }
         
@@ -234,6 +245,7 @@ class CollapseState extends State {
     // the character will be knocked out in this state
     enter (scene, character) {
         character.state = 'collapse'
+        character.damage_txt.setVisible(false)
         scene.selectionMenu.updateAvailable()
         character.anims.play(`${character.name}_collapse`, true)
         character.collapsed = true

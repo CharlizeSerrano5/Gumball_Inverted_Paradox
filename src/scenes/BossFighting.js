@@ -32,17 +32,26 @@ class BossFighting extends Phaser.Scene {
         // see: https://www.youtube.com/watch?v=OOo69t_-uok
         this.background = this.add.image(this.scale.width / 2,this.scale.height / 2 - tileSize * 1.55, 'background')
         // adding music
-        this.music = this.sound.add('fight_music').setLoop(true).setVolume(0.4)
+        this.music = this.sound.add('boss_music').setLoop(true).setVolume(0.4)
         
         // adding a character to scene - each character should have their own HP
         this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 'physical', 0).setOrigin(0,1)
-        this.gumball.attackList = [ 'SCRATCH', 'MAGIC']
+        // this.gumball.body.setSize(this.width / 2, this.height/2).setOffset(3, 0)
+        // this.gumball.attackList = [ 'SCRATCH', 'MAGIC']
+        this.gumball.addAttack("SCRATCH", 120, 0);
+        this.gumball.addAttack("MAGIC", 50, 10, 1);
+        console.log(Object.entries(this.gumball.attackList))
 
         this.anais = new Character(this, rightPos, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 50, 'ANAIS', 'SCIENCE', 'mage', 1).setOrigin(0,1)
-        this.anais.attackList = [ 'PUNCH', 'SCIENCE' ]
+        // this.anais.attackList = [ 'PUNCH', 'SCIENCE' ]
+        this.anais.addAttack("PUNCH", 25, 0);
+        this.anais.addAttack("SCIENCE", 200, 25, 1);
 
         this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 'mage', 2).setOrigin(0,1)
-        this.darwin.attackList = [ 'SLAP', 'SUPPORT' ]
+        // this.darwin.attackList = [ 'SLAP', 'SUPPORT' ]
+        this.darwin.addAttack("SLAP", 40, 0);
+        this.darwin.addAttack("SUPPORT", 40, 15, 1);
+
         // adding each character health
         this.gumball_hp = new HealthBar(this, centerX, floorY + tileSize, this.gumball, 0)
         this.gumball_mp = new ManaBar(this, centerX + tileSize * 3 + 12, floorY + tileSize, this.gumball, 0)
@@ -59,11 +68,11 @@ class BossFighting extends Phaser.Scene {
         this.characters_mp = [ this.gumball_mp, this.anais_mp, this.darwin_mp ]
 
         // adding enemy to scene - enemy has their own prefab
-        this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize / 1.5, 'penny', 0, HP, MP, 152, 'PENNY').setOrigin(0,1).setFlipX(true)
+        this.enemy = new Enemy(this, leftPos - tileSize, floorY + tileSize / 1.5, 'console', 0, HP * 3, MP, 200, 'CONSOLE').setOrigin(0,1)
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
         // enemy does not need mana
 
-        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 200).setOrigin(0,1)
+        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 400, 'NICOLE').setOrigin(0,1)
 
 
         // setting up keyboard inputs
@@ -71,7 +80,7 @@ class BossFighting extends Phaser.Scene {
 
         // this.selectionMenu = new SelectionMenu(this, game.config.width - tileSize - 5, floorY + tileSize + 25, this.characters)
         this.selectionMenu = new SelectionMenu(this, game.config.width - tileSize - 5,  tileSize + 25, this.characters)
-
+        this.add.bitmapText(centerX,  game.config.height - 9 , 'font', "[SHIFT] for Menu", 8).setOrigin(0.5)
         // Game OVER flag
         this.gameOver = false
         
@@ -89,7 +98,8 @@ class BossFighting extends Phaser.Scene {
             if (this.active_enemies == 0){
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'YOU WIN', 20).setOrigin(0.5)
-                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'any arrow key for credits', 12).setOrigin(0.5)
+
                     this.textAdded = true
                     
                 }
@@ -98,23 +108,24 @@ class BossFighting extends Phaser.Scene {
                 // use boolean value to ensure that browser does not lag
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'GAME OVER', 20).setOrigin(0.5)
-                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'any arrow key for credits', 12).setOrigin(0.5)
 
                     this.textAdded = true
                 }
             }
-            if (up.isDown){
+            if (up.isDown || down.isDown || left.isDown || right.isDown){
                 this.music.stop()
-                this.scene.start('menuScene')
+                this.scene.start('creditsScene')
             }
-            if (right.isDown){
-                this.music.stop()
-                this.scene.restart()
-            }
+
         }
         if (!this.gameOver){
             // for debugging
             // console.log("enemy attacked=" + this.enemy.hasAttacked +', ' + this.characters[0].name + this.characters[0].state + ' , ' + this.characters[1].name + this.characters[1].state + ' , ' + this.characters[2].name + this.characters[2].state)
+            // DEBUGGING
+            if (Phaser.Input.Keyboard.JustDown(shift)){
+                this.scene.start('menuScene')
+            }
 
             if (!this.music_playing){
                 this.music.play()
@@ -124,33 +135,37 @@ class BossFighting extends Phaser.Scene {
             this.FSM_holder[1].step()
             this.FSM_holder[2].step()
             this.enemyFSM.step()
-        
-            if (Phaser.Input.Keyboard.JustDown(space)){
-                this.selectionMenu.select()
-            }
-            if (this.selectionMenu.current_selection == 0){
-                if (Phaser.Input.Keyboard.JustDown(right)){
-                    this.selectionMenu.attackChange(1)
+
+            // console.log(this.selectionMenu.allowSelect)
+
+            if (this.selectionMenu.allowSelect) {
+                if (Phaser.Input.Keyboard.JustDown(space)){
+                    this.selectionMenu.select()
                 }
-                if (Phaser.Input.Keyboard.JustDown(left)){
-                    this.selectionMenu.attackChange(-1)
+                if (this.selectionMenu.current_selection == 0){
+                    if (Phaser.Input.Keyboard.JustDown(right)){
+                        this.selectionMenu.attackChange(1)
+                    }
+                    if (Phaser.Input.Keyboard.JustDown(left)){
+                        this.selectionMenu.attackChange(-1)
+                    }
                 }
-            }
-            
-            if (this.selectionMenu.current_selection == 2){
-                if (Phaser.Input.Keyboard.JustDown(right)){
-                    this.selectionMenu.charChange(1)
+                
+                if (this.selectionMenu.current_selection == 2){
+                    if (Phaser.Input.Keyboard.JustDown(right)){
+                        this.selectionMenu.charChange(1)
+                    }
+                    if (Phaser.Input.Keyboard.JustDown(left)){
+                        this.selectionMenu.charChange(-1)
+                    }
                 }
-                if (Phaser.Input.Keyboard.JustDown(left)){
-                    this.selectionMenu.charChange(-1)
+                
+                if (Phaser.Input.Keyboard.JustDown(up)){
+                    this.selectionMenu.lookChoice(1)
                 }
-            }
-            
-            if (Phaser.Input.Keyboard.JustDown(up)){
-                this.selectionMenu.lookChoice(1)
-            }
-            if (Phaser.Input.Keyboard.JustDown(down)){
-                this.selectionMenu.lookChoice(-1)
+                if (Phaser.Input.Keyboard.JustDown(down)){
+                    this.selectionMenu.lookChoice(-1)
+                }
             }
         } 
     }
@@ -189,6 +204,7 @@ class BossFighting extends Phaser.Scene {
             this.selectionMenu.moves = 3
 
             this.player_turn = true
+            this.selectionMenu.allowSelect = true
             this.selectionMenu.setVisibility(true)
             // this.selectionMenu.allowSelect = true
         }

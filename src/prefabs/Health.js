@@ -6,6 +6,7 @@ class HealthBar extends Phaser.GameObjects.Graphics{
 
         this.x = x - tileSize * 2;
         this.y = y;
+        this.start_hp = character.health
         this.value = character.health;
         // this.p = /100;
         this.padding = 4
@@ -61,7 +62,8 @@ class HealthBar extends Phaser.GameObjects.Graphics{
             this.bar.fillStyle(0xcb3938)
         }
 
-        var health_width = Math.floor(this.value / 8.7)
+        // var health_width = Math.floor(this.value / 8.7)
+        var health_width = 114 * (this.value / this.start_hp)
         this.bar.fillRect(this.x + 2, this.y + 2, health_width, this.height - this.padding)
     }
 }

@@ -26,6 +26,8 @@ class Menu extends Phaser.Scene{
         // setting up audio
         this.load.audio('music', 'sound/8BitArcade.mp3')
         this.load.audio('fight_music', 'sound/80s_Fight_Music_1.mp3')
+        this.load.audio('boss_music', 'sound/80s_Fight_Music_2.mp3')
+
         this.load.audio('select', 'sound/select.mp3')
         this.load.audio('talking', 'sound/talking.mp3')
 
@@ -60,6 +62,12 @@ class Menu extends Phaser.Scene{
             frameWidth: 43,
             frameHeight: 60
         })
+
+        this.load.spritesheet('console', 'console_spritesheet.png', {
+            frameWidth: 110,
+            frameHeight: 130
+        })
+
         this.load.spritesheet('nicole', 'nicole_spritesheet.png', {
             frameWidth: 32,
             frameHeight: 66
@@ -232,6 +240,32 @@ class Menu extends Phaser.Scene{
             frames: this.anims.generateFrameNumbers('penny', { start: 24, end: 24}),
         })
 
+
+        this.anims.create({
+            key: 'CONSOLE_default',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('console', { start: 0, end:7}),
+        })
+        this.anims.create({
+            key: 'CONSOLE_singleAttack',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('console', { start: 8, end:15}),
+        })
+        this.anims.create({
+            key: 'CONSOLE_damaged',
+            frameRate: 8,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('console', { start: 16, end:23}),
+        })
+        this.anims.create({
+            key: 'CONSOLE_defeat',
+            frameRate: 8,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('console', { start: 23, end: 23}),
+        })
+
         this.anims.create({
             key: 'NICOLE_attack',
             frameRate: 8,
@@ -243,13 +277,6 @@ class Menu extends Phaser.Scene{
 
     update() {
         const { left, right, up, down, space, shift } = this.keys   
-
-        // if (right.isDown || up.isDown ){
-        //     this.scene.start('fightingScene')
-        // }
-        // if (left.isDown){
-        //     this.scene.start('creditsScene')  
-        // }
 
         if (down.isDown || right.isDown || left.isDown || up.isDown){
             this.scene.start('tutorialScene')

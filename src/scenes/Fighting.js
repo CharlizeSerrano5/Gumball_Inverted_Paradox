@@ -72,7 +72,7 @@ class Fighting extends Phaser.Scene {
         this.enemy_hp = new HealthBar(this, centerX, tileSize / 4, this.enemy)
         // enemy does not need mana
 
-        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 200, 'NICOLE').setOrigin(0,1)
+        this.summon = new Summon(this, rightPos - tileSize * 3, game.config.height + 100, 'nicole', 300, 'NICOLE').setOrigin(0,1)
 
 
         // setting up keyboard inputs
@@ -98,7 +98,9 @@ class Fighting extends Phaser.Scene {
             if (this.active_enemies == 0){
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'YOU WIN', 20).setOrigin(0.5)
-                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY - tileSize, 'font', '[up] for menu', 8).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY + tileSize, 'font', '[right] for BOSS', 12).setOrigin(0.5)
+
                     this.textAdded = true
                     
                 }
@@ -107,12 +109,13 @@ class Fighting extends Phaser.Scene {
                 // use boolean value to ensure that browser does not lag
                 if (!this.textAdded){
                     this.add.bitmapText(centerX, centerY, 'font', 'GAME OVER', 20).setOrigin(0.5)
-                    this.add.bitmapText(centerX, centerY - tileSize, 'font', 'up for menu right to restart', 8).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY - tileSize, 'font', '[up] for menu [down] to restart', 8).setOrigin(0.5)
+                    this.add.bitmapText(centerX, centerY + tileSize, 'font', '[left] for CREDITS', 8).setOrigin(0.5)
 
                     this.textAdded = true
                 }
             }
-            if ( right.isDown || left.isDown ){
+            if (left.isDown && this.active_players == 0){
                 this.music.stop()
                 this.scene.start('creditsScene')
             }
@@ -120,7 +123,11 @@ class Fighting extends Phaser.Scene {
                 this.music.stop()
                 this.scene.start('menuScene')
             }
-            if (right.isDown){
+            if (right.isDown && this.active_enemies == 0){
+                this.music.stop()
+                this.scene.start('bossfightingScene')
+            }
+            if (down.isDown && this.active_players == 0){
                 this.music.stop()
                 this.scene.restart()
             }
@@ -210,6 +217,7 @@ class Fighting extends Phaser.Scene {
             this.selectionMenu.moves = 3
 
             this.player_turn = true
+            this.selectionMenu.allowSelect = true
             this.selectionMenu.setVisibility(true)
             // this.selectionMenu.allowSelect = true
         }

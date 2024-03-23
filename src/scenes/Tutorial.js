@@ -39,12 +39,15 @@ class Tutorial extends Phaser.Scene {
         this.mp = MP
         this.placement = 2
         this.FSM_holder = Array(3).fill(0)
+        
+        this.music_playing = false
 
     }
 
     create() {
         this.background = this.add.image(this.scale.width / 1.5,this.scale.height / 2.5 , 'livingroom').setScale(0.4)
 
+        this.music = this.sound.add('music').setLoop(true).setVolume(0.4)
 
         // parse dialog from JSON file
         this.dialog = this.cache.json.get('dialog')
@@ -110,7 +113,12 @@ class Tutorial extends Phaser.Scene {
     }
 
     update() {
-        
+        if (!this.music_playing){
+            this.music.play()
+            this.music_playing = true
+        }
+
+
         // check for spacebar press
         const { left, right, up, down, space, shift } = this.keys
         if (Phaser.Input.Keyboard.JustDown(shift)){
@@ -242,6 +250,7 @@ class Tutorial extends Phaser.Scene {
                     duration: this.tweenDuration,
                     ease: 'Linear',
                     onComplete: () => {
+                        this.music.stop()
                         this.scene.start('fightingScene')
                     }
                 })
