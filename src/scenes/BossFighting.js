@@ -35,19 +35,19 @@ class BossFighting extends Phaser.Scene {
         this.music = this.sound.add('boss_music').setLoop(true).setVolume(0.4)
         
         // adding a character to scene - each character should have their own HP
-        this.gumball = new Character(this, rightPos-tileSize, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 'physical', 0).setOrigin(0,1)
+        this.gumball = new Character(this, rightPos-tileSize - 16, floorY + tileSize /1.5, 'gumball', 0, this.hp, MP, 30, 'GUMBALL', 'MAGIC', 'physical', 0).setOrigin(0,1)
         // this.gumball.body.setSize(this.width / 2, this.height/2).setOffset(3, 0)
         // this.gumball.attackList = [ 'SCRATCH', 'MAGIC']
         this.gumball.addAttack("SCRATCH", 120, 0);
         this.gumball.addAttack("MAGIC", 50, 10, 1);
         console.log(Object.entries(this.gumball.attackList))
 
-        this.anais = new Character(this, rightPos, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 50, 'ANAIS', 'SCIENCE', 'mage', 1).setOrigin(0,1)
+        this.anais = new Character(this, rightPos - 16, floorY +tileSize / 1.5, 'anais', 0, this.hp, MP, 50, 'ANAIS', 'SCIENCE', 'mage', 1).setOrigin(0,1)
         // this.anais.attackList = [ 'PUNCH', 'SCIENCE' ]
         this.anais.addAttack("PUNCH", 25, 0);
         this.anais.addAttack("SCIENCE", 200, 25, 1);
 
-        this.darwin = new Character(this, rightPos + tileSize, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 'mage', 2).setOrigin(0,1)
+        this.darwin = new Character(this, rightPos + tileSize - 16, floorY + tileSize / 1.5, 'darwin', 0, this.hp, MP, 10, 'DARWIN', 'SUPPORT', 'mage', 2).setOrigin(0,1)
         // this.darwin.attackList = [ 'SLAP', 'SUPPORT' ]
         this.darwin.addAttack("SLAP", 40, 0);
         this.darwin.addAttack("SUPPORT", 40, 15, 1);
