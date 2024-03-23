@@ -137,6 +137,7 @@ class Fighting extends Phaser.Scene {
             // console.log("enemy attacked=" + this.enemy.hasAttacked +', ' + this.characters[0].name + this.characters[0].state + ' , ' + this.characters[1].name + this.characters[1].state + ' , ' + this.characters[2].name + this.characters[2].state)
             // DEBUGGING
             if (Phaser.Input.Keyboard.JustDown(shift)){
+                this.music.stop()
                 this.scene.start('menuScene')
             }
 
